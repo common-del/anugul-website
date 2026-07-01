@@ -69,10 +69,10 @@ export default function AnalyticsPage({
             </div>
           ))}
           <div className="rounded-xl bg-brand-tint p-3">
-            <div className="truncate text-xl font-extrabold text-brand-ink">
+            <div className="text-lg font-extrabold leading-tight text-brand-ink">
               {district.bestBlock}
             </div>
-            <div className="text-xs text-muted">{t.analytics.topBlock}</div>
+            <div className="mt-0.5 text-xs text-muted">{t.analytics.topBlock}</div>
           </div>
         </div>
 

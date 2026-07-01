@@ -16,7 +16,7 @@ export default function LanguageToggle({ current }: { current: string }) {
         href={to(loc)}
         aria-label={name}
         aria-current={active ? "true" : undefined}
-        className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${
+        className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
           active ? "bg-white text-brand" : "text-white/75"
         }`}
       >

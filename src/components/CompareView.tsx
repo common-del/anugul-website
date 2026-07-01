@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BAND_COLOR, bandFromScore, type BandKey } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -138,7 +138,7 @@ export default function CompareView({
     return (
       <span
         className="font-semibold tabular-nums"
-        style={{ color: BAND_COLOR[bandFromScore(v)] }}
+        style={{ color: BAND_TEXT[bandFromScore(v)] }}
       >
         {fmtPercent(Math.round(v), locale)}
       </span>
@@ -183,7 +183,7 @@ export default function CompareView({
           >
             {slot.data ? (
               <div>
-                <p className="truncate text-sm font-bold text-brand-ink">
+                <p className="line-clamp-2 text-sm font-bold leading-tight text-brand-ink">
                   {slot.data.name}
                 </p>
                 <button
@@ -212,12 +212,12 @@ export default function CompareView({
             label=""
             head
             a={
-              <span className="block truncate font-bold text-brand-ink">
+              <span className="block line-clamp-2 font-bold leading-tight text-brand-ink">
                 {aData.name}
               </span>
             }
             b={
-              <span className="block truncate font-bold text-brand-ink">
+              <span className="block line-clamp-2 font-bold leading-tight text-brand-ink">
                 {bData.name}
               </span>
             }

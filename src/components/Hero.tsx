@@ -13,7 +13,7 @@ export default function Hero({ locale, t }: { locale: Locale; t: Messages }) {
       </h1>
       <Link
         href={`/${locale}/find/`}
-        className="mt-4 flex min-h-[54px] items-center justify-center rounded-xl bg-accent px-5 text-lg font-bold text-white shadow-sm active:bg-accent-dark"
+        className="mt-4 flex min-h-[54px] items-center justify-center rounded-xl bg-accent px-5 text-lg font-bold text-brand-ink shadow-sm active:brightness-95"
       >
         {t.home.hero.cta}
       </Link>

@@ -75,10 +75,10 @@ def yesno(v):
 
 # ---------- bands ------------------------------------------------------------
 
-# Internal band keys. Human-readable labels live in the i18n catalogs (od/en/…),
-# never baked into the data, so language stays swappable.
-BAND_RELABEL = {"Critical": "urgent", "Needs support": "needs",
-                "Developing": "developing", "Excelling": "excelling"}
+# Internal band keys. Human-readable labels live in the i18n catalogs (od/en/…).
+# The band is DERIVED from the rounded score (band_from_score below) so the
+# badge always agrees with the number shown (the v3 label can disagree at the
+# 75.0 boundary).
 
 def band_from_score(s):
     if s is None:
@@ -102,9 +102,10 @@ blocks = dash["blocks"]
 canon = {}
 for bname, b in blocks.items():
     for s in b["bands"]["overall"]["schools"]:
+        sc = round(float(s["score"]), 1)
         canon[udise(s["udise"])] = {
-            "score": round(float(s["score"]), 1),
-            "band": BAND_RELABEL.get(s["band"], "needs"),
+            "score": sc,
+            "band": band_from_score(sc),
             "name": s["name"],
             "cluster": s["cluster"],
             "block": bname,
@@ -176,6 +177,14 @@ for row in neigh_file:
 udise_rows = {}
 for row in read_csv("Angul_UDISE.csv"):
     udise_rows[udise(row["UDISE_Code"])] = row
+
+# Backfill missing school names (a few v3 rows have name == UDISE / blank) from
+# the UDISE roster so cards and name-search show a real name.
+for u, c in canon.items():
+    if not str(c["name"]).strip() or str(c["name"]).strip() == u:
+        alt = (udise_rows.get(u, {}).get("School_Name") or "").strip()
+        if alt:
+            c["name"] = alt
 
 def profile(u):
     r = udise_rows.get(u)
@@ -378,7 +387,6 @@ dump(OUT, "district.json", district_out)
 dump(OUT, "_qa.json", qa)
 # client assets for the Find page — name/block/cluster + map only, no scores
 dump(PUBLIC, "search-index.json", search)
-dump(PUBLIC, "blocks.json", blocks_out)
 dump(PUBLIC, "district-map.json", district_map)
 
 # per-school compact records for the client-side Compare view (one file each,

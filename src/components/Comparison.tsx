@@ -1,4 +1,4 @@
-import { BAND_COLOR, bandFromScore } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, bandFromScore } from "@/lib/bands";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -25,26 +25,25 @@ type Copy = {
 function Bar({
   label,
   value,
-  color,
   locale,
 }: {
   label: string;
   value: number;
-  color: string;
   locale: Locale;
 }) {
+  const b = bandFromScore(value);
   return (
     <div>
       <div className="flex justify-between text-sm">
         <span className="text-brand-ink">{label}</span>
-        <span className="font-semibold tabular-nums" style={{ color }}>
+        <span className="font-semibold tabular-nums" style={{ color: BAND_TEXT[b] }}>
           {fmtPercent(Math.round(value), locale)}
         </span>
       </div>
       <div className="mt-1 h-2.5 w-full overflow-hidden rounded-full bg-brand-tint">
         <div
           className="h-full rounded-full"
-          style={{ width: `${value}%`, backgroundColor: color }}
+          style={{ width: `${value}%`, backgroundColor: BAND_COLOR[b] }}
         />
       </div>
     </div>
@@ -75,18 +74,8 @@ export default function Comparison({
   return (
     <div className="space-y-4">
       <div className="space-y-2.5">
-        <Bar
-          label={c.yourSchool}
-          value={score}
-          color={BAND_COLOR[bandFromScore(score)]}
-          locale={locale}
-        />
-        <Bar
-          label={c.blockAvg}
-          value={blockAverage}
-          color={BAND_COLOR[bandFromScore(blockAverage)]}
-          locale={locale}
-        />
+        <Bar label={c.yourSchool} value={score} locale={locale} />
+        <Bar label={c.blockAvg} value={blockAverage} locale={locale} />
       </div>
       <p className="text-sm font-semibold text-brand-ink">{deltaText}</p>
 

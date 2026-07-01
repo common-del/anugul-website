@@ -53,8 +53,7 @@
     "searchPlaceholder": "Type your school's name",
     "browseTitle": "Browse by block",
     "changeBlock": "Change block",
-    "noResults": "No schools found. Try a different spelling.",
-    "forOthers": "For school heads & officials"
+    "noResults": "No schools found. Try a different spelling."
   },
   "school": {
     "comingSoon": "The full report card is coming in the next step.",

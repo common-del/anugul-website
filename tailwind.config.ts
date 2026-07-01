@@ -14,7 +14,7 @@ const config: Config = {
           tint: "#eef2f8",
           line: "#d8e1ef",
         },
-        accent: { DEFAULT: "#f5911e", dark: "#c56e12", light: "#f6a93b" },
+        accent: { DEFAULT: "#f5911e", dark: "#9a5510", light: "#f6a93b" },
         muted: "#566579",
         // Result bands: low = warm/attention, high = brand blue. Always shown
         // with the band word + number, so colour is never the only signal.

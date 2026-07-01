@@ -1,4 +1,4 @@
-import { BAND_COLOR, bandFromScore } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, bandFromScore } from "@/lib/bands";
 import { fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -17,7 +17,7 @@ export default function BlockBars({
   return (
     <div className="space-y-2.5">
       {sorted.map((bl) => {
-        const color = BAND_COLOR[bandFromScore(bl.average)];
+        const b = bandFromScore(bl.average);
         return (
           <div key={bl.name}>
             <div className="flex justify-between text-sm">
@@ -31,7 +31,7 @@ export default function BlockBars({
               </span>
               <span
                 className="font-semibold tabular-nums"
-                style={{ color }}
+                style={{ color: BAND_TEXT[b] }}
               >
                 {fmtPercent(Math.round(bl.average), locale)}
               </span>
@@ -39,7 +39,7 @@ export default function BlockBars({
             <div className="mt-1 h-2.5 w-full overflow-hidden rounded-full bg-brand-tint">
               <div
                 className="h-full rounded-full"
-                style={{ width: `${bl.average}%`, backgroundColor: color }}
+                style={{ width: `${bl.average}%`, backgroundColor: BAND_COLOR[b] }}
               />
             </div>
           </div>

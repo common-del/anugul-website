@@ -5,7 +5,8 @@ import type { Locale } from "./i18n/config";
 const ODIA_DIGITS = ["୦", "୧", "୨", "୩", "୪", "୫", "୬", "୭", "୮", "୯"];
 
 export function fmtNum(n: number, locale: Locale): string {
-  const s = String(n);
+  // Indian digit grouping (28,079); percentages/small numbers are unaffected.
+  const s = new Intl.NumberFormat("en-IN").format(n);
   return locale === "od" ? s.replace(/[0-9]/g, (d) => ODIA_DIGITS[Number(d)]) : s;
 }
 

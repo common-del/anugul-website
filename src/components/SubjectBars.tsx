@@ -1,4 +1,4 @@
-import { BAND_COLOR, bandFromScore } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, bandFromScore } from "@/lib/bands";
 import { fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -25,26 +25,23 @@ export default function SubjectBars({
           <div className="mt-2 space-y-2.5">
             {SUBJECT_ORDER.filter((s) => byGrade[g][s] !== undefined).map((s) => {
               const pct = byGrade[g][s];
-              const color = BAND_COLOR[bandFromScore(pct)];
+              const b = bandFromScore(pct);
+              const pctText = fmtPercent(Math.round(pct), locale);
               return (
-                <div
-                  key={s}
-                  role="img"
-                  aria-label={`${subjectLabels[s]}, ${Math.round(pct)}%`}
-                >
+                <div key={s} role="img" aria-label={`${subjectLabels[s]}, ${pctText}`}>
                   <div className="flex justify-between text-sm">
                     <span className="text-brand-ink">{subjectLabels[s]}</span>
                     <span
                       className="font-semibold tabular-nums"
-                      style={{ color }}
+                      style={{ color: BAND_TEXT[b] }}
                     >
-                      {fmtPercent(Math.round(pct), locale)}
+                      {pctText}
                     </span>
                   </div>
                   <div className="mt-1 h-2.5 w-full overflow-hidden rounded-full bg-brand-tint">
                     <div
                       className="h-full rounded-full"
-                      style={{ width: `${pct}%`, backgroundColor: color }}
+                      style={{ width: `${pct}%`, backgroundColor: BAND_COLOR[b] }}
                     />
                   </div>
                 </div>

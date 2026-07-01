@@ -1,4 +1,4 @@
-import { BAND_COLOR, type BandKey } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
 import { fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -19,10 +19,11 @@ export default function BandMeter({
 }) {
   const color = BAND_COLOR[band];
   const pct = fmtPercent(Math.round(score), locale);
+  const mx = Math.max(3, Math.min(97, score)); // clamp marker inside the meter
   return (
     <section className="rounded-2xl border border-brand-line bg-white p-5">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-4xl font-extrabold" style={{ color }}>
+        <span className="text-4xl font-extrabold" style={{ color: BAND_TEXT[band] }}>
           {pct}
         </span>
         <span
@@ -55,14 +56,11 @@ export default function BandMeter({
           strokeWidth="0.5"
           strokeDasharray="1 1"
         />
-        <polygon
-          points={`${score},6.5 ${score - 3},1 ${score + 3},1`}
-          fill="#12233d"
-        />
+        <polygon points={`${mx},6.5 ${mx - 3},1 ${mx + 3},1`} fill="#12233d" />
         <line
-          x1={score}
+          x1={mx}
           y1="6.5"
-          x2={score}
+          x2={mx}
           y2="14"
           stroke="#12233d"
           strokeWidth="1.2"

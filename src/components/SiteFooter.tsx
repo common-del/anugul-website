@@ -28,13 +28,8 @@ export default function SiteFooter({
         </a>
       </div>
       <p className="mt-4 text-xs text-muted">{t.site.copyright}</p>
-      {/* Quiet path for non-parent audiences; off the parent journey. */}
-      <Link
-        href={`/${locale}/roles/`}
-        className="mt-3 inline-block text-xs text-muted underline underline-offset-2"
-      >
-        {t.find.forOthers}
-      </Link>
+      {/* No visible link to the officials view (/roles, /analytics) — parents
+          shouldn't stumble on it; officials reach it via a shared URL. */}
     </footer>
   );
 }

@@ -10,7 +10,7 @@ export default function BackButton({ label }: { label: string }) {
       type="button"
       onClick={() => router.back()}
       aria-label={label}
-      className="no-print grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/30"
+      className="no-print grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/30"
     >
       <svg
         width="20"
