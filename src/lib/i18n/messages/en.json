@@ -138,5 +138,15 @@
     "overall": "Overall",
     "chooseTwo": "Choose two schools to compare.",
     "cta": "Compare with another school"
+  },
+  "analytics": {
+    "title": "How is Angul doing?",
+    "intro": "District and block-wise results from the SAKSHAM assessment.",
+    "districtExplain": "Average score across all assessed government schools.",
+    "schoolsAssessed": "schools assessed",
+    "studentsAssessed": "students assessed",
+    "topBlock": "Top block",
+    "subjectTitle": "District performance by subject",
+    "blockTitle": "Block-wise performance"
   }
 }

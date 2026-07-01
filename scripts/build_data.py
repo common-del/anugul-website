@@ -118,10 +118,9 @@ district_avg = round(float(district.get("district_avg", 0)), 1)
 # student master -> per-school subject means + assessed counts (build-only input)
 SUBJECTS = ["Odia", "English", "Maths", "EVS", "Science", "SST"]
 
-# Privacy guard: don't publish a subject average built from very few students —
-# a mean over 1-2 children can reveal an individual result. Threshold is a
-# policy choice, confirmed at the Bucket 0 checkpoint (cautious end, privacy-first).
-MIN_SUBJECT_N = 10
+# Show every subject average, including single-student grades (client decision;
+# note this can expose an individual child's result for tiny cohorts).
+MIN_SUBJECT_N = 1
 sm_sum = defaultdict(lambda: defaultdict(float))   # (udise,grade) -> subj -> sum
 sm_cnt = defaultdict(lambda: defaultdict(int))     # (udise,grade) -> subj -> n
 sm_students = defaultdict(set)                       # udise -> {(roll,grade)}
@@ -263,6 +262,8 @@ district_out = {
     "passLine": district.get("pass_line"),
     "bestBlock": district.get("best_block"),
     "schoolsAssessed": len(canon),
+    "studentsAssessed": sum(blocks[b]["headline"].get("students") or 0 for b in blocks),
+    "subjectMeans": district.get("subject_means"),
     "blocks": [
         {"name": b, "average": block_avg[b],
          "schools": len(blocks[b]["bands"]["overall"]["schools"]),

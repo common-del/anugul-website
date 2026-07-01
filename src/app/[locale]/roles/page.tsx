@@ -31,6 +31,10 @@ export default function RolesPage({ params }: { params: { locale: string } }) {
         <ul className="mt-4 space-y-3">
           {ROLE_KEYS.map((k) => {
             const r = t.roles[k];
+            const href =
+              k === "blockOfficer" || k === "others"
+                ? `/${locale}/analytics/`
+                : `/${locale}/find/`;
             return (
               <li
                 key={k}
@@ -39,7 +43,7 @@ export default function RolesPage({ params }: { params: { locale: string } }) {
                 <p className="font-bold text-brand-ink">{r.label}</p>
                 <p className="mt-1 text-sm text-muted">{r.text}</p>
                 <Link
-                  href={`/${locale}/find/`}
+                  href={href}
                   className="mt-3 inline-flex min-h-[44px] items-center gap-1 font-bold text-brand"
                 >
                   {r.cta} <span aria-hidden>→</span>
