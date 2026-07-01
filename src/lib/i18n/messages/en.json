@@ -1,0 +1,133 @@
+{
+  "site": {
+    "name": "Angul Schools",
+    "strapline": "Angul, Odisha | Know Your School's Performance",
+    "subtitle": "SAKSHAM - Student Assessment for Knowledge, Skills & Competency-based Achievement Mapping",
+    "description": "See how schools in Angul, Odisha are performing on the SAKSHAM assessment.",
+    "tagline": "Because every parent deserves to know",
+    "copyright": "© 2026 Government of Odisha"
+  },
+  "back": "Back",
+  "home": {
+    "hero": {
+      "eyebrow": "Get Full School's Report Card Here",
+      "title": "Know Your School's Performance",
+      "cta": "Find my school now"
+    },
+    "watch": {
+      "kicker": "Watch & learn",
+      "title": "How to read your report card",
+      "cta": "Watch on YouTube",
+      "minutes": "2 min"
+    }
+  },
+  "roles": {
+    "pageTitle": "For school heads, leaders & partners",
+    "pageIntro": "Choose your role to see what you can do with the data.",
+    "forYou": "What you can do",
+    "backToParent": "I'm a parent — take me home",
+    "schoolHead": {
+      "label": "School Head",
+      "text": "Open your school's full report card and compare it with other schools in your block.",
+      "cta": "Open my school"
+    },
+    "villageHead": {
+      "label": "Village Head",
+      "text": "Check how schools in your village are performing and share results at gram sabha meetings.",
+      "cta": "View village schools"
+    },
+    "blockOfficer": {
+      "label": "Block Officer",
+      "text": "Access block-wide analytics, subject-wise scores, and downloadable data for all schools.",
+      "cta": "Go to Analytics"
+    },
+    "others": {
+      "label": "Others",
+      "text": "Researchers, NGOs and citizens can explore district-level reports and open data.",
+      "cta": "Browse reports"
+    }
+  },
+  "find": {
+    "title": "Find your school",
+    "intro": "Search by name, or pick your block.",
+    "searchPlaceholder": "Type your school's name",
+    "browseTitle": "Browse by block",
+    "changeBlock": "Change block",
+    "noResults": "No schools found. Try a different spelling.",
+    "forOthers": "For school heads & officials"
+  },
+  "school": {
+    "comingSoon": "The full report card is coming in the next step.",
+    "backToFind": "Find another school"
+  },
+  "footerLinks": {
+    "aboutSaksham": "About SAKSHAM",
+    "aboutAngul": "About Angul"
+  },
+  "aboutSaksham": {
+    "title": "About SAKSHAM",
+    "body": "Details about the SAKSHAM assessment will appear here soon."
+  },
+  "band": {
+    "urgent": "Needs urgent support",
+    "needs": "Needs support",
+    "developing": "Developing",
+    "excelling": "Excelling"
+  },
+  "subjects": {
+    "Odia": "Odia",
+    "English": "English",
+    "Maths": "Maths",
+    "EVS": "EVS",
+    "Science": "Science",
+    "SST": "Social Studies"
+  },
+  "grades": { "Grade 5": "Grade 5", "Grade 8": "Grade 8" },
+  "report": {
+    "studentsAssessed": "students assessed",
+    "overallTitle": "Overall performance",
+    "overallExplain": "The school's average score across all assessed grades and subjects.",
+    "compareTitle": "How your school compares",
+    "yourSchool": "Your school",
+    "blockAvg": "Block average",
+    "aboveBlock": "{n} points above the block average",
+    "belowBlock": "{n} points below the block average",
+    "atBlock": "About the same as the block average",
+    "nearbyTitle": "Nearby schools",
+    "nearbyLine": "{ahead} of {total} nearby schools are ahead of yours",
+    "nearbyNone": "Nearby school results aren't available for comparison.",
+    "nearbyFar": "Note: schools here are spread far apart.",
+    "subjectsTitle": "Subject by subject",
+    "fewStudents": "This school has too few students to show subject-wise scores while protecting each child's privacy."
+  },
+  "profile": {
+    "title": "About your school",
+    "intro": "Facts from official school records.",
+    "students": "Students",
+    "teachers": "Teachers",
+    "ptr": "Students per teacher",
+    "classrooms": "Classrooms",
+    "furniture": "Furniture",
+    "playground": "Playground",
+    "furnitureYes": "For all children",
+    "furniturePartial": "Partial",
+    "furnitureNone": "None",
+    "yes": "Yes",
+    "no": "No",
+    "needRepair": "{n} classroom(s) need major repair"
+  },
+  "guidance": {
+    "title": "Talking to your school",
+    "intro": "Many parents use this report to start a friendly conversation. You might ask:",
+    "q1": "How is my child doing, and where can they improve?",
+    "q2": "What is the school doing to help children learn better?",
+    "q3": "How can I support my child's learning at home?",
+    "smc": "You can also raise these at a School Management Committee (SMC) meeting, where parents have a say."
+  },
+  "share": {
+    "title": "Share this report card",
+    "whatsapp": "Share on WhatsApp",
+    "print": "Save as PDF",
+    "message": "See {school}'s SAKSHAM report card:"
+  }
+}

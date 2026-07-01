@@ -1,0 +1,14 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# misc
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# NOTE: src/data/ is intentionally committed (aggregated, non-sensitive).
+# Raw/individual source data lives outside the repo and is never committed.
