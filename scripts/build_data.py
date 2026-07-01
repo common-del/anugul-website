@@ -338,6 +338,27 @@ blocks_out = sorted(
     key=lambda d: d["name"],
 )
 
+# district outline (real Angul border from india-maps-data) + block markers at
+# their true centroids, both in one normalised viewBox for the Find map.
+geo = json.load(open(os.path.join(HERE, "angul-district.geojson"), encoding="utf-8"))
+outer_rings = [poly[0] for poly in geo["geometry"]["coordinates"]]
+mpts = [p for ring in outer_rings for p in ring]
+mlon_min, mlon_max = min(p[0] for p in mpts), max(p[0] for p in mpts)
+mlat_min, mlat_max = min(p[1] for p in mpts), max(p[1] for p in mpts)
+mscale = 100.0 / (mlon_max - mlon_min)
+mheight = round((mlat_max - mlat_min) * mscale, 1)
+def mx(lon):
+    return round((lon - mlon_min) * mscale, 1)
+def my(lat):
+    return round((mlat_max - lat) * mscale, 1)
+paths = ["M" + " L".join(f"{mx(lon)},{my(lat)}" for lon, lat in ring) + " Z"
+         for ring in outer_rings]
+district_map = {
+    "viewBox": f"0 0 100 {mheight}",
+    "path": " ".join(paths),
+    "blocks": [{"name": b, "x": mx(cent[b][0]), "y": my(cent[b][1])} for b in sorted(cent)],
+}
+
 # ---------- write ------------------------------------------------------------
 
 os.makedirs(OUT, exist_ok=True)
@@ -357,6 +378,7 @@ dump(OUT, "_qa.json", qa)
 # client assets for the Find page — name/block/cluster + map only, no scores
 dump(PUBLIC, "search-index.json", search)
 dump(PUBLIC, "blocks.json", blocks_out)
+dump(PUBLIC, "district-map.json", district_map)
 
 # per-school compact records for the client-side Compare view (one file each,
 # so there is no single bulk download of all scores)

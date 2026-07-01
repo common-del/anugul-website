@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { BLOCK_SHAPES } from "@/lib/blockShapes";
 
 type Item = { u: string; n: string; b: string; c: string };
-type Block = { name: string; x: number; y: number; schools: number };
+type Marker = { name: string; x: number; y: number };
+type DistrictMap = { viewBox: string; path: string; blocks: Marker[] };
 
 type Labels = {
   searchPlaceholder: string;
@@ -22,7 +22,7 @@ export default function SchoolFinder({
   labels: Labels;
 }) {
   const [index, setIndex] = useState<Item[]>([]);
-  const [blocks, setBlocks] = useState<Block[]>([]);
+  const [map, setMap] = useState<DistrictMap | null>(null);
   const [q, setQ] = useState("");
   const [block, setBlock] = useState<string | null>(null);
 
@@ -31,9 +31,9 @@ export default function SchoolFinder({
       .then((r) => r.json())
       .then(setIndex)
       .catch(() => {});
-    fetch("/data/blocks.json")
+    fetch("/data/district-map.json")
       .then((r) => r.json())
-      .then(setBlocks)
+      .then(setMap)
       .catch(() => {});
   }, []);
 
@@ -53,6 +53,7 @@ export default function SchoolFinder({
   }, [q, block, index]);
 
   const browsing = !q && !block;
+  const blockNames = map ? map.blocks.map((b) => b.name).sort() : [];
 
   return (
     <div>
@@ -69,32 +70,41 @@ export default function SchoolFinder({
         className="w-full rounded-xl border border-brand-line bg-white px-4 py-3 text-base text-brand-ink outline-none focus:border-brand"
       />
 
-      {browsing && blocks.length > 0 && (
+      {browsing && map && (
         <div className="mt-5">
           <p className="text-sm font-bold text-brand-ink">{labels.browseTitle}</p>
           <svg
-            viewBox="0 0 95 92"
-            className="mt-2 w-full"
+            viewBox={map.viewBox}
+            className="mx-auto mt-2 block w-full max-w-[300px]"
             role="group"
             aria-label={labels.browseTitle}
           >
-            {BLOCK_SHAPES.map((b) => (
+            <path
+              d={map.path}
+              className="fill-brand-tint stroke-brand"
+              strokeWidth="0.5"
+              strokeLinejoin="round"
+            />
+            {map.blocks.map((b) => (
               <g
                 key={b.name}
                 className="group cursor-pointer"
                 onClick={() => setBlock(b.name)}
               >
-                <polygon
-                  points={b.points}
-                  strokeWidth="0.7"
-                  className="fill-brand-tint stroke-white transition-colors group-hover:fill-brand"
+                <circle cx={b.x} cy={b.y} r="6" fill="transparent" />
+                <circle
+                  cx={b.x}
+                  cy={b.y}
+                  r="1.7"
+                  className="fill-brand group-hover:fill-accent"
                 />
                 <text
-                  x={b.lx}
-                  y={b.ly}
+                  x={b.x}
+                  y={b.y - 2.6}
                   textAnchor="middle"
                   fontSize="3"
-                  className="pointer-events-none fill-brand-ink group-hover:fill-white"
+                  className="pointer-events-none fill-brand-ink group-hover:fill-brand"
+                  style={{ fontWeight: 600 }}
                 >
                   {b.name}
                 </text>
@@ -102,14 +112,14 @@ export default function SchoolFinder({
             ))}
           </svg>
           <div className="mt-3 flex flex-wrap gap-2">
-            {blocks.map((bl) => (
+            {blockNames.map((name) => (
               <button
-                key={bl.name}
+                key={name}
                 type="button"
-                onClick={() => setBlock(bl.name)}
+                onClick={() => setBlock(name)}
                 className="min-h-[44px] rounded-full bg-white px-4 text-sm font-semibold text-brand ring-1 ring-brand-line"
               >
-                {bl.name}
+                {name}
               </button>
             ))}
           </div>
