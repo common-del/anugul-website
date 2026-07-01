@@ -129,5 +129,14 @@
     "whatsapp": "Share on WhatsApp",
     "print": "Save as PDF",
     "message": "See {school}'s SAKSHAM report card:"
+  },
+  "compare": {
+    "title": "Compare schools",
+    "intro": "Pick two schools to see them side by side.",
+    "searchPlaceholder": "Search a school to add",
+    "change": "Change",
+    "overall": "Overall",
+    "chooseTwo": "Choose two schools to compare.",
+    "cta": "Compare with another school"
   }
 }

@@ -358,6 +358,18 @@ dump(OUT, "_qa.json", qa)
 dump(PUBLIC, "search-index.json", search)
 dump(PUBLIC, "blocks.json", blocks_out)
 
+# per-school compact records for the client-side Compare view (one file each,
+# so there is no single bulk download of all scores)
+SCHOOL_DIR = os.path.join(PUBLIC, "school")
+os.makedirs(SCHOOL_DIR, exist_ok=True)
+for u, s in schools.items():
+    rec = {"name": s["name"], "block": s["block"], "cluster": s["cluster"],
+           "score": s["overall"]["score"], "band": s["overall"]["band"],
+           "byGrade": s["byGrade"]}
+    with open(os.path.join(SCHOOL_DIR, f"{u}.json"), "w", encoding="utf-8") as f:
+        json.dump(rec, f, ensure_ascii=False, separators=(",", ":"))
+print(f"  wrote {len(schools)} per-school JSON -> public/data/school/")
+
 print("\n--- QA summary ---")
 print(json.dumps(qa, ensure_ascii=False, indent=2)[:2000])
 print(f"\nDONE. {len(schools)} school records -> {OUT}")

@@ -104,6 +104,13 @@ export default function SchoolPage({
           locale={locale}
         />
 
+        <Link
+          href={`/${locale}/compare/?a=${s.udise}`}
+          className="no-print inline-flex items-center gap-1 text-sm font-semibold text-brand underline underline-offset-2"
+        >
+          {t.compare.cta} <span aria-hidden>→</span>
+        </Link>
+
         <section>
           <h2 className="mb-3 text-lg font-bold text-brand-ink">
             {t.report.compareTitle}
