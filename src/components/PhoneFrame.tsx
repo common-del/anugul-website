@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const HOST = "angul-schools.vercel.app";
+const HOST = "anugul-website.vercel.app";
 
 // Desktop: a fixed 360×640 phone with a mobile-Chrome address bar; content
 // scrolls inside the screen (visible scrollbar) so the device keeps its size.
