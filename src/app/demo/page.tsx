@@ -20,6 +20,17 @@ export default function DemoPage() {
   const [phoneUrl, setPhoneUrl] = useState(START);
   const [laptopUrl, setLaptopUrl] = useState(START);
   const [scale, setScale] = useState(MIN_SCALE);
+  // Iframes mount client-side only, so ?start= can pick the first page
+  // (e.g. /demo/?start=/od/roles/ opens both frames on the roles page).
+  const [start, setStart] = useState<string | null>(null);
+
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search).get("start");
+    const target = p && /^\/(od|en)\//.test(p) ? p : START;
+    setStart(target);
+    setPhoneUrl(target);
+    setLaptopUrl(target);
+  }, []);
 
   // Auto-fit: scale the laptop to fill the space beside the phone frame.
   useEffect(() => {
@@ -70,12 +81,14 @@ export default function DemoPage() {
               </div>
               <span className="text-lg leading-none text-neutral-500" aria-hidden>⋮</span>
             </div>
-            <iframe
-              ref={phoneRef}
-              src={START}
-              title="Phone preview"
-              className="h-full w-full flex-1 border-0"
-            />
+            {start && (
+              <iframe
+                ref={phoneRef}
+                src={start}
+                title="Phone preview"
+                className="h-full w-full flex-1 border-0"
+              />
+            )}
           </div>
         </div>
 
@@ -98,13 +111,15 @@ export default function DemoPage() {
                     <span className="text-neutral-400">{laptopUrl}</span>
                   </div>
                 </div>
-                <iframe
-                  ref={laptopRef}
-                  src={START}
-                  title="Computer preview"
-                  className="border-0"
-                  style={{ width: LAPTOP_W, height: LAPTOP_H }}
-                />
+                {start && (
+                  <iframe
+                    ref={laptopRef}
+                    src={start}
+                    title="Computer preview"
+                    className="border-0"
+                    style={{ width: LAPTOP_W, height: LAPTOP_H }}
+                  />
+                )}
               </div>
             </div>
           </div>
