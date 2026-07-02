@@ -30,22 +30,10 @@ body {
   border-radius: 4px;
 }
 
-/* Print: drop the device chrome and let the report card flow onto the page. */
+/* Print: hide navigation chrome; the report card flows onto the page. */
 @media print {
   .no-print {
     display: none !important;
-  }
-  .device-bezel {
-    padding: 0 !important;
-    background: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-  }
-  .device-screen {
-    width: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-    border-radius: 0 !important;
   }
   body {
     background: #fff !important;

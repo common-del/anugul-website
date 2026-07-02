@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PhoneFrame from "@/components/PhoneFrame";
+import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -20,9 +20,9 @@ export default function RolesPage({ params }: { params: { locale: string } }) {
   const t = getDict(locale);
 
   return (
-    <PhoneFrame>
+    <PageShell>
       <SiteHeader locale={locale} t={t} showBack />
-      <main className="px-5 py-6">
+      <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-6">
         <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
           {t.roles.pageTitle}
         </h1>
@@ -61,6 +61,6 @@ export default function RolesPage({ params }: { params: { locale: string } }) {
         </Link>
       </main>
       <SiteFooter locale={locale} t={t} />
-    </PhoneFrame>
+    </PageShell>
   );
 }

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import PhoneFrame from "@/components/PhoneFrame";
+import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import BandMeter from "@/components/BandMeter";
@@ -38,9 +38,9 @@ export default function AnalyticsPage({
   const t = getDict(locale);
 
   return (
-    <PhoneFrame>
+    <PageShell>
       <SiteHeader locale={locale} t={t} showBack />
-      <main className="space-y-6 px-5 py-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 space-y-6 px-5 py-6">
         <section>
           <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
             {t.analytics.title}
@@ -76,30 +76,32 @@ export default function AnalyticsPage({
           </div>
         </div>
 
-        <section>
-          <h2 className="mb-3 text-lg font-bold text-brand-ink">
-            {t.analytics.subjectTitle}
-          </h2>
-          <SubjectBars
-            byGrade={district.subjectMeans}
-            gradeLabels={t.grades}
-            subjectLabels={t.subjects}
-            locale={locale}
-          />
-        </section>
+        <div className="space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
+          <section>
+            <h2 className="mb-3 text-lg font-bold text-brand-ink">
+              {t.analytics.subjectTitle}
+            </h2>
+            <SubjectBars
+              byGrade={district.subjectMeans}
+              gradeLabels={t.grades}
+              subjectLabels={t.subjects}
+              locale={locale}
+            />
+          </section>
 
-        <section>
-          <h2 className="mb-3 text-lg font-bold text-brand-ink">
-            {t.analytics.blockTitle}
-          </h2>
-          <BlockBars
-            blocks={district.blocks}
-            bestBlock={district.bestBlock}
-            locale={locale}
-          />
-        </section>
+          <section>
+            <h2 className="mb-3 text-lg font-bold text-brand-ink">
+              {t.analytics.blockTitle}
+            </h2>
+            <BlockBars
+              blocks={district.blocks}
+              bestBlock={district.bestBlock}
+              locale={locale}
+            />
+          </section>
+        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
-    </PhoneFrame>
+    </PageShell>
   );
 }

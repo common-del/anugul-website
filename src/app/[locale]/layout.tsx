@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { locales, htmlLang, isLocale, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import SetLang from "@/components/SetLang";
+import DemoSync from "@/components/DemoSync";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -37,6 +38,7 @@ export default function LocaleLayout({
   return (
     <>
       <SetLang lang={htmlLang[params.locale as Locale]} />
+      <DemoSync />
       {children}
     </>
   );

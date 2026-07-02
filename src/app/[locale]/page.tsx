@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import PhoneFrame from "@/components/PhoneFrame";
+import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import Hero from "@/components/Hero";
 import WatchCard from "@/components/WatchCard";
@@ -17,19 +17,21 @@ export default function Home({ params }: { params: { locale: string } }) {
   const t = getDict(locale);
 
   return (
-    <PhoneFrame>
+    <PageShell>
       <SiteHeader locale={locale} t={t} />
-      <main>
-        <Hero locale={locale} t={t} />
-        <WatchCard
-          kicker={t.home.watch.kicker}
-          title={t.home.watch.title}
-          cta={t.home.watch.cta}
-          minutes={t.home.watch.minutes}
-          videoId="NXSC0xkwUc8"
-        />
+      <main className="mx-auto w-full max-w-5xl flex-1">
+        <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-8 lg:py-6">
+          <Hero locale={locale} t={t} />
+          <WatchCard
+            kicker={t.home.watch.kicker}
+            title={t.home.watch.title}
+            cta={t.home.watch.cta}
+            minutes={t.home.watch.minutes}
+            videoId="NXSC0xkwUc8"
+          />
+        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
-    </PhoneFrame>
+    </PageShell>
   );
 }

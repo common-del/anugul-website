@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import PhoneFrame from "@/components/PhoneFrame";
+import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import SchoolFinder from "@/components/SchoolFinder";
@@ -15,9 +15,9 @@ export default function FindPage({ params }: { params: { locale: string } }) {
   const locale = params.locale as Locale;
   const t = getDict(locale);
   return (
-    <PhoneFrame>
+    <PageShell>
       <SiteHeader locale={locale} t={t} showBack />
-      <main className="px-5 py-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
         <h1 className="text-2xl font-extrabold text-brand-ink">{t.find.title}</h1>
         <p className="mt-1 text-muted">{t.find.intro}</p>
         <div className="mt-4">
@@ -33,6 +33,6 @@ export default function FindPage({ params }: { params: { locale: string } }) {
         </div>
       </main>
       <SiteFooter locale={locale} t={t} />
-    </PhoneFrame>
+    </PageShell>
   );
 }

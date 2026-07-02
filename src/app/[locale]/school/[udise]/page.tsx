@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PhoneFrame from "@/components/PhoneFrame";
+import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import BandMeter from "@/components/BandMeter";
@@ -78,9 +78,9 @@ export default function SchoolPage({
   const hasSubjects = Object.keys(s.byGrade).length > 0;
 
   return (
-    <PhoneFrame>
+    <PageShell>
       <SiteHeader locale={locale} t={t} showBack />
-      <main className="space-y-6 px-5 py-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
         <section>
           <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
             {s.name}
@@ -96,68 +96,74 @@ export default function SchoolPage({
           </p>
         </section>
 
-        <BandMeter
-          score={s.overall.score}
-          band={s.overall.band}
-          label={t.band[s.overall.band]}
-          explain={t.report.overallExplain}
-          locale={locale}
-        />
-
-        <Link
-          href={`/${locale}/compare/?a=${s.udise}`}
-          className="no-print inline-flex items-center gap-1 text-sm font-semibold text-brand underline underline-offset-2"
-        >
-          {t.compare.cta} <span aria-hidden>→</span>
-        </Link>
-
-        <section>
-          <h2 className="mb-3 text-lg font-bold text-brand-ink">
-            {t.report.compareTitle}
-          </h2>
-          <Comparison
-            score={s.overall.score}
-            blockAverage={s.comparison.blockAverage}
-            nearby={s.comparison.nearby}
-            c={t.report}
-            locale={locale}
-          />
-        </section>
-
-        <section>
-          <h2 className="mb-3 text-lg font-bold text-brand-ink">
-            {t.report.subjectsTitle}
-          </h2>
-          {hasSubjects ? (
-            <SubjectBars
-              byGrade={s.byGrade}
-              gradeLabels={t.grades}
-              subjectLabels={t.subjects}
+        <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
+          <div className="space-y-6">
+            <BandMeter
+              score={s.overall.score}
+              band={s.overall.band}
+              label={t.band[s.overall.band]}
+              explain={t.report.overallExplain}
               locale={locale}
             />
-          ) : (
-            <p className="rounded-xl border border-brand-line bg-white p-4 text-sm text-muted">
-              {t.report.fewStudents}
-            </p>
-          )}
-        </section>
 
-        {s.profile && (
-          <SchoolProfile profile={s.profile} c={t.profile} locale={locale} />
-        )}
+            <Link
+              href={`/${locale}/compare/?a=${s.udise}`}
+              className="no-print inline-flex items-center gap-1 text-sm font-semibold text-brand underline underline-offset-2"
+            >
+              {t.compare.cta} <span aria-hidden>→</span>
+            </Link>
 
-        <Guidance c={t.guidance} />
+            <section>
+              <h2 className="mb-3 text-lg font-bold text-brand-ink">
+                {t.report.compareTitle}
+              </h2>
+              <Comparison
+                score={s.overall.score}
+                blockAverage={s.comparison.blockAverage}
+                nearby={s.comparison.nearby}
+                c={t.report}
+                locale={locale}
+              />
+            </section>
+          </div>
 
-        <ShareBar schoolName={s.name} labels={t.share} />
+          <div className="space-y-6 lg:mt-0">
+            <section>
+              <h2 className="mb-3 text-lg font-bold text-brand-ink">
+                {t.report.subjectsTitle}
+              </h2>
+              {hasSubjects ? (
+                <SubjectBars
+                  byGrade={s.byGrade}
+                  gradeLabels={t.grades}
+                  subjectLabels={t.subjects}
+                  locale={locale}
+                />
+              ) : (
+                <p className="rounded-xl border border-brand-line bg-white p-4 text-sm text-muted">
+                  {t.report.fewStudents}
+                </p>
+              )}
+            </section>
 
-        <Link
-          href={`/${locale}/find/`}
-          className="no-print inline-block text-sm font-semibold text-brand underline underline-offset-2"
-        >
-          {t.school.backToFind}
-        </Link>
+            {s.profile && (
+              <SchoolProfile profile={s.profile} c={t.profile} locale={locale} />
+            )}
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-6">
+          <Guidance c={t.guidance} />
+          <ShareBar schoolName={s.name} labels={t.share} />
+          <Link
+            href={`/${locale}/find/`}
+            className="no-print inline-block text-sm font-semibold text-brand underline underline-offset-2"
+          >
+            {t.school.backToFind}
+          </Link>
+        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
-    </PhoneFrame>
+    </PageShell>
   );
 }

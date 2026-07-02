@@ -11,7 +11,7 @@ export default function SiteFooter({
 }) {
   return (
     <footer className="no-print mt-2 border-t border-brand-line bg-white px-5 py-6 text-center">
-      <div className="flex items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4">
         <Link
           href={`/${locale}/about-saksham/`}
           className="text-sm font-semibold text-brand underline underline-offset-2"
