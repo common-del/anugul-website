@@ -7,7 +7,9 @@ const START = "/od/";
 // Laptop screen renders a real 1280×800 viewport, scaled to sit beside the phone.
 const LAPTOP_W = 1280;
 const LAPTOP_H = 800;
-const LAPTOP_SCALE = 0.55;
+// At 0.8 the laptop's height matches the phone frame (~700px) — tidy pairing.
+const MAX_SCALE = 0.8;
+const MIN_SCALE = 0.45;
 
 // Internal demo stage: the same site in a phone and a computer frame, side by
 // side, navigation kept in sync (via DemoSync inside each frame). Not linked
@@ -17,6 +19,18 @@ export default function DemoPage() {
   const laptopRef = useRef<HTMLIFrameElement>(null);
   const [phoneUrl, setPhoneUrl] = useState(START);
   const [laptopUrl, setLaptopUrl] = useState(START);
+  const [scale, setScale] = useState(MIN_SCALE);
+
+  // Auto-fit: scale the laptop to fill the space beside the phone frame.
+  useEffect(() => {
+    const fit = () => {
+      const avail = window.innerWidth - 384 - 40 - 96; // phone + gap + margins
+      setScale(Math.max(MIN_SCALE, Math.min(MAX_SCALE, avail / LAPTOP_W)));
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
 
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
@@ -70,9 +84,9 @@ export default function DemoPage() {
           <div className="rounded-t-xl bg-neutral-900 p-2.5 shadow-2xl">
             <div
               className="overflow-hidden rounded-lg bg-white"
-              style={{ width: LAPTOP_W * LAPTOP_SCALE, height: (LAPTOP_H + 40) * LAPTOP_SCALE }}
+              style={{ width: LAPTOP_W * scale, height: (LAPTOP_H + 40) * scale }}
             >
-              <div style={{ width: LAPTOP_W, transform: `scale(${LAPTOP_SCALE})`, transformOrigin: "top left" }}>
+              <div style={{ width: LAPTOP_W, transform: `scale(${scale})`, transformOrigin: "top left" }}>
                 <div className="flex h-10 items-center gap-3 border-b border-neutral-200 bg-neutral-100 px-4">
                   <span className="flex gap-1.5" aria-hidden>
                     <span className="h-3 w-3 rounded-full bg-neutral-300" />
@@ -95,7 +109,7 @@ export default function DemoPage() {
             </div>
           </div>
           {/* laptop base */}
-          <div className="mx-auto h-3 rounded-b-xl bg-neutral-700" style={{ width: LAPTOP_W * LAPTOP_SCALE + 60 }} />
+          <div className="mx-auto h-3 rounded-b-xl bg-neutral-700" style={{ width: LAPTOP_W * scale + 60 }} />
         </div>
       </div>
     </div>
