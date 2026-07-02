@@ -65,9 +65,12 @@ export default function BlockPage({
     [o.varChild, district.variance.child],
   ];
   const whatifN = Object.keys(b.leverage.whatif).sort((a, z) => +a - +z);
-  const g5cog = b.cognitive["Grade 5"]?.by_cog ?? {};
-  const g5found = b.foundational["Grade 5"];
-  const weakLos = g5found?.weak_los ?? [];
+  const cogGrades = Object.keys(b.cognitive).sort();
+  const foundGrades = Object.keys(b.foundational).sort();
+  const weakLos = foundGrades
+    .flatMap((g) => b.foundational[g]?.weak_los ?? [])
+    .sort((a, z) => a.pct - z.pct)
+    .slice(0, 8);
   const heatSubjects = Array.from(
     new Set(
       Object.values(b.clusters_heatmap).flatMap((row) =>
@@ -443,39 +446,61 @@ export default function BlockPage({
         {/* learning detail: cognitive skills, foundational, weak LOs, misconceptions */}
         <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
           <div className="space-y-6">
-            {Object.keys(g5cog).length > 0 && (
+            {cogGrades.some((g) => Object.keys(b.cognitive[g]?.by_cog ?? {}).length) && (
               <section className="rounded-2xl border border-brand-line bg-white p-5">
                 <h2 className="text-lg font-bold text-brand-ink">{o.cogTitle}</h2>
                 <p className="mt-1 text-sm text-muted">{o.cogIntro}</p>
-                <div className="mt-3 space-y-2">
-                  {Object.entries(g5cog).map(([skill, v]) => (
-                    <div key={skill}>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-brand-ink">{skill}</span>
-                        <span className="font-semibold tabular-nums text-brand-ink">{pct(v)}</span>
-                      </div>
-                      <div className="mt-0.5 h-2 w-full overflow-hidden rounded-full bg-brand-tint">
-                        <div className="h-full rounded-full bg-brand" style={{ width: `${v}%` }} />
+                {cogGrades.map((g) => {
+                  const by = b.cognitive[g]?.by_cog ?? {};
+                  if (!Object.keys(by).length) return null;
+                  return (
+                    <div key={g} className="mt-3">
+                      <h3 className="text-sm font-bold text-brand-ink">
+                        {t.grades[g as keyof typeof t.grades] ?? g}
+                      </h3>
+                      <div className="mt-2 space-y-2">
+                        {Object.entries(by).map(([skill, v]) => (
+                          <div key={skill}>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-brand-ink">{skill}</span>
+                              <span className="font-semibold tabular-nums text-brand-ink">{pct(v)}</span>
+                            </div>
+                            <div className="mt-0.5 h-2 w-full overflow-hidden rounded-full bg-brand-tint">
+                              <div className="h-full rounded-full bg-brand" style={{ width: `${v}%` }} />
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </section>
             )}
 
-            {g5found && (
+            {foundGrades.length > 0 && (
               <section className="rounded-2xl border border-brand-line bg-white p-5">
                 <h2 className="text-lg font-bold text-brand-ink">{o.foundTitle}</h2>
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-brand-tint p-3">
-                    <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(g5found.at)}</div>
-                    <div className="text-xs text-muted">{o.foundAt}</div>
-                  </div>
-                  <div className="rounded-xl bg-brand-tint p-3">
-                    <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(g5found.gm1)}</div>
-                    <div className="text-xs text-muted">{o.foundGm1}</div>
-                  </div>
-                </div>
+                {foundGrades.map((g) => {
+                  const f = b.foundational[g];
+                  if (!f) return null;
+                  return (
+                    <div key={g} className="mt-3">
+                      <h3 className="text-sm font-bold text-brand-ink">
+                        {t.grades[g as keyof typeof t.grades] ?? g}
+                      </h3>
+                      <div className="mt-2 grid grid-cols-2 gap-3">
+                        <div className="rounded-xl bg-brand-tint p-3">
+                          <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(f.at)}</div>
+                          <div className="text-xs text-muted">{o.foundAt}</div>
+                        </div>
+                        <div className="rounded-xl bg-brand-tint p-3">
+                          <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(f.gm1)}</div>
+                          <div className="text-xs text-muted">{o.foundGm1}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </section>
             )}
           </div>

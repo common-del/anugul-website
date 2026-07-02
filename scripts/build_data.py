@@ -411,14 +411,14 @@ for bname, bd in blocks.items():
     # own item-analysis memo.
     miscon = [m for m in bd["action"]["miscon"]
               if (m["grade"], m["subject"], m["qno"]) not in BROKEN_MISCON]
-    # Grade 5 only: the client's own analysis flags the G8 at-grade vs
-    # grade-minus-1 comparison as a tagging artifact ("do not act on it").
+    # Foundational (this-year vs prior-year) for every assessed grade.
     foundational = {}
-    g5f = bd["foundational"].get("Grade 5")
-    if g5f:
-        foundational["Grade 5"] = {"at": g5f.get("at"), "gm1": g5f.get("gm1"),
-                                   "by_subject": g5f.get("by_subject"),
-                                   "weak_los": clean_weak_los(g5f.get("weak_los"))[:8]}
+    for gk, gf in bd["foundational"].items():
+        if not gf:
+            continue
+        foundational[gk] = {"at": gf.get("at"), "gm1": gf.get("gm1"),
+                            "by_subject": gf.get("by_subject"),
+                            "weak_los": clean_weak_los(gf.get("weak_los"))[:8]}
     block_out = {
         "name": bname,
         "slug": slug,
@@ -439,7 +439,7 @@ for bname, bd in blocks.items():
                      "block_mean": bd["leverage"]["block_mean"]},
         "bright_spots": named(bd["bright_spots"]),
         "foundational": foundational,
-        "cognitive": {"Grade 5": bd["cognitive"].get("Grade 5")},
+        "cognitive": bd["cognitive"],
         "skills": {"bottom": bd["action"]["bottom"], "top": bd["action"]["top"]},
         "miscon": miscon,
         "inputs": rollup_inputs([s["udise"] for s in bands_out["overall"]["schools"]]),
@@ -504,8 +504,8 @@ district_off = {
     "proficiency": district["proficiency"],
     "below50": district["below50"],
     "variance": district["variance"],
-    "foundational": {"Grade 5": district["foundational"].get("Grade 5")},
-    "cognitive": {"Grade 5": district["cognitive"].get("Grade 5")},
+    "foundational": district["foundational"],
+    "cognitive": district["cognitive"],
     "hard_los": hard_los,
     "leverage": {"whatif": district["leverage"]["whatif"],
                  "schools_for_half_deficit": district["leverage"]["schools_for_half_deficit"],

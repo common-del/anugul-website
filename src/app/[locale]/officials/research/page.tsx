@@ -23,8 +23,7 @@ export default function ResearchPage({
   const o = t.officials;
   const d = getDistrictOfficials();
   const pct = (n: number) => fmtPercent(Math.round(n), locale);
-  const cog = d.cognitive["Grade 5"]?.by_cog ?? {};
-  const found = d.foundational["Grade 5"];
+  const gradeKeys = Object.keys(d.cognitive).sort();
 
   return (
     <PageShell>
@@ -37,45 +36,58 @@ export default function ResearchPage({
         <section className="mt-5 rounded-2xl border border-brand-line bg-white p-5">
           <h2 className="text-lg font-bold text-brand-ink">{o.cogTitle}</h2>
           <p className="mt-1 text-sm text-muted">{o.cogIntro}</p>
-          <div className="mt-3 space-y-2">
-            {Object.entries(cog).map(([skill, v]) => (
-              <div key={skill}>
-                <div className="flex justify-between text-sm">
-                  <span className="text-brand-ink">{skill}</span>
-                  <span className="font-semibold tabular-nums text-brand-ink">
-                    {pct(v as number)}
-                  </span>
-                </div>
-                <div className="mt-0.5 h-2 w-full overflow-hidden rounded-full bg-brand-tint">
-                  <div
-                    className="h-full rounded-full bg-brand"
-                    style={{ width: `${v}%` }}
-                  />
+          {gradeKeys.map((g) => {
+            const by = d.cognitive[g]?.by_cog ?? {};
+            if (!Object.keys(by).length) return null;
+            return (
+              <div key={g} className="mt-3">
+                <h3 className="text-sm font-bold text-brand-ink">
+                  {t.grades[g as keyof typeof t.grades] ?? g}
+                </h3>
+                <div className="mt-2 space-y-2">
+                  {Object.entries(by).map(([skill, v]) => (
+                    <div key={skill}>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-brand-ink">{skill}</span>
+                        <span className="font-semibold tabular-nums text-brand-ink">
+                          {pct(v as number)}
+                        </span>
+                      </div>
+                      <div className="mt-0.5 h-2 w-full overflow-hidden rounded-full bg-brand-tint">
+                        <div className="h-full rounded-full bg-brand" style={{ width: `${v}%` }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </section>
 
-        {found && (
-          <section className="mt-5 rounded-2xl border border-brand-line bg-white p-5">
-            <h2 className="text-lg font-bold text-brand-ink">{o.foundTitle}</h2>
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-brand-tint p-3">
-                <div className="text-2xl font-extrabold tabular-nums text-brand-ink">
-                  {pct(found.at)}
+        <section className="mt-5 rounded-2xl border border-brand-line bg-white p-5">
+          <h2 className="text-lg font-bold text-brand-ink">{o.foundTitle}</h2>
+          {gradeKeys.map((g) => {
+            const f = d.foundational[g];
+            if (!f) return null;
+            return (
+              <div key={g} className="mt-3">
+                <h3 className="text-sm font-bold text-brand-ink">
+                  {t.grades[g as keyof typeof t.grades] ?? g}
+                </h3>
+                <div className="mt-2 grid grid-cols-2 gap-3">
+                  <div className="rounded-xl bg-brand-tint p-3">
+                    <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(f.at)}</div>
+                    <div className="text-xs text-muted">{o.foundAt}</div>
+                  </div>
+                  <div className="rounded-xl bg-brand-tint p-3">
+                    <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(f.gm1)}</div>
+                    <div className="text-xs text-muted">{o.foundGm1}</div>
+                  </div>
                 </div>
-                <div className="text-xs text-muted">{o.foundAt}</div>
               </div>
-              <div className="rounded-xl bg-brand-tint p-3">
-                <div className="text-2xl font-extrabold tabular-nums text-brand-ink">
-                  {pct(found.gm1)}
-                </div>
-                <div className="text-xs text-muted">{o.foundGm1}</div>
-              </div>
-            </div>
-          </section>
-        )}
+            );
+          })}
+        </section>
 
         <section className="mt-5 rounded-2xl border border-brand-line bg-white p-5">
           <h2 className="text-lg font-bold text-brand-ink">{o.hardTitle}</h2>
