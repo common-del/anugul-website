@@ -11,6 +11,17 @@ function readJson(rel: string) {
 
 export type BandKeyStr = "urgent" | "needs" | "developing" | "excelling";
 
+// Aggregated UDISE inputs for a block/cluster, juxtaposed with outcomes.
+export type InputsRollup = {
+  coverage: { withData: number; total: number };
+  avgBasics?: number | null;
+  ptrOver?: number;
+  singleTeacher?: number;
+  dilapidated?: number;
+  supportPriority?: number;
+  facilityGaps?: { name: string; missing: number }[];
+};
+
 export type BlockSlice = {
   name: string;
   slug: string;
@@ -25,9 +36,14 @@ export type BlockSlice = {
   failing_all: Record<string, { pct: number; n: number; N: number }>;
   leverage: { top: { udise: string; name: string; cluster: string; score: number; students: number; recoverable: number }[]; whatif: Record<string, { delta: number; new: number }>; schools_for_half_deficit: number; n_schools: number; block_mean: number };
   bright_spots: { udise: string; name: string; cluster: string; score: number; cluster_score: number; gap: number; students: number }[];
-  foundational: Record<string, { at: number; gm1: number }>;
-  cognitive: Record<string, { by_cog: Record<string, number> } | null>;
+  foundational: Record<string, {
+    at: number; gm1: number;
+    by_subject?: Record<string, { at?: number; gm1?: number }>;
+    weak_los?: { lo: string; subject: string; gl: string; pct: number; desc: string }[];
+  }>;
+  cognitive: Record<string, { by_cog: Record<string, number>; by_subject?: Record<string, Record<string, number>> } | null>;
   miscon: MisconCard[];
+  inputs: InputsRollup;
 };
 
 export type MisconCard = {
@@ -44,6 +60,7 @@ export type ClusterSlice = {
   recognition: { grade: string; subject: string; desc: string; observed: number; district: number; n: number }[];
   worstSubject: string | null;
   worstSubjectPct: number | null;
+  inputs: InputsRollup;
 };
 
 export function getDistrictOfficials() {

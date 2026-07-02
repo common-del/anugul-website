@@ -79,6 +79,8 @@ export default function OfficialsHub({
         <section className="mt-5 space-y-2">
           {[
             { href: `/${locale}/analytics/`, label: t.analytics.title },
+            { href: `/${locale}/officials/schools/`, label: o.hubSchools },
+            { href: `/${locale}/officials/research/outcomes/`, label: o.hubOutcomes },
             { href: `/${locale}/officials/misconceptions/`, label: o.hubMisconceptions },
             { href: `/${locale}/officials/research/`, label: o.hubResearch },
             { href: `/${locale}/officials/methods/`, label: o.hubMethods },

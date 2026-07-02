@@ -7,6 +7,7 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
+import InputsCard from "@/components/InputsCard";
 import {
   getBlock,
   getBlockSlugs,
@@ -64,6 +65,9 @@ export default function BlockPage({
     [o.varChild, district.variance.child],
   ];
   const whatifN = Object.keys(b.leverage.whatif).sort((a, z) => +a - +z);
+  const g5cog = b.cognitive["Grade 5"]?.by_cog ?? {};
+  const g5found = b.foundational["Grade 5"];
+  const weakLos = g5found?.weak_los ?? [];
   const heatSubjects = Array.from(
     new Set(
       Object.values(b.clusters_heatmap).flatMap((row) =>
@@ -109,6 +113,11 @@ export default function BlockPage({
             ))}
           </div>
         </section>
+
+        {/* inputs juxtaposed with the outcome above */}
+        <div className="mt-6">
+          <InputsCard data={b.inputs} unitName={b.name} o={o} locale={locale} />
+        </div>
 
         <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
           <div className="space-y-6">
@@ -430,6 +439,102 @@ export default function BlockPage({
             </table>
           </div>
         </section>
+
+        {/* learning detail: cognitive skills, foundational, weak LOs, misconceptions */}
+        <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
+          <div className="space-y-6">
+            {Object.keys(g5cog).length > 0 && (
+              <section className="rounded-2xl border border-brand-line bg-white p-5">
+                <h2 className="text-lg font-bold text-brand-ink">{o.cogTitle}</h2>
+                <p className="mt-1 text-sm text-muted">{o.cogIntro}</p>
+                <div className="mt-3 space-y-2">
+                  {Object.entries(g5cog).map(([skill, v]) => (
+                    <div key={skill}>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-brand-ink">{skill}</span>
+                        <span className="font-semibold tabular-nums text-brand-ink">{pct(v)}</span>
+                      </div>
+                      <div className="mt-0.5 h-2 w-full overflow-hidden rounded-full bg-brand-tint">
+                        <div className="h-full rounded-full bg-brand" style={{ width: `${v}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {g5found && (
+              <section className="rounded-2xl border border-brand-line bg-white p-5">
+                <h2 className="text-lg font-bold text-brand-ink">{o.foundTitle}</h2>
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  <div className="rounded-xl bg-brand-tint p-3">
+                    <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(g5found.at)}</div>
+                    <div className="text-xs text-muted">{o.foundAt}</div>
+                  </div>
+                  <div className="rounded-xl bg-brand-tint p-3">
+                    <div className="text-2xl font-extrabold tabular-nums text-brand-ink">{pct(g5found.gm1)}</div>
+                    <div className="text-xs text-muted">{o.foundGm1}</div>
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            {weakLos.length > 0 && (
+              <section className="rounded-2xl border border-brand-line bg-white p-5">
+                <h2 className="text-lg font-bold text-brand-ink">{o.blockWeakLoTitle}</h2>
+                <ul className="mt-2 divide-y divide-brand-line text-sm">
+                  {weakLos.map((h) => (
+                    <li key={h.lo} className="flex items-start justify-between gap-3 py-2">
+                      <span className="min-w-0 text-brand-ink">
+                        {h.desc}
+                        <span className="block text-xs text-muted">
+                          {t.subjects[h.subject as keyof typeof t.subjects] ?? h.subject} · {h.lo}
+                        </span>
+                      </span>
+                      <span className="shrink-0 font-semibold tabular-nums text-[#b3261e]">
+                        {pct(h.pct)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {b.miscon.length > 0 && (
+              <section className="rounded-2xl border border-brand-line bg-white p-5">
+                <h2 className="text-lg font-bold text-brand-ink">{o.misconTitle}</h2>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-sm font-semibold text-brand underline underline-offset-2">
+                    {fill(o.blockMisconShow, { n: num(b.miscon.length) })}
+                  </summary>
+                  <div className="mt-3 space-y-3">
+                    {b.miscon.map((c, i) => (
+                      <article key={i} className="rounded-xl bg-brand-tint p-4">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-accent-dark">
+                          {t.grades[c.grade as keyof typeof t.grades] ?? c.grade} ·{" "}
+                          {t.subjects[c.subject as keyof typeof t.subjects] ?? c.subject}
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-brand-ink">{c.stem}</p>
+                        {c.pct != null && (
+                          <p className="mt-1 text-sm text-brand-ink">
+                            {fill(o.misconChose, {
+                              pct: num(c.pct),
+                              wrong: c.opts[c.chosen] ?? c.chosen,
+                              right: c.opts[c.correct] ?? c.correct,
+                            })}
+                          </p>
+                        )}
+                        <p className="mt-1 text-xs text-muted">{c.text}</p>
+                      </article>
+                    ))}
+                  </div>
+                </details>
+              </section>
+            )}
+          </div>
+        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>

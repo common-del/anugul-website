@@ -331,6 +331,62 @@ OFF_DIR = os.path.join(HERE, "..", "src", "data", "officials")
 os.makedirs(os.path.join(OFF_DIR, "blocks"), exist_ok=True)
 os.makedirs(os.path.join(OFF_DIR, "clusters"), exist_ok=True)
 
+# --- school inputs (UDISE) read once; used for the per-school card and for
+# block/cluster roll-ups. Roll-ups juxtapose inputs with outcomes at an
+# aggregated level; no correlation is claimed (the client's own analysis shows
+# inputs explain ~6% of the score gap). Per-school supervisory-visit counts are
+# never read — a public "0 visits" would implicitly name an absent CRCC/BEO.
+BASICS8 = ["Electricity", "Toilet", "Handwash", "Playground", "Ramp",
+           "Furniture", "Kitchen", "SMC formed"]
+inputs_full = {}
+try:
+    import openpyxl
+    _wb = openpyxl.load_workbook(src("School_Inputs_Enrichment.xlsx"),
+                                 read_only=True, data_only=True)
+    _ws = _wb["Schools"]
+    _hdr = None
+    for _row in _ws.iter_rows(values_only=True):
+        if _hdr is None:
+            _hdr = list(_row); continue
+        rec = dict(zip(_hdr, _row))
+        if not rec.get("Has UDISE data"):
+            continue
+        inputs_full[udise(rec["UDISE"])] = {
+            "ptr": rec.get("PTR"), "ptrNorm": rec.get("PTR norm"),
+            "ptrOver": rec.get("PTR over norm"),
+            "singleTeacher": bool(rec.get("Single-teacher")),
+            "dilapidated": rec.get("Dilapidated rooms"),
+            "basics": rec.get("Basics met /8"),
+            "supportPriority": (str(rec.get("Support priority") or "").strip().lower() == "yes"),
+            "fac": {b: (str(rec.get(b) or "").strip().lower() == "yes") for b in BASICS8},
+        }
+    _wb.close()
+except Exception as e:
+    print("  WARN: school inputs read skipped:", e)
+
+def rollup_inputs(udises):
+    """Aggregate UDISE inputs over a set of assessed schools. coverage.total is
+    the assessed-school count; withData is how many have a UDISE input panel."""
+    recs = [inputs_full[u] for u in udises if u in inputs_full]
+    total = len(udises)
+    if not recs:
+        return {"coverage": {"withData": 0, "total": total}}
+    bvals = [r["basics"] for r in recs if r["basics"] is not None]
+    gaps = []
+    for b in BASICS8:
+        miss = sum(1 for r in recs if not r["fac"].get(b))
+        if miss:
+            gaps.append({"name": b, "missing": miss})
+    return {
+        "coverage": {"withData": len(recs), "total": total},
+        "avgBasics": round(sum(bvals) / len(bvals), 1) if bvals else None,
+        "ptrOver": sum(1 for r in recs if (r["ptrOver"] or 0) > 0),
+        "singleTeacher": sum(1 for r in recs if r["singleTeacher"]),
+        "dilapidated": sum(1 for r in recs if (r["dilapidated"] or 0) > 0),
+        "supportPriority": sum(1 for r in recs if r["supportPriority"]),
+        "facilityGaps": sorted(gaps, key=lambda x: -x["missing"]),
+    }
+
 # --- per-block officials slice ---
 block_slugs = {}
 for bname, bd in blocks.items():
@@ -386,6 +442,7 @@ for bname, bd in blocks.items():
         "cognitive": {"Grade 5": bd["cognitive"].get("Grade 5")},
         "skills": {"bottom": bd["action"]["bottom"], "top": bd["action"]["top"]},
         "miscon": miscon,
+        "inputs": rollup_inputs([s["udise"] for s in bands_out["overall"]["schools"]]),
     }
     with open(os.path.join(OFF_DIR, "blocks", f"{slug}.json"), "w", encoding="utf-8") as f:
         json.dump(block_out, f, ensure_ascii=False, separators=(",", ":"))
@@ -498,6 +555,7 @@ for bname, bd in blocks.items():
             "brightSpots": named(spots)[:2], "recognition": recognition,
             "worstSubject": worst_subject,
             "worstSubjectPct": subj_pcts.get(worst_subject) if worst_subject else None,
+            "inputs": rollup_inputs([s["udise"] for s in schools_in]),
         }
         with open(os.path.join(OFF_DIR, "clusters", f"{slug}.json"), "w", encoding="utf-8") as f:
             json.dump(cluster_out, f, ensure_ascii=False, separators=(",", ":"))
@@ -522,31 +580,12 @@ for row in read_csv("Per_School_Peer_Enrichment.csv"):
         "worstSubjPct": num(row.get("worst_subj_pct")),
     }
 
-inputs_rows = {}
-try:
-    import openpyxl
-    wb = openpyxl.load_workbook(src("School_Inputs_Enrichment.xlsx"),
-                                read_only=True, data_only=True)
-    ws = wb["Schools"]
-    hdr = None
-    for row in ws.iter_rows(values_only=True):
-        if hdr is None:
-            hdr = list(row)
-            continue
-        rec = dict(zip(hdr, row))
-        if not rec.get("Has UDISE data"):
-            continue
-        u = udise(rec["UDISE"])
-        # NOTE: per-school supervisory-visit counts deliberately not shipped —
-        # a public "0 visits" implicitly names a specific CRCC/BEO as absent.
-        inputs_rows[u] = {
-            "ptr": rec.get("PTR"), "ptrNorm": rec.get("PTR norm"),
-            "ptrOver": rec.get("PTR over norm"),
-            "singleTeacher": bool(rec.get("Single-teacher")),
-            "basicsMet": rec.get("Basics met /8"),
-        }
-except Exception as e:
-    print("  WARN: inputs enrichment skipped:", e)
+# per-school card fields, derived from the inputs read once above
+inputs_rows = {
+    u: {"ptr": r["ptr"], "ptrNorm": r["ptrNorm"], "ptrOver": r["ptrOver"],
+        "singleTeacher": r["singleTeacher"], "basicsMet": r["basics"]}
+    for u, r in inputs_full.items()
+}
 
 # cluster position + nearest bright spot per school
 cluster_pos = {}   # (block, cluster) -> (rank, of, score)

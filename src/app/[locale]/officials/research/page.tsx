@@ -100,12 +100,20 @@ export default function ResearchPage({
           </ul>
         </section>
 
-        <Link
-          href={`/${locale}/officials/research/items/`}
-          className="mt-5 flex min-h-[52px] items-center justify-between rounded-xl border border-brand-line bg-white px-4 font-semibold text-brand-ink"
-        >
-          {o.itemsTitle} <span aria-hidden>→</span>
-        </Link>
+        <div className="mt-5 space-y-2">
+          <Link
+            href={`/${locale}/officials/research/outcomes/`}
+            className="flex min-h-[52px] items-center justify-between rounded-xl border border-brand-line bg-white px-4 font-semibold text-brand-ink"
+          >
+            {o.outcomesTitle} <span aria-hidden>→</span>
+          </Link>
+          <Link
+            href={`/${locale}/officials/research/items/`}
+            className="flex min-h-[52px] items-center justify-between rounded-xl border border-brand-line bg-white px-4 font-semibold text-brand-ink"
+          >
+            {o.itemsTitle} <span aria-hidden>→</span>
+          </Link>
+        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>

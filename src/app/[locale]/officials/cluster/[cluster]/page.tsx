@@ -8,6 +8,7 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT } from "@/lib/bands";
+import InputsCard from "@/components/InputsCard";
 import { getCluster, getClusterIndex, type ClusterSlice } from "@/lib/officialsData";
 
 export function generateStaticParams() {
@@ -76,6 +77,11 @@ export default function ClusterPage({
               <div className="truncate text-xs text-muted">{s.l}</div>
             </div>
           ))}
+        </div>
+
+        {/* inputs juxtaposed with the score above */}
+        <div className="mt-6">
+          <InputsCard data={c.inputs} unitName={c.cluster} o={o} locale={locale} />
         </div>
 
         {/* schools with bands */}
