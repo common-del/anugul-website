@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // Small two-letter language switch: E / ଓ, current one highlighted.
+// Plain <a> + click-time query capture: keeps ?block= / ?a=&b= across the
+// switch (usePathname has no query, and useSearchParams needs Suspense under
+// static export). Full page load — simple and reliable on a static site.
 export default function LanguageToggle({ current }: { current: string }) {
   const pathname = usePathname() || `/${current}`;
   const rest = pathname.replace(/^\/(od|en)(?=\/|$)/, "");
@@ -12,16 +14,20 @@ export default function LanguageToggle({ current }: { current: string }) {
   const seg = (loc: "en" | "od", letter: string, name: string) => {
     const active = loc === current;
     return (
-      <Link
+      <a
         href={to(loc)}
         aria-label={name}
         aria-current={active ? "true" : undefined}
+        onClick={(e) => {
+          e.preventDefault();
+          window.location.href = to(loc) + window.location.search;
+        }}
         className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
           active ? "bg-white text-brand" : "text-white/75"
         }`}
       >
         {letter}
-      </Link>
+      </a>
     );
   };
 

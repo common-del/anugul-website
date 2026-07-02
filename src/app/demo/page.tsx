@@ -55,6 +55,12 @@ export default function DemoPage() {
         { type: "demo-goto", href: d.href },
         window.location.origin,
       );
+      // Track the frames in the real address bar so a refresh resumes here.
+      window.history.replaceState(
+        null,
+        "",
+        `/demo/?start=${encodeURIComponent(d.href)}`,
+      );
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
