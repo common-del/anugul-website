@@ -283,6 +283,338 @@ district_out = {
     ],
 }
 
+# ---------- officials data (block/cluster/research views) --------------------
+# Guardrails applied here, at the data layer:
+#  - nothing from *_PRIVATE / Suspicious_* files; bright-spots 'spikes' column dropped
+#  - 9 answer-key-suspect items excluded from item bank, hard-LO and weak-LO lists,
+#    and misconception cards (plus 3 known-broken items) — never exposed as a flag
+#  - cluster_league 'pct_below' and block-level plain 'whatif' omitted (unverified)
+#  - cognitive views: Grade 5 only (client's own analysis rejects the G8 cut)
+#  - band keys derived from displayed scores (consistent with parent pages)
+
+import math
+import re as _re
+
+def slugify(name):
+    return _re.sub(r"-+", "-", _re.sub(r"[^a-z0-9]+", "-", str(name).lower())).strip("-")
+
+items = d_items = dash["district"]["items"]
+keysuspect_keys = {(i["grade"], i["subject"], i["q_no"]) for i in d_items if i.get("keysuspect")}
+keysuspect_los = {str(i["lo"]).strip() for i in d_items if i.get("keysuspect")}
+BROKEN_MISCON = {("Grade 8", "Maths", 6), ("Grade 8", "Odia", 20), ("Grade 8", "SST", 15)}
+
+def clean_weak_los(lst):
+    return [w for w in (lst or []) if str(w.get("lo", "")).strip() not in keysuspect_los]
+
+def band_list(schools_list):
+    out = []
+    for s in schools_list:
+        u = udise(s["udise"])
+        c = canon.get(u)
+        sc = round(float(s["score"]), 1)
+        out.append({"udise": u, "name": c["name"] if c else s["name"],
+                    "cluster": s["cluster"], "score": sc, "band": band_from_score(sc)})
+    return out
+
+def named(rows):
+    out = []
+    for r in rows:
+        r = dict(r)
+        u = udise(r.get("udise", ""))
+        if u in canon:
+            r["name"] = canon[u]["name"]
+        r["udise"] = u
+        out.append(r)
+    return out
+
+OFF_DIR = os.path.join(HERE, "..", "src", "data", "officials")
+os.makedirs(os.path.join(OFF_DIR, "blocks"), exist_ok=True)
+os.makedirs(os.path.join(OFF_DIR, "clusters"), exist_ok=True)
+
+# --- per-block officials slice ---
+block_slugs = {}
+for bname, bd in blocks.items():
+    slug = slugify(bname)
+    block_slugs[bname] = slug
+    bands_out = {}
+    for gkey in ("overall", "g5", "g8"):
+        raw = bd["bands"].get(gkey)
+        if not raw:
+            continue
+        lst = band_list(raw["schools"])
+        counts = {}
+        for s in lst:
+            counts[s["band"]] = counts.get(s["band"], 0) + 1
+        bands_out[gkey] = {"counts": counts, "schools": sorted(lst, key=lambda x: x["score"])}
+    league_rows = [{k: r[k] for k in ("cluster", "score", "students", "schools",
+                                      "best_school", "worst_school")}
+                   for r in bd["cluster_league"]["rows"]]
+    # Misconception cards: exclude only the 3 known-broken items. The naive
+    # key-suspect flag also catches REAL misconceptions (a strong trap beating
+    # the key is the phenomenon itself); those stay — validated in the client's
+    # own item-analysis memo.
+    miscon = [m for m in bd["action"]["miscon"]
+              if (m["grade"], m["subject"], m["qno"]) not in BROKEN_MISCON]
+    # Grade 5 only: the client's own analysis flags the G8 at-grade vs
+    # grade-minus-1 comparison as a tagging artifact ("do not act on it").
+    foundational = {}
+    g5f = bd["foundational"].get("Grade 5")
+    if g5f:
+        foundational["Grade 5"] = {"at": g5f.get("at"), "gm1": g5f.get("gm1"),
+                                   "by_subject": g5f.get("by_subject"),
+                                   "weak_los": clean_weak_los(g5f.get("weak_los"))[:8]}
+    block_out = {
+        "name": bname,
+        "slug": slug,
+        "headline": bd["headline"],
+        "vs_best": bd["vs_best"],
+        "drop": bd["drop"],
+        "rel_subject": bd["rel_subject"],
+        "bands": bands_out,
+        "cluster_league": {"block_score": bd["cluster_league"]["block_score"], "rows": league_rows},
+        "clusters_heatmap": bd["clusters"],
+        "concentration": bd["concentration"],
+        "failing_all": bd["failing_all"],
+        "subj_grade_below": bd["subj_grade_below"],
+        "leverage": {"top": named(bd["leverage"]["top"]),
+                     "whatif": bd["leverage"]["whatif"],
+                     "schools_for_half_deficit": bd["leverage"]["schools_for_half_deficit"],
+                     "n_schools": bd["leverage"]["n_schools"],
+                     "block_mean": bd["leverage"]["block_mean"]},
+        "bright_spots": named(bd["bright_spots"]),
+        "foundational": foundational,
+        "cognitive": {"Grade 5": bd["cognitive"].get("Grade 5")},
+        "skills": {"bottom": bd["action"]["bottom"], "top": bd["action"]["top"]},
+        "miscon": miscon,
+    }
+    with open(os.path.join(OFF_DIR, "blocks", f"{slug}.json"), "w", encoding="utf-8") as f:
+        json.dump(block_out, f, ensure_ascii=False, separators=(",", ":"))
+print(f"  wrote {len(blocks)} officials block slices -> src/data/officials/blocks/")
+
+# --- misconception cards (district view: same item across blocks) ---
+mis_by_item = {}
+for bname, bd in blocks.items():
+    for m in bd["action"]["miscon"]:
+        key = (m["grade"], m["subject"], m["qno"])
+        if key in BROKEN_MISCON:
+            continue
+        entry = mis_by_item.setdefault(key, {
+            "grade": m["grade"], "subject": m["subject"], "qno": m["qno"],
+            "stem": m["stem"], "opts": m["opts"], "correct": m["correct"],
+            "chosen": m["chosen"], "text": m["text"], "byBlock": {}})
+        entry["byBlock"][bname] = m["pct"]
+mis_cards = sorted(mis_by_item.values(),
+                   key=lambda x: -max(x["byBlock"].values()))
+with open(os.path.join(OFF_DIR, "misconceptions.json"), "w", encoding="utf-8") as f:
+    json.dump(mis_cards, f, ensure_ascii=False, separators=(",", ":"))
+print(f"  wrote {len(mis_cards)} misconception cards")
+
+# --- clean item bank (researchers): v3 items + psychometrics + full LO text ---
+psy = {}
+for row in read_csv("Item_Psychometrics.csv"):
+    psy[(row["grade"], row["subject"], int(row["qno"].lstrip("q") if str(row["qno"]).startswith("q") else row["qno"]))] = row
+blueprint_desc = {}
+for row in read_csv("TEMPLATE_AnswerKey_Blueprint.csv"):
+    try:
+        blueprint_desc[(row["grade"], row["subject"], int(row["q_no"]))] = (row.get("LO Description") or "").strip()
+    except (ValueError, KeyError):
+        pass
+items_clean = []
+for i in d_items:
+    if i.get("keysuspect"):
+        continue
+    key = (i["grade"], i["subject"], i["q_no"])
+    p = psy.get(key, {})
+    items_clean.append({
+        "grade": i["grade"], "subject": i["subject"], "q_no": i["q_no"],
+        "lo": str(i["lo"]).strip(), "desc": blueprint_desc.get(key) or i["desc"],
+        "gl": i["gl"], "cog": (p.get("cog") or "").strip() or None,
+        "correct_pct": i["correct_pct"], "top_wrong_pct": i["top_wrong_pct"],
+        "blank": i["blank"],
+        "discrimination": num(p.get("D")), "rpbis": num(p.get("rpbis")),
+    })
+with open(os.path.join(OFF_DIR, "items.json"), "w", encoding="utf-8") as f:
+    json.dump(items_clean, f, ensure_ascii=False, separators=(",", ":"))
+print(f"  wrote {len(items_clean)} clean items (of {len(d_items)})")
+
+# --- district officials summary ---
+hard_los = [h for h in district.get("hard_los", [])
+            if str(h.get("lo", "")).strip() not in keysuspect_los]
+# NOTE: the source's 'distress_blocks' label is deliberately NOT shipped — the
+# client's own report renders no such label; below50/proficiency numbers speak.
+district_off = {
+    "rank": district["rank"],
+    "proficiency": district["proficiency"],
+    "below50": district["below50"],
+    "variance": district["variance"],
+    "foundational": {"Grade 5": district["foundational"].get("Grade 5")},
+    "cognitive": {"Grade 5": district["cognitive"].get("Grade 5")},
+    "hard_los": hard_los,
+    "leverage": {"whatif": district["leverage"]["whatif"],
+                 "schools_for_half_deficit": district["leverage"]["schools_for_half_deficit"],
+                 "n_schools": district["leverage"]["n_schools"]},
+    "blocks": [{"name": b, "slug": block_slugs[b]} for b in sorted(blocks)],
+}
+with open(os.path.join(OFF_DIR, "district.json"), "w", encoding="utf-8") as f:
+    json.dump(district_off, f, ensure_ascii=False, separators=(",", ":"))
+print("  wrote officials district summary")
+
+# --- bright-spot recognition rows (cluster level; 'spikes' never read) ---
+bs_clusters = []
+for row in read_csv("Bright_Spots_clusters.csv"):
+    bs_clusters.append({"cluster": (row.get("unit") or "").strip(),
+                        "grade": row["grade"], "subject": row["subject"],
+                        "desc": (row.get("desc") or "").strip(),
+                        "observed": num(row.get("observed")),
+                        "district": num(row.get("district")),
+                        "n": int(num(row.get("n")) or 0)})
+
+# --- per-cluster one-pager data ---
+cluster_index = []
+cluster_slug_seen = {}
+for bname, bd in blocks.items():
+    rows = bd["cluster_league"]["rows"]
+    ranked = sorted(rows, key=lambda r: -r["score"])
+    heat = bd["clusters"]
+    for pos, r in enumerate(ranked, 1):
+        cname = r["cluster"]
+        slug = slugify(cname)
+        if slug in cluster_slug_seen and cluster_slug_seen[slug] != (bname, cname):
+            slug = f"{slug}-{block_slugs[bname]}"
+        cluster_slug_seen[slug] = (bname, cname)
+        schools_in = [s for s in band_list(bd["bands"]["overall"]["schools"])
+                      if s["cluster"] == cname]
+        schools_in.sort(key=lambda x: x["name"])
+        spots = [b for b in bd["bright_spots"] if b["cluster"] == cname]
+        recognition = [x for x in bs_clusters if x["cluster"] == cname][:3]
+        hm = heat.get(cname, {})
+        subj_pcts = {k: v for k, v in hm.items() if not k.startswith("_")}
+        worst_subject = max(subj_pcts, key=subj_pcts.get) if subj_pcts else None
+        cluster_out = {
+            "cluster": cname, "block": bname, "blockSlug": block_slugs[bname],
+            "rank": pos, "of": len(ranked), "score": r["score"],
+            "blockScore": bd["cluster_league"]["block_score"],
+            "students": r["students"], "schools": schools_in,
+            "brightSpots": named(spots)[:2], "recognition": recognition,
+            "worstSubject": worst_subject,
+            "worstSubjectPct": subj_pcts.get(worst_subject) if worst_subject else None,
+        }
+        with open(os.path.join(OFF_DIR, "clusters", f"{slug}.json"), "w", encoding="utf-8") as f:
+            json.dump(cluster_out, f, ensure_ascii=False, separators=(",", ":"))
+        cluster_index.append({"cluster": cname, "block": bname, "slug": slug,
+                              "schools": len(schools_in)})
+with open(os.path.join(OFF_DIR, "cluster-index.json"), "w", encoding="utf-8") as f:
+    json.dump(sorted(cluster_index, key=lambda x: (x["block"], x["cluster"])),
+              f, ensure_ascii=False, separators=(",", ":"))
+print(f"  wrote {len(cluster_index)} cluster one-pager slices")
+
+# --- school enrichment: peer benchmark, cluster position, bright spot, inputs ---
+peer_rows = {}
+for row in read_csv("Per_School_Peer_Enrichment.csv"):
+    u = udise(row["UDISE_Code"])
+    peer_rows[u] = {
+        "nPeers": int(num(row.get("n_peers")) or 0),
+        "median": num(row.get("peer_median")),
+        "pctile": num(row.get("pctile")),
+        "bestSubj": (row.get("best_subj") or "").strip() or None,
+        "bestSubjPct": num(row.get("best_subj_pct")),
+        "worstSubj": (row.get("worst_subj") or "").strip() or None,
+        "worstSubjPct": num(row.get("worst_subj_pct")),
+    }
+
+inputs_rows = {}
+try:
+    import openpyxl
+    wb = openpyxl.load_workbook(src("School_Inputs_Enrichment.xlsx"),
+                                read_only=True, data_only=True)
+    ws = wb["Schools"]
+    hdr = None
+    for row in ws.iter_rows(values_only=True):
+        if hdr is None:
+            hdr = list(row)
+            continue
+        rec = dict(zip(hdr, row))
+        if not rec.get("Has UDISE data"):
+            continue
+        u = udise(rec["UDISE"])
+        # NOTE: per-school supervisory-visit counts deliberately not shipped —
+        # a public "0 visits" implicitly names a specific CRCC/BEO as absent.
+        inputs_rows[u] = {
+            "ptr": rec.get("PTR"), "ptrNorm": rec.get("PTR norm"),
+            "ptrOver": rec.get("PTR over norm"),
+            "singleTeacher": bool(rec.get("Single-teacher")),
+            "basicsMet": rec.get("Basics met /8"),
+        }
+except Exception as e:
+    print("  WARN: inputs enrichment skipped:", e)
+
+# cluster position + nearest bright spot per school
+cluster_pos = {}   # (block, cluster) -> (rank, of, score)
+for bname, bd in blocks.items():
+    ranked = sorted(bd["cluster_league"]["rows"], key=lambda r: -r["score"])
+    for pos, r in enumerate(ranked, 1):
+        cluster_pos[(bname, r["cluster"])] = (pos, len(ranked), r["score"])
+
+def hav_km(a, b):
+    la1, lo1, la2, lo2 = map(math.radians, [a[0], a[1], b[0], b[1]])
+    h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2
+    return 2 * 6371 * math.asin(math.sqrt(h))
+
+spots_by_block = {}
+for bname, bd in blocks.items():
+    spots_by_block[bname] = named(bd["bright_spots"])
+
+for u, s in schools.items():
+    s["peer"] = peer_rows.get(u)
+    s["inputs"] = inputs_rows.get(u)
+    cp = cluster_pos.get((s["block"], s["cluster"]))
+    s["clusterPos"] = ({"rank": cp[0], "of": cp[1], "score": cp[2]} if cp else None)
+    spot = None
+    cands = [b for b in spots_by_block.get(s["block"], []) if b["udise"] != u]
+    same_cluster = [b for b in cands if b["cluster"] == s["cluster"]]
+    if same_cluster:
+        spot = same_cluster[0]
+    elif cands:
+        me = ll.get(u, {})
+        if me.get("lat") is not None:
+            geo = [(hav_km((me["lat"], me["lon"]),
+                           (ll[b["udise"]]["lat"], ll[b["udise"]]["lon"])), b)
+                   for b in cands if ll.get(b["udise"], {}).get("lat") is not None]
+            if geo:
+                geo.sort(key=lambda x: x[0])
+                spot = dict(geo[0][1]); spot["km"] = round(geo[0][0], 1)
+        if spot is None:
+            spot = cands[0]
+    s["brightSpot"] = spot
+print(f"  enriched schools: peer={sum(1 for s in schools.values() if s['peer'])}, "
+      f"inputs={len(inputs_rows)}, clusterPos={sum(1 for s in schools.values() if s['clusterPos'])}")
+
+# --- open downloads (aggregates only) ---
+DL = os.path.join(HERE, "..", "public", "data", "downloads")
+os.makedirs(DL, exist_ok=True)
+with open(os.path.join(DL, "block_aggregates.csv"), "w", encoding="utf-8", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "overall", "g5", "g8", "schools", "students", "pct_below50", "pct_proficient"])
+    for r in district["rank"]:
+        b = r["block"]
+        h = blocks[b]["headline"]
+        w.writerow([b, h["overall"], h["g5"], h["g8"], h["schools"], h["students"],
+                    district["below50"].get(b), district["proficiency"].get(b)])
+with open(os.path.join(DL, "cluster_league.csv"), "w", encoding="utf-8", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "cluster", "score", "students", "schools", "best_school", "worst_school"])
+    for bname, bd in sorted(blocks.items()):
+        for r in bd["cluster_league"]["rows"]:
+            w.writerow([bname, r["cluster"], r["score"], r["students"], r["schools"],
+                        r["best_school"], r["worst_school"]])
+with open(os.path.join(DL, "items_clean.csv"), "w", encoding="utf-8", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["grade", "subject", "q_no", "lo", "gl", "desc", "correct_pct", "top_wrong_pct", "blank_pct"])
+    for i in items_clean:
+        w.writerow([i["grade"], i["subject"], i["q_no"], i["lo"], i["gl"], i["desc"],
+                    i["correct_pct"], i["top_wrong_pct"], i["blank"]])
+print("  wrote downloads: block_aggregates.csv, cluster_league.csv, items_clean.csv")
+
 # ---------- QA / coverage ----------------------------------------------------
 
 set_canon = set(canon)

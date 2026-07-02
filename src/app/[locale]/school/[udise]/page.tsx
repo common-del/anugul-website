@@ -7,6 +7,12 @@ import BandMeter from "@/components/BandMeter";
 import Comparison from "@/components/Comparison";
 import SubjectBars from "@/components/SubjectBars";
 import SchoolProfile, { type Profile } from "@/components/SchoolProfile";
+import SchoolContext, {
+  type Peer,
+  type ClusterPos,
+  type BrightSpotRef,
+  type Inputs,
+} from "@/components/SchoolContext";
 import Guidance from "@/components/Guidance";
 import ShareBar from "@/components/ShareBar";
 import type { Metadata } from "next";
@@ -37,6 +43,10 @@ type School = {
     };
   };
   profile: Profile | null;
+  peer: Peer;
+  clusterPos: ClusterPos;
+  brightSpot: BrightSpotRef;
+  inputs: Inputs;
 };
 
 const schools = schoolsData as unknown as Record<string, School>;
@@ -149,6 +159,18 @@ export default function SchoolPage({
             {s.profile && (
               <SchoolProfile profile={s.profile} c={t.profile} locale={locale} />
             )}
+
+            <SchoolContext
+              peer={s.peer}
+              clusterPos={s.clusterPos}
+              cluster={s.cluster}
+              block={s.block}
+              brightSpot={s.brightSpot}
+              inputs={s.inputs}
+              c={t.peerCard}
+              subjectLabels={t.subjects}
+              locale={locale}
+            />
           </div>
         </div>
 
