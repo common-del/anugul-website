@@ -32,7 +32,9 @@ export default function RolesPage({ params }: { params: { locale: string } }) {
           {ROLE_KEYS.map((k) => {
             const r = t.roles[k];
             const href =
-              k === "schoolHead" ? `/${locale}/find/` : `/${locale}/officials/`;
+              k === "schoolHead"
+                ? `/${locale}/officials/schools/`
+                : `/${locale}/officials/`;
             return (
               <li
                 key={k}

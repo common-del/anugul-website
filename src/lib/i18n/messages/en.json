@@ -131,7 +131,19 @@
     "rteBasics": "Basics in place: {n} of 8",
     "rtePtr": "Students per teacher: {ptr} (norm {norm})",
     "rteSingle": "Single-teacher school",
-    "rteNA": "Detailed facility records for this school are not yet available."
+    "rteNA": "Detailed facility records for this school are not yet available.",
+    "rteBasicsIn": "In place",
+    "rteBasicsOut": "Not in place",
+    "basics": {
+      "Electricity": "Electricity",
+      "Toilet": "Toilet",
+      "Handwash": "Handwash",
+      "Playground": "Playground",
+      "Ramp": "Ramp",
+      "Furniture": "Furniture",
+      "Kitchen": "Kitchen",
+      "SMC formed": "SMC formed"
+    }
   },
   "guidance": {
     "title": "Talking to your school",
@@ -292,7 +304,14 @@
     "dirCount": "{n} schools",
     "dirEmpty": "No schools match your search.",
     "dirSortHint": "Tap a heading to sort.",
-    "hubSchools": "School directory"
+    "hubSchools": "School directory",
+    "schoolHeadKicker": "School head view",
+    "neighboursTitle": "Nearest schools, ranked",
+    "neighboursIntro": "The nearest schools, ordered by overall score. Where one leads this school, that is a place to look for practice to borrow.",
+    "neighboursThis": "This school",
+    "neighboursAheadIn": "Ahead of this school in",
+    "neighboursNoAhead": "Not ahead of this school in any subject",
+    "neighboursKm": "{km} km"
   },
   "analytics": {
     "title": "How is Angul doing?",

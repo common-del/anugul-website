@@ -254,6 +254,8 @@ for u, c in canon.items():
         "profile": profile(u),
         "hasProfile": u in udise_rows,
         "hasNeighbours": bool(nb),
+        # nearest schools (with a score), nearest-first — for the school-head view
+        "neighbours": [{"udise": nu, "km": km} for (nu, km) in use],
     }
 
 # search index (light, ships to client). Name/block/cluster only — deliberately
@@ -583,7 +585,9 @@ for row in read_csv("Per_School_Peer_Enrichment.csv"):
 # per-school card fields, derived from the inputs read once above
 inputs_rows = {
     u: {"ptr": r["ptr"], "ptrNorm": r["ptrNorm"], "ptrOver": r["ptrOver"],
-        "singleTeacher": r["singleTeacher"], "basicsMet": r["basics"]}
+        "singleTeacher": r["singleTeacher"], "basicsMet": r["basics"],
+        "basicsIn": [b for b in BASICS8 if r["fac"].get(b)],
+        "basicsOut": [b for b in BASICS8 if not r["fac"].get(b)]}
     for u, r in inputs_full.items()
 }
 

@@ -123,7 +123,7 @@ export default function SchoolDirectory({
             {filtered.map((r) => (
               <tr key={r.udise} className="border-b border-brand-line">
                 <td className="py-1.5 pr-2">
-                  <Link href={`/${locale}/school/${r.udise}/`} className="text-brand underline-offset-2 hover:underline">
+                  <Link href={`/${locale}/officials/school/${r.udise}/`} className="text-brand underline-offset-2 hover:underline">
                     {r.name}
                   </Link>
                 </td>

@@ -13,12 +13,14 @@ export type BrightSpotRef = {
 export type Inputs = {
   ptr: number | null; ptrNorm: number | null; ptrOver: number | null;
   singleTeacher: boolean; basicsMet: number | null;
+  basicsIn?: string[]; basicsOut?: string[];
 } | null;
 
 type Copy = {
   title: string; intro: string; line: string; best: string; worst: string;
   clusterLine: string; brightTitle: string; brightLine: string;
-  rteTitle: string; rteBasics: string; rtePtr: string; rteSingle: string; rteNA: string;
+  rteTitle: string; rtePtr: string; rteSingle: string; rteNA: string;
+  rteBasicsIn: string; rteBasicsOut: string; basics: Record<string, string>;
 };
 
 function fill(s: string, vars: Record<string, string | number>) {
@@ -119,8 +121,17 @@ export default function SchoolContext({
         <p className="text-sm font-bold text-brand-ink">{c.rteTitle}</p>
         {inputs ? (
           <ul className="mt-1 space-y-1 text-sm text-brand-ink">
-            {inputs.basicsMet != null && (
-              <li>{fill(c.rteBasics, { n: num(inputs.basicsMet) })}</li>
+            {inputs.basicsIn && inputs.basicsIn.length > 0 && (
+              <li>
+                <span className="font-semibold">{c.rteBasicsIn}:</span>{" "}
+                {inputs.basicsIn.map((b) => c.basics[b] ?? b).join(", ")}
+              </li>
+            )}
+            {inputs.basicsOut && inputs.basicsOut.length > 0 && (
+              <li className="text-[#b3261e]">
+                <span className="font-semibold">{c.rteBasicsOut}:</span>{" "}
+                {inputs.basicsOut.map((b) => c.basics[b] ?? b).join(", ")}
+              </li>
             )}
             {inputs.ptr != null && inputs.ptrNorm != null && (
               <li>{fill(c.rtePtr, { ptr: num(inputs.ptr), norm: num(inputs.ptrNorm) })}</li>
