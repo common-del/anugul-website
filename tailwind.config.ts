@@ -15,6 +15,16 @@ const config: Config = {
           line: "#d8e1ef",
         },
         accent: { DEFAULT: "#f5911e", dark: "#9a5510", light: "#f6a93b" },
+        // v2 redesign: government green (docx mock, "Saksham Portal" family)
+        gov: {
+          DEFAULT: "#0E5A40",
+          dark: "#0A452F",
+          deep: "#0B3B2A",
+          mid: "#187A57",
+          ink: "#143726",
+          tint: "#EDF5F0",
+          line: "#D5E4DB",
+        },
         muted: "#566579",
         // Result bands: low = warm/attention, high = brand blue. Always shown
         // with the band word + number, so colour is never the only signal.

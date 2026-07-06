@@ -22,8 +22,8 @@ export default function LanguageToggle({ current }: { current: string }) {
           e.preventDefault();
           window.location.href = to(loc) + window.location.search;
         }}
-        className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
-          active ? "bg-white text-brand" : "text-white/75"
+        className={`flex h-9 items-center justify-center rounded-full px-3 text-[13px] font-bold ${
+          active ? "bg-gov text-white" : "text-gov-dark"
         }`}
       >
         {letter}
@@ -32,9 +32,9 @@ export default function LanguageToggle({ current }: { current: string }) {
   };
 
   return (
-    <div className="no-print flex shrink-0 items-center gap-0.5 rounded-full bg-white/15 p-0.5 ring-1 ring-white/30">
-      {seg("en", "E", "English")}
-      {seg("od", "ଓ", "ଓଡ଼ିଆ")}
+    <div className="no-print flex shrink-0 items-center gap-0.5 rounded-full bg-gov-tint p-0.5 ring-1 ring-gov-line">
+      {seg("en", "EN", "English")}
+      {seg("od", "ଓଡ଼ିଆ", "ଓଡ଼ିଆ")}
     </div>
   );
 }

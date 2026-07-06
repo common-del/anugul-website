@@ -3,50 +3,120 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Messages } from "@/lib/i18n/dict";
 import LanguageToggle from "./LanguageToggle";
 import BackButton from "./BackButton";
+import HelpMenu from "./HelpMenu";
 
+// v2 header (docx mock): white masthead — logo, "Angul Schools" +
+// "Government of Odisha", role selector (Parent, Government and Orgs),
+// EN/ଓଡ଼ିଆ — then a dark-green title bar: Home | Reports | Help ▾.
+// School Head / officer views stay on discreet URLs, not in the selector.
 export default function SiteHeader({
   locale,
   t,
   showBack = false,
+  active = "none",
 }: {
   locale: Locale;
   t: Messages;
   showBack?: boolean;
+  active?: "home" | "reports" | "none";
 }) {
+  const v = t.v2;
+  const roles = [
+    { href: `/${locale}/`, label: v.roleParent, current: true },
+    { href: `/${locale}/gov/`, label: v.roleOrgs, current: false },
+  ];
+  // TODO: replace seal with the School & Mass Education Dept logo when the
+  // file is supplied (Drive link in the mock doc is not accessible here).
   return (
-    <header>
-      <div className="bg-brand-dark px-4 py-1.5 text-center text-[13px] text-white/90">
-        <div className="mx-auto w-full max-w-5xl">{t.site.strapline}</div>
-      </div>
-      <div className="bg-brand text-white">
-        <div className="mx-auto w-full max-w-5xl">
-          <div className="flex items-center justify-between gap-3 px-4 pt-3">
-            <div className="flex min-w-0 items-center gap-2.5">
-              {showBack && <BackButton label={t.back} />}
-              <Link
-                href={`/${locale}/`}
-                aria-label={t.site.name}
-                className="flex min-w-0 items-center gap-2.5"
-              >
-                <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/seal-of-odisha.svg"
-                    alt="Government of Odisha"
-                    className="h-8 w-8 object-contain"
-                  />
-                </span>
-                <span className="truncate text-lg font-bold leading-tight">
-                  {t.site.name}
-                </span>
-              </Link>
-            </div>
+    <header className="no-print">
+      <div className="border-b border-gov-line bg-white">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5">
+          <Link
+            href={`/${locale}/`}
+            aria-label={t.site.name}
+            className="flex min-w-0 items-center gap-2.5"
+          >
+            <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-gov-line">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/seal-of-odisha.svg"
+                alt="Government of Odisha"
+                className="h-9 w-9 object-contain"
+              />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-lg font-extrabold leading-tight text-gov-dark">
+                {t.site.name}
+              </span>
+              <span className="block truncate text-[11.5px] leading-snug text-muted">
+                {v.govOdisha}
+              </span>
+            </span>
+          </Link>
+
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="hidden text-sm font-semibold text-muted sm:inline">
+              {v.iAmA}
+            </span>
+            <nav className="flex items-center gap-1.5" aria-label={v.iAmA}>
+              {roles.map((r) => (
+                <Link
+                  key={r.href}
+                  href={r.href}
+                  className={`flex min-h-[38px] items-center rounded-full px-3.5 text-[13.5px] font-bold ring-1 ${
+                    r.current
+                      ? "bg-gov text-white ring-gov"
+                      : "bg-white text-gov-dark ring-gov-line hover:bg-gov-tint"
+                  }`}
+                >
+                  {r.label}
+                </Link>
+              ))}
+            </nav>
             <LanguageToggle current={locale} />
           </div>
-          <p className="px-4 pb-3 pt-1.5 text-[11px] leading-snug text-white/85">
-            {t.site.subtitle}
-          </p>
         </div>
+      </div>
+
+      <div className="bg-gov">
+        <nav
+          className="mx-auto flex w-full max-w-5xl items-stretch px-2 font-semibold"
+          aria-label={v.navHome}
+        >
+          {showBack && (
+            <span className="flex items-center pl-2 pr-1">
+              <BackButton label={t.back} />
+            </span>
+          )}
+          <Link
+            href={`/${locale}/`}
+            className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
+              active === "home"
+                ? "border-accent text-white"
+                : "border-transparent text-white/85 hover:text-white"
+            }`}
+          >
+            {v.navHome}
+          </Link>
+          <Link
+            href={`/${locale}/reports/`}
+            className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
+              active === "reports"
+                ? "border-accent text-white"
+                : "border-transparent text-white/85 hover:text-white"
+            }`}
+          >
+            {v.navReports}
+          </Link>
+          <HelpMenu
+            label={v.navHelp}
+            items={[
+              { href: `/${locale}/faq/`, label: v.helpFaqs },
+              { href: `/${locale}/contact/`, label: v.helpContact },
+              { href: `/${locale}/resources/`, label: v.helpResources },
+            ]}
+          />
+        </nav>
       </div>
     </header>
   );
