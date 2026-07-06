@@ -90,6 +90,22 @@ export default function SiteFooter({
               </Link>
             ))}
           </nav>
+          {/* Follow us. TODO: add Facebook / YouTube / Instagram once the
+              official Angul account URLs are supplied. */}
+          <div className="flex items-center gap-2 text-[13px] font-semibold text-white/85">
+            {v.followUs}
+            <a
+              href="https://x.com/angul_dm"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Angul on X"
+              className="grid h-8 w-8 place-items-center rounded-full bg-white/10 hover:bg-white/20"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+              </svg>
+            </a>
+          </div>
           <p className="text-xs text-white/60">{t.site.copyright}</p>
         </div>
       </div>
