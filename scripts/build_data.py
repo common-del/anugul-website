@@ -258,10 +258,12 @@ for u, c in canon.items():
         "neighbours": [{"udise": nu, "km": km} for (nu, km) in use],
     }
 
-# search index (light, ships to client). Name/block/cluster only — deliberately
-# NO scores or bands, so the client asset can't be scraped into a league table.
+# search index (light, ships to client). v2: includes the /10 score shown on
+# result cards — the user reversed the earlier no-scores-for-parents decision
+# (2026-07-06, docx mock: named schools with scores are now public by design).
 search = [
-    {"u": s["udise"], "n": s["name"], "b": s["block"], "c": s["cluster"]}
+    {"u": s["udise"], "n": s["name"], "b": s["block"], "c": s["cluster"],
+     "s10": int(round(s["overall"]["score"] / 10)), "band": s["overall"]["band"]}
     for s in schools.values()
 ]
 search.sort(key=lambda x: x["n"])
@@ -760,7 +762,7 @@ def dump(base, name, obj):
 dump(OUT, "schools.json", schools)
 dump(OUT, "district.json", district_out)
 dump(OUT, "_qa.json", qa)
-# client assets for the Find page — name/block/cluster + map only, no scores
+# client assets for the Find page — name/block/cluster + /10 score + map
 dump(PUBLIC, "search-index.json", search)
 dump(PUBLIC, "district-map.json", district_map)
 

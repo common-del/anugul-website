@@ -14,19 +14,25 @@ export default function FindPage({ params }: { params: { locale: string } }) {
   if (!isLocale(params.locale)) notFound();
   const locale = params.locale as Locale;
   const t = getDict(locale);
+  const v = t.v2;
   return (
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
-        <h1 className="text-2xl font-extrabold text-brand-ink">{t.find.title}</h1>
-        <p className="mt-1 text-muted">{t.find.intro}</p>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        <h1 className="text-2xl font-extrabold text-gov-ink">{v.findTitle}</h1>
+        <p className="mt-1 text-muted">{v.findIntro}</p>
         <div className="mt-4">
           <SchoolFinder
             locale={locale}
             labels={{
               searchPlaceholder: t.find.searchPlaceholder,
-              browseTitle: t.find.browseTitle,
-              changeBlock: t.find.changeBlock,
+              filtersLabel: v.filtersLabel,
+              blockLabel: v.blockLabel,
+              clusterLabel: v.clusterLabel,
+              allOption: v.allOption,
+              schoolsFound: v.schoolsFound,
+              openReport: v.openReport,
+              overallScore: v.overallScore,
               noResults: t.find.noResults,
             }}
           />

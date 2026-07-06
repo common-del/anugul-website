@@ -3,25 +3,25 @@ import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import BandMeter from "@/components/BandMeter";
-import Comparison from "@/components/Comparison";
-import SubjectBars from "@/components/SubjectBars";
-import SchoolProfile, { type Profile } from "@/components/SchoolProfile";
-import SchoolContext, {
-  type Peer,
-  type ClusterPos,
-  type BrightSpotRef,
-  type Inputs,
-} from "@/components/SchoolContext";
-import Guidance from "@/components/Guidance";
-import ShareBar from "@/components/ShareBar";
+import WhatsAppShare from "@/components/WhatsAppShare";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import type { BandKey } from "@/lib/bands";
+import { BAND_TEXT, type BandKey } from "@/lib/bands";
 import schoolsData from "@/data/schools.json";
 
+type Profile = {
+  classRange: string | null;
+  management: string | null;
+  enrolment: number | null;
+  teachers: number | null;
+  classrooms: number | null;
+};
+type Inputs = {
+  basicsIn?: string[];
+  basicsOut?: string[];
+} | null;
 type School = {
   udise: string;
   name: string;
@@ -30,26 +30,23 @@ type School = {
   overall: { score: number; band: BandKey };
   byGrade: Record<string, Record<string, number>>;
   assessedStudents: number | null;
-  comparison: {
-    blockName: string;
-    blockAverage: number;
-    districtAverage: number;
-    nearby: {
-      compared: number;
-      ahead: number;
-      behind: number;
-      likeForLike: boolean;
-      nearestKm: number | null;
-    };
-  };
   profile: Profile | null;
-  peer: Peer;
-  clusterPos: ClusterPos;
-  brightSpot: BrightSpotRef;
   inputs: Inputs;
+  neighbours: { udise: string; km: number | null }[];
 };
 
 const schools = schoolsData as unknown as Record<string, School>;
+
+// Block-wise "how to read your report card" explainer videos (from the
+// approved mock-up doc).
+const EXPLAINER: Record<string, string> = {
+  Angul: "https://youtu.be/gn9tbf-tLkA",
+  Athamallik: "https://youtu.be/r04dfh8Gq94",
+  Talcher: "https://youtu.be/lq_Z0Ikqlag",
+};
+const EXPLAINER_DEFAULT = "https://youtu.be/OcBdapIlGHM";
+
+const score10 = (pct: number) => Math.round(pct / 10);
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -75,6 +72,8 @@ export function generateMetadata({
   };
 }
 
+// v2 parent report card (docx mock): /10 overall, subject scores, download +
+// WhatsApp, per-block explainer video, About Your School, named nearby list.
 export default function SchoolPage({
   params,
 }: {
@@ -85,104 +84,244 @@ export default function SchoolPage({
   if (!s) notFound();
   const locale = params.locale as Locale;
   const t = getDict(locale);
-  const hasSubjects = Object.keys(s.byGrade).length > 0;
+  const v = t.v2;
+  const num = (n: number) => fmtNum(n, locale);
+  const overall10 = score10(s.overall.score);
+  const grades = Object.keys(s.byGrade).sort();
+
+  const neighbours = (s.neighbours ?? [])
+    .map((n) => {
+      const ns = schools[n.udise];
+      return ns
+        ? {
+            udise: ns.udise,
+            name: ns.name,
+            cluster: ns.cluster,
+            km: n.km,
+            s10: score10(ns.overall.score),
+            band: ns.overall.band,
+          }
+        : null;
+    })
+    .filter(Boolean) as {
+    udise: string; name: string; cluster: string; km: number | null;
+    s10: number; band: BandKey;
+  }[];
+  neighbours.sort((a, z) => z.s10 - a.s10);
+
+  const about: { label: string; value: string }[] = [];
+  if (s.profile?.management) about.push({ label: t.profile.management, value: s.profile.management });
+  if (s.profile?.classRange) about.push({ label: t.profile.classRange, value: s.profile.classRange });
+  if (s.profile?.enrolment != null) about.push({ label: t.profile.students, value: num(s.profile.enrolment) });
+  if (s.profile?.teachers != null) about.push({ label: t.profile.teachers, value: num(s.profile.teachers) });
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
-        <section>
-          <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
-            {s.name}
-          </h1>
-          <p className="mt-1 text-sm text-muted">
-            {s.block} · {s.cluster}
-          </p>
-          <p className="mt-1 text-xs text-muted">
-            UDISE {s.udise}
-            {s.assessedStudents
-              ? ` · ${fmtNum(s.assessedStudents, locale)} ${t.report.studentsAssessed}`
-              : ""}
-          </p>
+      <SiteHeader locale={locale} t={t} showBack active="reports" />
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        {/* header row */}
+        <section className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-muted">
+              {v.youAre}{" "}
+              <span className="rounded-full bg-gov px-2.5 py-0.5 text-[11px] font-bold text-white">
+                {v.roleParent}
+              </span>
+            </p>
+            <h1 className="mt-2 text-2xl font-extrabold leading-tight text-gov-ink">
+              {s.name}
+            </h1>
+            <p className="mt-1 text-sm text-muted">
+              UDISE: {s.udise} · {s.block} · {s.cluster}
+              {s.assessedStudents
+                ? ` · ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
+                : ""}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+                {v.overallScore}
+              </div>
+              <div
+                className="text-[13px] font-bold"
+                style={{ color: BAND_TEXT[s.overall.band] }}
+              >
+                {t.band[s.overall.band]}
+              </div>
+            </div>
+            <div className="grid h-[74px] w-[74px] shrink-0 place-items-center rounded-full bg-gov">
+              <div className="text-center leading-none">
+                <span className="block text-[26px] font-extrabold text-white">
+                  {num(overall10)}
+                </span>
+                <span className="mt-1 block text-[11px] text-white/75">
+                  /{num(10)}
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
-          <div className="space-y-6">
-            <BandMeter
-              score={s.overall.score}
-              band={s.overall.band}
-              label={t.band[s.overall.band]}
-              explain={t.report.overallExplain}
-              locale={locale}
-            />
-
-            <Link
-              href={`/${locale}/compare/?a=${s.udise}`}
-              className="no-print inline-flex items-center gap-1 text-sm font-semibold text-brand underline underline-offset-2"
-            >
-              {t.compare.cta} <span aria-hidden>→</span>
-            </Link>
-
-            <section>
-              <h2 className="mb-3 text-lg font-bold text-brand-ink">
-                {t.report.compareTitle}
-              </h2>
-              <Comparison
-                score={s.overall.score}
-                blockAverage={s.comparison.blockAverage}
-                nearby={s.comparison.nearby}
-                c={t.report}
-                locale={locale}
-              />
-            </section>
-          </div>
-
-          <div className="space-y-6 lg:mt-0">
-            <section>
-              <h2 className="mb-3 text-lg font-bold text-brand-ink">
-                {t.report.subjectsTitle}
-              </h2>
-              {hasSubjects ? (
-                <SubjectBars
-                  byGrade={s.byGrade}
-                  gradeLabels={t.grades}
-                  subjectLabels={t.subjects}
-                  locale={locale}
-                />
-              ) : (
-                <p className="rounded-xl border border-brand-line bg-white p-4 text-sm text-muted">
-                  {t.report.fewStudents}
-                </p>
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+          <div className="space-y-5">
+            {/* subject scores /10 */}
+            <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <h2 className="text-lg font-bold text-gov-ink">{v.subjectsTitle}</h2>
+              {grades.map((g) => (
+                <div key={g} className="mt-3">
+                  {grades.length > 1 && (
+                    <h3 className="text-sm font-bold text-gov-ink">
+                      {t.grades[g as keyof typeof t.grades] ?? g}
+                    </h3>
+                  )}
+                  <div className="mt-2 space-y-2.5">
+                    {Object.entries(s.byGrade[g]).map(([subj, pct]) => {
+                      const v10 = score10(pct);
+                      return (
+                        <div key={subj}>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gov-ink">
+                              {t.subjects[subj as keyof typeof t.subjects] ?? subj}
+                            </span>
+                            <span className="font-bold tabular-nums text-gov-ink">
+                              {num(v10)}/{num(10)}
+                            </span>
+                          </div>
+                          <div className="mt-1 flex gap-[3px]" aria-hidden>
+                            {Array.from({ length: 10 }).map((_, i) => (
+                              <span
+                                key={i}
+                                className={`h-3 flex-1 rounded-[3px] ${
+                                  i < v10 ? "bg-gov" : "bg-gov-tint"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              {grades.length === 0 && (
+                <p className="mt-2 text-sm text-muted">{t.report.fewStudents}</p>
               )}
+              <div className="mt-5 flex flex-wrap gap-3">
+                <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
+              </div>
             </section>
 
-            {s.profile && (
-              <SchoolProfile profile={s.profile} c={t.profile} locale={locale} />
+            {/* about your school */}
+            {(about.length > 0 || s.inputs) && (
+              <section className="rounded-2xl border border-gov-line bg-white p-5">
+                <h2 className="text-lg font-bold text-gov-ink">{v.aboutSchool}</h2>
+                {about.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    {about.map((a) => (
+                      <div
+                        key={a.label}
+                        className="rounded-lg border-l-4 border-gov-mid bg-gov-tint px-3.5 py-2.5"
+                      >
+                        <div className="text-lg font-extrabold leading-tight text-gov-ink">
+                          {a.value}
+                        </div>
+                        <div className="mt-0.5 text-xs text-muted">{a.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {s.inputs?.basicsIn && s.inputs.basicsIn.length > 0 && (
+                  <p className="mt-3 text-sm text-gov-ink">
+                    <span className="font-semibold">{t.peerCard.rteBasicsIn}:</span>{" "}
+                    {s.inputs.basicsIn.map((b) => (t.peerCard.basics as Record<string, string>)[b] ?? b).join(", ")}
+                  </p>
+                )}
+                {s.inputs?.basicsOut && s.inputs.basicsOut.length > 0 && (
+                  <p className="mt-1 text-sm text-[#b3261e]">
+                    <span className="font-semibold">{t.peerCard.rteBasicsOut}:</span>{" "}
+                    {s.inputs.basicsOut.map((b) => (t.peerCard.basics as Record<string, string>)[b] ?? b).join(", ")}
+                  </p>
+                )}
+              </section>
             )}
-
-            <SchoolContext
-              peer={s.peer}
-              clusterPos={s.clusterPos}
-              cluster={s.cluster}
-              block={s.block}
-              brightSpot={s.brightSpot}
-              inputs={s.inputs}
-              c={t.peerCard}
-              subjectLabels={t.subjects}
-              locale={locale}
-            />
           </div>
-        </div>
 
-        <div className="mt-6 space-y-6">
-          <Guidance c={t.guidance} />
-          <ShareBar schoolName={s.name} labels={t.share} />
-          <Link
-            href={`/${locale}/find/`}
-            className="no-print inline-block text-sm font-semibold text-brand underline underline-offset-2"
-          >
-            {t.school.backToFind}
-          </Link>
+          <div className="space-y-5">
+            {/* explainer video */}
+            <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <h2 className="text-base font-bold text-gov-ink">{v.watchTitle}</h2>
+              <p className="mt-1 text-sm text-muted">{v.watchDesc}</p>
+              <a
+                href={EXPLAINER[s.block] ?? EXPLAINER_DEFAULT}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex min-h-[46px] items-center gap-2 rounded-xl border-2 border-gov px-4 text-[15px] font-bold text-gov"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                {v.watchCta}
+              </a>
+            </section>
+
+            {/* nearby schools, named with /10 */}
+            {neighbours.length > 0 && (
+              <section className="overflow-hidden rounded-2xl border border-gov-line bg-white">
+                <div className="bg-gov px-5 py-3.5">
+                  <h2 className="text-base font-bold text-white">{v.nearbyTitle}</h2>
+                  <p className="mt-0.5 text-xs text-white/80">{v.nearbySub}</p>
+                </div>
+                <ul className="divide-y divide-gov-line">
+                  {neighbours.map((n) => (
+                    <li key={n.udise}>
+                      <Link
+                        href={`/${locale}/school/${n.udise}/`}
+                        className="flex min-h-[60px] items-center justify-between gap-3 px-4 py-2.5 active:bg-gov-tint"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-bold text-gov-ink">
+                            {n.name}
+                          </span>
+                          <span className="block text-xs text-muted">
+                            {n.cluster}
+                            {n.km != null
+                              ? ` · ${v.kmAway.replace("{km}", num(n.km))}`
+                              : ""}
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2">
+                          <span className="tabular-nums">
+                            <span
+                              className="text-lg font-extrabold"
+                              style={{ color: BAND_TEXT[n.band] }}
+                            >
+                              {num(n.s10)}
+                            </span>
+                            <span className="text-xs text-muted">/{num(10)}</span>
+                          </span>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden
+                            className="text-gov-mid"
+                          >
+                            <path d="M9 6l6 6-6 6" />
+                          </svg>
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
         </div>
       </main>
       <SiteFooter locale={locale} t={t} />

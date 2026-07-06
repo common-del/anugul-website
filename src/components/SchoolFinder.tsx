@@ -2,34 +2,41 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { fmtNum } from "@/lib/format";
+import { BAND_TEXT, type BandKey } from "@/lib/bands";
+import type { Locale } from "@/lib/i18n/config";
 
-type Item = { u: string; n: string; b: string; c: string };
-type Marker = { name: string; x: number; y: number };
-type DistrictMap = { viewBox: string; path: string; blocks: Marker[] };
+type Item = { u: string; n: string; b: string; c: string; s10: number; band: BandKey };
 
 type Labels = {
   searchPlaceholder: string;
-  browseTitle: string;
-  changeBlock: string;
+  filtersLabel: string;
+  blockLabel: string;
+  clusterLabel: string;
+  allOption: string;
+  schoolsFound: string;
+  openReport: string;
+  overallScore: string;
   noResults: string;
 };
 
+// v2 finder (docx mock): search + Block/Cluster dropdowns (no District — all
+// Angul), result cards with the /10 score. Block choice stays in ?block=.
 export default function SchoolFinder({
   locale,
   labels,
 }: {
-  locale: string;
+  locale: Locale;
   labels: Labels;
 }) {
   const [index, setIndex] = useState<Item[]>([]);
-  const [map, setMap] = useState<DistrictMap | null>(null);
   const [q, setQ] = useState("");
-  const [block, setBlockState] = useState<string | null>(null);
+  const [block, setBlockState] = useState("");
+  const [cluster, setCluster] = useState("");
 
-  // Block selection lives in the URL (?block=) so deep links work and the
-  // /demo frames stay on the same view.
-  const setBlock = (name: string | null) => {
+  const setBlock = (name: string) => {
     setBlockState(name);
+    setCluster("");
     const url = new URL(window.location.href);
     if (name) url.searchParams.set("block", name);
     else url.searchParams.delete("block");
@@ -43,140 +50,136 @@ export default function SchoolFinder({
       .then((r) => r.json())
       .then(setIndex)
       .catch(() => {});
-    fetch("/data/district-map.json")
-      .then((r) => r.json())
-      .then(setMap)
-      .catch(() => {});
   }, []);
 
-  const results = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    if (query) {
-      return index
-        .filter((s) => s.n.toLowerCase().includes(query) || s.u.includes(query))
-        .slice(0, 40);
-    }
-    if (block) {
-      return index
-        .filter((s) => s.b === block)
-        .sort((a, b) => a.n.localeCompare(b.n));
-    }
-    return [];
-  }, [q, block, index]);
-
-  const browsing = !q && !block;
-  const blockNames = map ? map.blocks.map((b) => b.name).sort() : [];
-
-  const resultsList = (q || block) && (
-    <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-white">
-      {results.map((s) => (
-        <li key={s.u}>
-          <Link
-            href={`/${locale}/school/${s.u}/`}
-            className="flex min-h-[56px] flex-col justify-center px-4 py-3 active:bg-brand-tint"
-          >
-            <span className="font-semibold text-brand-ink">{s.n}</span>
-            <span className="text-xs text-muted">
-              {s.b} · {s.c}
-            </span>
-          </Link>
-        </li>
-      ))}
-      {results.length === 0 && (
-        <li className="px-4 py-4 text-sm text-muted">{labels.noResults}</li>
-      )}
-    </ul>
+  const blocks = useMemo(
+    () => [...new Set(index.map((s) => s.b))].sort(),
+    [index],
+  );
+  const clusters = useMemo(
+    () =>
+      [...new Set(index.filter((s) => !block || s.b === block).map((s) => s.c))].sort(),
+    [index, block],
   );
 
+  const active = q.trim() !== "" || block !== "" || cluster !== "";
+  const matches = useMemo(() => {
+    if (!active) return [];
+    const query = q.trim().toLowerCase();
+    return index
+      .filter(
+        (s) =>
+          (!query || s.n.toLowerCase().includes(query) || s.u.includes(query)) &&
+          (!block || s.b === block) &&
+          (!cluster || s.c === cluster),
+      )
+      .sort((a, z) => a.n.localeCompare(z.n));
+  }, [index, q, block, cluster, active]);
+  const results = matches.slice(0, 60);
+
+  const selectCls =
+    "min-h-[46px] flex-1 rounded-xl border border-gov-line bg-white px-3 text-[15px] font-semibold text-gov-ink";
+
   return (
-    <div>
-      <input
-        type="search"
-        inputMode="search"
-        value={q}
-        onChange={(e) => {
-          setQ(e.target.value);
-          if (block) setBlock(null);
-        }}
-        placeholder={labels.searchPlaceholder}
-        aria-label={labels.searchPlaceholder}
-        className="w-full rounded-xl border border-brand-line bg-white px-4 py-3 text-base text-brand-ink outline-none focus:border-brand md:max-w-xl"
-      />
+    <div className="md:max-w-2xl">
+      <div className="flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          aria-hidden
+          className="shrink-0 text-muted"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          inputMode="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={labels.searchPlaceholder}
+          aria-label={labels.searchPlaceholder}
+          className="min-h-[50px] w-full bg-transparent text-base text-gov-ink outline-none"
+        />
+      </div>
 
-      {browsing && map && (
-        <div className="mt-5 md:grid md:grid-cols-[minmax(0,340px),1fr] md:items-start md:gap-8">
-          <div>
-            <p className="text-sm font-bold text-brand-ink">
-              {labels.browseTitle}
-            </p>
-            <svg
-              viewBox={map.viewBox}
-              className="mx-auto mt-2 block w-full max-w-[300px] md:mx-0"
-              role="group"
-              aria-label={labels.browseTitle}
-            >
-              <path
-                d={map.path}
-                className="fill-brand-tint stroke-brand"
-                strokeWidth="0.5"
-                strokeLinejoin="round"
-              />
-              {map.blocks.map((b) => (
-                <g
-                  key={b.name}
-                  className="group cursor-pointer"
-                  onClick={() => setBlock(b.name)}
-                >
-                  <circle cx={b.x} cy={b.y} r="6" fill="transparent" />
-                  <circle
-                    cx={b.x}
-                    cy={b.y}
-                    r="1.7"
-                    className="fill-brand group-hover:fill-accent"
-                  />
-                  <text
-                    x={b.x}
-                    y={b.y - 2.6}
-                    textAnchor="middle"
-                    fontSize="3"
-                    className="pointer-events-none fill-brand-ink group-hover:fill-brand"
-                    style={{ fontWeight: 600 }}
-                  >
-                    {b.name}
-                  </text>
-                </g>
-              ))}
-            </svg>
-          </div>
-          <div className="mt-3 flex flex-wrap content-start gap-2 md:mt-7">
-            {blockNames.map((name) => (
-              <button
-                key={name}
-                type="button"
-                onClick={() => setBlock(name)}
-                className="min-h-[44px] rounded-full bg-white px-4 text-sm font-semibold text-brand ring-1 ring-brand-line"
-              >
-                {name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {block && !q && (
-        <div className="mt-5 flex items-center justify-between md:max-w-2xl">
-          <p className="text-lg font-bold text-brand-ink">{block}</p>
-          <button
-            type="button"
-            onClick={() => setBlock(null)}
-            className="text-sm font-semibold text-brand underline underline-offset-2"
+      <p className="mt-4 text-sm font-bold text-gov-ink">{labels.filtersLabel}</p>
+      <div className="mt-2 flex gap-3">
+        <label className="flex flex-1 flex-col gap-1 text-xs font-semibold text-muted">
+          {labels.blockLabel}
+          <select
+            value={block}
+            onChange={(e) => setBlock(e.target.value)}
+            className={selectCls}
           >
-            {labels.changeBlock}
-          </button>
-        </div>
-      )}
+            <option value="">{labels.allOption}</option>
+            {blocks.map((b) => (
+              <option key={b} value={b}>{b}</option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-1 flex-col gap-1 text-xs font-semibold text-muted">
+          {labels.clusterLabel}
+          <select
+            value={cluster}
+            onChange={(e) => setCluster(e.target.value)}
+            className={selectCls}
+          >
+            <option value="">{labels.allOption}</option>
+            {clusters.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </label>
+      </div>
 
-      <div className="md:max-w-2xl">{resultsList}</div>
+      {active && (
+        <>
+          <p className="mt-5 text-sm font-bold text-gov-ink">
+            {labels.schoolsFound.replace("{n}", fmtNum(matches.length, locale))}
+          </p>
+          <ul className="mt-2 space-y-2.5">
+            {results.map((s) => (
+              <li key={s.u}>
+                <Link
+                  href={`/${locale}/school/${s.u}/`}
+                  className="block rounded-xl border border-gov-line bg-white p-4 active:bg-gov-tint"
+                >
+                  <span className="font-bold text-gov-ink">{s.n}</span>
+                  <span className="mt-0.5 block text-xs text-muted">
+                    UDISE: {s.u} · {s.b} · {s.c}
+                  </span>
+                  <span className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-muted">
+                      {labels.overallScore}{" "}
+                      <span
+                        className="text-lg font-extrabold tabular-nums"
+                        style={{ color: BAND_TEXT[s.band] }}
+                      >
+                        {fmtNum(s.s10, locale)}
+                      </span>
+                      <span className="font-semibold">/{fmtNum(10, locale)}</span>
+                    </span>
+                    <span className="rounded-lg bg-gov px-4 py-2 text-sm font-bold text-white">
+                      {labels.openReport}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+            {results.length === 0 && (
+              <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
+                {labels.noResults}
+              </li>
+            )}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

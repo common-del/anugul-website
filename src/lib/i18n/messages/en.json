@@ -116,7 +116,9 @@
     "furnitureNone": "None",
     "yes": "Yes",
     "no": "No",
-    "needRepair": "{n} classroom(s) need major repair"
+    "needRepair": "{n} classroom(s) need major repair",
+    "management": "School management type",
+    "classRange": "Classes"
   },
   "peerCard": {
     "title": "Compared with similar schools",
@@ -357,6 +359,26 @@
     "faqTitle": "Frequently Asked Questions",
     "resourcesTitle": "Resources",
     "contactTitle": "Contact Us",
-    "contactOffice": "District Education Office, Angul"
+    "contactOffice": "District Education Office, Angul",
+    "findTitle": "Find Your School",
+    "findIntro": "Search by school name or UDISE code",
+    "filtersLabel": "Filters (optional)",
+    "blockLabel": "Block",
+    "clusterLabel": "Cluster",
+    "allOption": "All",
+    "schoolsFound": "Schools found ({n})",
+    "openReport": "Open Report",
+    "overallScore": "Overall Score",
+    "youAre": "You are:",
+    "downloadPdf": "Download Report Card (PDF)",
+    "shareWhatsApp": "Share on WhatsApp",
+    "watchTitle": "Watch: How to read your School Report Card",
+    "watchDesc": "A short video to help you understand the report.",
+    "watchCta": "Watch Video",
+    "aboutSchool": "About Your School",
+    "nearbyTitle": "Also view the scores of nearby schools",
+    "nearbySub": "The nearest schools to yours. Tap a school to open its report card.",
+    "kmAway": "{km} km",
+    "subjectsTitle": "Subject scores (out of 10)"
   }
 }
