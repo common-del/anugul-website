@@ -121,7 +121,13 @@ export default function OfficialSchoolPage({
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+          <Link
+            href={`/${locale}/principal/${s.udise}/`}
+            className="text-sm font-semibold text-brand underline underline-offset-2"
+          >
+            {t.v2.principalView} <span aria-hidden>→</span>
+          </Link>
           <Link
             href={`/${locale}/officials/schools/`}
             className="text-sm font-semibold text-brand underline underline-offset-2"

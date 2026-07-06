@@ -412,6 +412,18 @@
     "bandDescExcelling": "Above 75%",
     "bandDescDeveloping": "51 to 75%",
     "bandDescNeeds": "26 to 50%",
-    "bandDescUrgent": "25% and below"
+    "bandDescUrgent": "25% and below",
+    "principalRole": "School Head",
+    "ourSchool": "Our school",
+    "blockTop": "Block top",
+    "principalActionsTitle": "What should you do as a Principal?",
+    "principalActionsIntro": "Take these 3 simple actions to improve learning in your school.",
+    "pa1Title": "Read and understand the report card",
+    "pa1Text": "Go through the scores and identify strengths and areas for improvement.",
+    "pa2Title": "Discuss with respective teachers",
+    "pa2Text": "Share the results with teachers and plan together for improvement.",
+    "pa3Title": "Follow the plan shared by DIET & CRCCs",
+    "pa3Text": "Implement the academic support plan shared by DIET & CRCCs.",
+    "principalView": "Principal view"
   }
 }
