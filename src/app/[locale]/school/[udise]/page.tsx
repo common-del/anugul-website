@@ -4,6 +4,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
+import { hasCard, cardUrl } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
@@ -208,6 +209,31 @@ export default function SchoolPage({
                 <p className="mt-2 text-sm text-muted">{t.report.fewStudents}</p>
               )}
               <div className="mt-5 flex flex-wrap gap-3">
+                {hasCard(s.udise) && (
+                  <a
+                    href={cardUrl(s.udise)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-xl bg-gov px-5 text-[15px] font-bold text-white active:brightness-110"
+                  >
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      <path d="M12 3v12" />
+                      <path d="M7 10l5 5 5-5" />
+                      <path d="M5 21h14" />
+                    </svg>
+                    {v.downloadPdf}
+                  </a>
+                )}
                 <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
               </div>
             </section>
