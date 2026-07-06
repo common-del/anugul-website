@@ -18,6 +18,7 @@ type Labels = {
   openReport: string;
   overallScore: string;
   noResults: string;
+  showingFirst: string;
 };
 
 // v2 finder (docx mock): search + Block/Cluster dropdowns (no District — all
@@ -75,7 +76,10 @@ export default function SchoolFinder({
       )
       .sort((a, z) => a.n.localeCompare(z.n));
   }, [index, q, block, cluster, active]);
-  const results = matches.slice(0, 60);
+  // 250 covers the largest block (Pallahara, 221) so browsing by block always
+  // shows every school; the note below appears if a broad text search exceeds it.
+  const CAP = 250;
+  const results = matches.slice(0, CAP);
 
   const selectCls =
     "min-h-[46px] flex-1 rounded-xl border border-gov-line bg-white px-3 text-[15px] font-semibold text-gov-ink";
@@ -175,6 +179,13 @@ export default function SchoolFinder({
             {results.length === 0 && (
               <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
                 {labels.noResults}
+              </li>
+            )}
+            {matches.length > results.length && (
+              <li className="px-1 py-2 text-sm text-muted">
+                {labels.showingFirst
+                  .replace("{shown}", fmtNum(results.length, locale))
+                  .replace("{n}", fmtNum(matches.length, locale))}
               </li>
             )}
           </ul>

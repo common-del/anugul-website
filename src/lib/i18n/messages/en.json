@@ -424,6 +424,14 @@
     "pa2Text": "Share the results with teachers and plan together for improvement.",
     "pa3Title": "Follow the plan shared by DIET & CRCCs",
     "pa3Text": "Implement the academic support plan shared by DIET & CRCCs.",
-    "principalView": "Principal view"
+    "principalView": "Principal view",
+    "showingFirst": "Showing the first {shown} of {n} — refine your search to see the rest.",
+    "bestLosT": "Learning outcomes where this block does well",
+    "subjectsWord": "Subjects",
+    "reportsFindT": "Your school's report card",
+    "reportsFindDesc": "Search for your school and open its report card.",
+    "reportsDistrictT": "District overview",
+    "reportsDistrictDesc": "How Angul district and all its blocks are doing.",
+    "reportsBlocksT": "Block report cards"
   }
 }

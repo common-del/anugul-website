@@ -54,9 +54,16 @@ export default function GovBlockPicker({
             {map.blocks.map((b) => (
               <g
                 key={b.name}
-                className="group cursor-pointer"
+                className="group cursor-pointer focus:outline-none"
                 onClick={() => go(b.name)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    go(b.name);
+                  }
+                }}
                 role="button"
+                tabIndex={0}
                 aria-label={b.name}
               >
                 <circle cx={b.x} cy={b.y} r="6" fill="transparent" />

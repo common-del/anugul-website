@@ -64,10 +64,17 @@ export default function GovBlockPage({
   const schoolsAsc = b.bands.overall?.schools ?? [];
   const bestSchool = schoolsAsc[schoolsAsc.length - 1] ?? null;
   const worstSchool = schoolsAsc[0] ?? null;
-  const weakLos = Object.values(b.foundational)
-    .flatMap((f) => f?.weak_los ?? [])
-    .sort((a, z) => a.pct - z.pct)
-    .slice(0, 6);
+  // best & weakest learning outcomes (hand-drawn spec) from the block's
+  // skills top/bottom lists, flattened across subjects
+  const flattenSkills = (m: Record<string, { grade: string; skill: string; pct: number }[]>) =>
+    Object.entries(m ?? {}).flatMap(([sub, rows]) =>
+      rows.map((r) => ({ ...r, subject: sub })),
+    );
+  const bestLos = flattenSkills(b.skills?.top).sort((a, z) => z.pct - a.pct);
+  const weakLos = flattenSkills(b.skills?.bottom).sort((a, z) => a.pct - z.pct);
+  const subjectsCovered = [
+    ...new Set(Object.values(b.rel_subject).flatMap((rows) => rows.map((r) => r.subject))),
+  ];
 
   const insights = [
     bestSubj && {
@@ -92,7 +99,7 @@ export default function GovBlockPage({
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack />
+      <SiteHeader locale={locale} t={t} showBack role="orgs" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* header */}
         <p className="text-sm font-semibold text-gov-mid">{v.blockReport}</p>
@@ -119,11 +126,38 @@ export default function GovBlockPage({
               { v: num(b.headline.schools), l: t.analytics.schoolsAssessed },
               { v: num(b.headline.students), l: t.analytics.studentsAssessed },
               { v: `${grade("Grade 5")} & ${grade("Grade 8")}`, l: v.gradesCovered },
-              { v: pct(b.headline.g5) + " / " + pct(b.headline.g8), l: `${grade("Grade 5")} / ${grade("Grade 8")}` },
+              { v: subjectsCovered.map(subj).join(" · "), l: v.subjectsWord, small: true },
             ].map((s) => (
               <div key={s.l} className="rounded-xl bg-gov-tint p-3">
-                <div className="text-lg font-extrabold leading-tight text-gov-ink">{s.v}</div>
+                <div
+                  className={`font-extrabold leading-tight text-gov-ink ${
+                    s.small ? "text-[13px]" : "text-lg"
+                  }`}
+                >
+                  {s.v}
+                </div>
                 <div className="mt-0.5 text-xs text-muted">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* grade-wise scores */}
+        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+          <h2 className="text-lg font-bold text-gov-ink">{v.gradeWiseScores}</h2>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            {[
+              { g: "Grade 5", val: b.headline.g5 },
+              { g: "Grade 8", val: b.headline.g8 },
+            ].map((x) => (
+              <div key={x.g} className="rounded-xl bg-gov-tint p-3">
+                <div
+                  className="text-2xl font-extrabold tabular-nums"
+                  style={{ color: BAND_TEXT[bandFromScore(x.val)] }}
+                >
+                  {pct(x.val)}
+                </div>
+                <div className="mt-0.5 text-xs text-muted">{grade(x.g)}</div>
               </div>
             ))}
           </div>
@@ -244,22 +278,50 @@ export default function GovBlockPage({
           </div>
         </section>
 
-        {/* weakest LOs */}
-        {weakLos.length > 0 && (
-          <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
-            <h2 className="text-lg font-bold text-gov-ink">{v.weakestLosT}</h2>
-            <ul className="mt-2 divide-y divide-gov-line text-sm">
-              {weakLos.map((h) => (
-                <li key={h.lo} className="flex items-start justify-between gap-3 py-2">
-                  <span className="min-w-0 text-gov-ink">
-                    {h.desc}
-                    <span className="block text-xs text-muted">{subj(h.subject)} · {h.lo}</span>
-                  </span>
-                  <span className="shrink-0 font-semibold tabular-nums text-[#b3261e]">{pct(h.pct)}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+        {/* best & weakest learning outcomes */}
+        {(bestLos.length > 0 || weakLos.length > 0) && (
+          <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+            {bestLos.length > 0 && (
+              <section className="rounded-2xl border border-gov-line bg-white p-5">
+                <h2 className="text-lg font-bold text-gov-ink">{v.bestLosT}</h2>
+                <ul className="mt-2 divide-y divide-gov-line text-sm">
+                  {bestLos.slice(0, 8).map((h, i) => (
+                    <li key={i} className="flex items-start justify-between gap-3 py-2">
+                      <span className="min-w-0 text-gov-ink">
+                        {h.skill}
+                        <span className="block text-xs text-muted">
+                          {subj(h.subject)} · {grade(h.grade)}
+                        </span>
+                      </span>
+                      <span className="shrink-0 font-semibold tabular-nums text-[#1e6b3a]">
+                        {pct(h.pct)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {weakLos.length > 0 && (
+              <section className="rounded-2xl border border-gov-line bg-white p-5">
+                <h2 className="text-lg font-bold text-gov-ink">{v.weakestLosT}</h2>
+                <ul className="mt-2 divide-y divide-gov-line text-sm">
+                  {weakLos.slice(0, 8).map((h, i) => (
+                    <li key={i} className="flex items-start justify-between gap-3 py-2">
+                      <span className="min-w-0 text-gov-ink">
+                        {h.skill}
+                        <span className="block text-xs text-muted">
+                          {subj(h.subject)} · {grade(h.grade)}
+                        </span>
+                      </span>
+                      <span className="shrink-0 font-semibold tabular-nums text-[#b3261e]">
+                        {pct(h.pct)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
         )}
 
         {/* downloads + actions */}
@@ -277,7 +339,7 @@ export default function GovBlockPage({
               {v.downloadDataSheet} ↓
             </a>
             <Link
-              href={`/${locale}/officials/schools/`}
+              href={`/${locale}/find/?block=${encodeURIComponent(b.name)}`}
               className="font-semibold text-gov underline underline-offset-2"
             >
               {v.schoolLevelReports} →

@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="or" className={`${latin.variable} ${odia.variable}`}>
-      <body className="bg-brand-tint">{children}</body>
+      <body className="bg-gov-tint">{children}</body>
     </html>
   );
 }

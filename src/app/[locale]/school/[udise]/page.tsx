@@ -91,6 +91,8 @@ export default function SchoolPage({
   const grades = Object.keys(s.byGrade).sort();
 
   const neighbours = (s.neighbours ?? [])
+    // the source CSV occasionally lists a school as its own neighbour
+    .filter((n) => n.udise !== s.udise)
     .map((n) => {
       const ns = schools[n.udise];
       return ns
@@ -237,6 +239,25 @@ export default function SchoolPage({
                 <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
               </div>
             </section>
+            {/* explainer video */}
+            <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <h2 className="text-base font-bold text-gov-ink">{v.watchTitle}</h2>
+              <p className="mt-1 text-sm text-muted">{v.watchDesc}</p>
+              <a
+                href={EXPLAINER[s.block] ?? EXPLAINER_DEFAULT}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex min-h-[46px] items-center gap-2 rounded-xl border-2 border-gov px-4 text-[15px] font-bold text-gov"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                {v.watchCta}
+              </a>
+            </section>
+          </div>
+
+          <div className="space-y-5">
 
             {/* about your school */}
             {(about.length > 0 || s.inputs) && (
@@ -271,25 +292,6 @@ export default function SchoolPage({
                 )}
               </section>
             )}
-          </div>
-
-          <div className="space-y-5">
-            {/* explainer video */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
-              <h2 className="text-base font-bold text-gov-ink">{v.watchTitle}</h2>
-              <p className="mt-1 text-sm text-muted">{v.watchDesc}</p>
-              <a
-                href={EXPLAINER[s.block] ?? EXPLAINER_DEFAULT}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex min-h-[46px] items-center gap-2 rounded-xl border-2 border-gov px-4 text-[15px] font-bold text-gov"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                {v.watchCta}
-              </a>
-            </section>
 
             {/* nearby schools, named with /10 */}
             {neighbours.length > 0 && (

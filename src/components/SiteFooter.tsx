@@ -43,7 +43,7 @@ export default function SiteFooter({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/seal-of-odisha.svg"
-                alt="Government of Odisha"
+                alt={v.govOdisha}
                 className="h-9 w-9 object-contain"
               />
             </span>

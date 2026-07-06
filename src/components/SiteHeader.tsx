@@ -14,16 +14,18 @@ export default function SiteHeader({
   t,
   showBack = false,
   active = "none",
+  role = "parent",
 }: {
   locale: Locale;
   t: Messages;
   showBack?: boolean;
   active?: "home" | "reports" | "none";
+  role?: "parent" | "orgs" | "none";
 }) {
   const v = t.v2;
   const roles = [
-    { href: `/${locale}/`, label: v.roleParent, current: true },
-    { href: `/${locale}/gov/`, label: v.roleOrgs, current: false },
+    { href: `/${locale}/`, label: v.roleParent, current: role === "parent" },
+    { href: `/${locale}/gov/`, label: v.roleOrgs, current: role === "orgs" },
   ];
   // TODO: replace seal with the School & Mass Education Dept logo when the
   // file is supplied (Drive link in the mock doc is not accessible here).
@@ -40,7 +42,7 @@ export default function SiteHeader({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/seal-of-odisha.svg"
-                alt="Government of Odisha"
+                alt={v.govOdisha}
                 className="h-9 w-9 object-contain"
               />
             </span>

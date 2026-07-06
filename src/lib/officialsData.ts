@@ -42,6 +42,10 @@ export type BlockSlice = {
     weak_los?: { lo: string; subject: string; gl: string; pct: number; desc: string }[];
   }>;
   cognitive: Record<string, { by_cog: Record<string, number>; by_subject?: Record<string, Record<string, number>> } | null>;
+  skills: {
+    top: Record<string, { grade: string; skill: string; pct: number }[]>;
+    bottom: Record<string, { grade: string; skill: string; pct: number }[]>;
+  };
   miscon: MisconCard[];
   inputs: InputsRollup;
 };

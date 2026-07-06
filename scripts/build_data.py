@@ -14,6 +14,7 @@ Source dir can be overridden with env SAKSHAM_SOURCE.
 
 import csv
 import json
+import math
 import os
 import sys
 from collections import defaultdict
@@ -263,7 +264,9 @@ for u, c in canon.items():
 # (2026-07-06, docx mock: named schools with scores are now public by design).
 search = [
     {"u": s["udise"], "n": s["name"], "b": s["block"], "c": s["cluster"],
-     "s10": int(round(s["overall"]["score"] / 10)), "band": s["overall"]["band"]}
+     # floor(x+0.5) matches JS Math.round on the report page — python round()
+     # is half-to-even and made 17 schools show a different /10 in Find.
+     "s10": int(math.floor(s["overall"]["score"] / 10 + 0.5)), "band": s["overall"]["band"]}
     for s in schools.values()
 ]
 search.sort(key=lambda x: x["n"])
@@ -308,7 +311,18 @@ keysuspect_los = {str(i["lo"]).strip() for i in d_items if i.get("keysuspect")}
 BROKEN_MISCON = {("Grade 8", "Maths", 6), ("Grade 8", "Odia", 20), ("Grade 8", "SST", 15)}
 
 def clean_weak_los(lst):
-    return [w for w in (lst or []) if str(w.get("lo", "")).strip() not in keysuspect_los]
+    # Drops key-suspect LOs and rows whose LO code contradicts the subject —
+    # the G8 language papers have known Odia/English cross-tagging (e.g. an
+    # 'OD 811' row labelled English on Talcher).
+    out = []
+    for w in (lst or []):
+        lo = str(w.get("lo", "")).strip()
+        if lo in keysuspect_los:
+            continue
+        if lo.startswith("OD") and w.get("subject") != "Odia":
+            continue
+        out.append(w)
+    return out
 
 def band_list(schools_list):
     out = []

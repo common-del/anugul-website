@@ -34,6 +34,7 @@ export default function FindPage({ params }: { params: { locale: string } }) {
               openReport: v.openReport,
               overallScore: v.overallScore,
               noResults: t.find.noResults,
+              showingFirst: v.showingFirst,
             }}
           />
         </div>
