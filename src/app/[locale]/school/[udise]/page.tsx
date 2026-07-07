@@ -4,6 +4,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
+import VideoEmbed from "@/components/VideoEmbed";
 import { hasCard, cardUrl } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -38,14 +39,14 @@ type School = {
 
 const schools = schoolsData as unknown as Record<string, School>;
 
-// Block-wise "how to read your report card" explainer videos (from the
-// approved mock-up doc).
+// Block-wise "how to read your report card" explainer videos (YouTube IDs,
+// from the approved mock-up doc).
 const EXPLAINER: Record<string, string> = {
-  Angul: "https://youtu.be/gn9tbf-tLkA",
-  Athamallik: "https://youtu.be/r04dfh8Gq94",
-  Talcher: "https://youtu.be/lq_Z0Ikqlag",
+  Angul: "gn9tbf-tLkA",
+  Athamallik: "r04dfh8Gq94",
+  Talcher: "lq_Z0Ikqlag",
 };
-const EXPLAINER_DEFAULT = "https://youtu.be/OcBdapIlGHM";
+const EXPLAINER_DEFAULT = "OcBdapIlGHM";
 
 const score10 = (pct: number) => Math.round(pct / 10);
 
@@ -310,21 +311,16 @@ export default function SchoolPage({
                 )}
               </div>
             </section>
-            {/* explainer video */}
+            {/* explainer video — click-to-play embedded player */}
             <section className="rounded-2xl border border-gov-line bg-white p-5">
               <h2 className="text-base font-bold text-gov-ink">{v.watchTitle}</h2>
               <p className="mt-1 text-sm text-muted">{v.watchDesc}</p>
-              <a
-                href={EXPLAINER[s.block] ?? EXPLAINER_DEFAULT}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex min-h-[46px] items-center gap-2 rounded-xl border-2 border-gov px-4 text-[15px] font-bold text-gov"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                {v.watchCta}
-              </a>
+              <div className="mt-3">
+                <VideoEmbed
+                  videoId={EXPLAINER[s.block] ?? EXPLAINER_DEFAULT}
+                  title={v.watchTitle}
+                />
+              </div>
             </section>
           </div>
 
