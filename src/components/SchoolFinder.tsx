@@ -6,7 +6,7 @@ import { fmtNum } from "@/lib/format";
 import { BAND_TEXT, type BandKey } from "@/lib/bands";
 import type { Locale } from "@/lib/i18n/config";
 
-type Item = { u: string; n: string; b: string; c: string; s10: number; band: BandKey };
+type Item = { u: string; n: string; b: string; c: string; st: string; s10: number; band: BandKey };
 type Geo = { u: string; lat: number; lon: number };
 
 type Labels = {
@@ -14,13 +14,15 @@ type Labels = {
   nearMeFinding: string;
   nearMeDenied: string;
   nearMeResults: string;
+  showMore: string;
+  showLess: string;
+  searchAny: string;
+  searchNote: string;
   stepFindTitle: string;
   chooseBlock: string;
   chooseCluster: string;
   pickSchool: string;
   changeSel: string;
-  typeSearchTitle: string;
-  searchPlaceholder: string;
   schoolsFound: string;
   openReport: string;
   overallScore: string;
@@ -37,10 +39,13 @@ function havKm(a: { lat: number; lon: number }, b: { lat: number; lon: number })
   return 2 * 6371 * Math.asin(Math.sqrt(h));
 }
 
-// v3 finder: GPS "Schools near me" is the primary path, a tap-only drill-down
-// (Block → Cluster → short list) is the backup, and typed search is demoted to
-// a collapsible for people who can type. ?near=1 auto-starts GPS; ?block=
-// deep-links the drill-down.
+const NEAR_SHOWN = 5; // collapsed count for "Schools near me"
+const NEAR_MAX = 25; // most we ever list
+
+// v3 finder: GPS "Schools near me" first (5, expandable), a global search box
+// right beneath it (matches name / UDISE / block / cluster / setting — the only
+// geographical fields the data holds; no village/pincode exist in any source),
+// then a tap-only Block → Cluster → list drill-down as the backup.
 export default function SchoolFinder({
   locale,
   labels,
@@ -52,9 +57,10 @@ export default function SchoolFinder({
   const [geo, setGeo] = useState<Geo[] | null>(null);
   const [gps, setGps] = useState<"idle" | "loading" | "denied">("idle");
   const [pos, setPos] = useState<{ lat: number; lon: number } | null>(null);
+  const [nearExpanded, setNearExpanded] = useState(false);
+  const [q, setQ] = useState("");
   const [block, setBlockState] = useState("");
   const [cluster, setCluster] = useState("");
-  const [q, setQ] = useState("");
 
   const setBlock = (name: string) => {
     setBlockState(name);
@@ -67,6 +73,7 @@ export default function SchoolFinder({
 
   const locate = () => {
     setGps("loading");
+    setNearExpanded(false);
     if (!navigator.geolocation) {
       setGps("denied");
       return;
@@ -105,10 +112,23 @@ export default function SchoolFinder({
     return geo
       .map((g) => ({ g, km: havKm(pos, g) }))
       .sort((a, z) => a.km - z.km)
-      .slice(0, 12)
+      .slice(0, NEAR_MAX)
       .map(({ g, km }) => ({ item: byU.get(g.u), km }))
       .filter((x): x is { item: Item; km: number } => !!x.item);
   }, [pos, geo, index, byU]);
+
+  // global search across every field we actually hold
+  const searchMatches = useMemo(() => {
+    const query = q.trim().toLowerCase();
+    if (!query) return [];
+    return index
+      .filter((s) =>
+        `${s.n} ${s.u} ${s.b} ${s.c} ${s.st}`.toLowerCase().includes(query),
+      )
+      .sort((a, z) => a.n.localeCompare(z.n));
+  }, [index, q]);
+  const CAP = 250;
+  const searchResults = searchMatches.slice(0, CAP);
 
   const blocks = useMemo(() => [...new Set(index.map((s) => s.b))].sort(), [index]);
   const clusters = useMemo(
@@ -127,16 +147,6 @@ export default function SchoolFinder({
         : [],
     [index, block, cluster],
   );
-
-  const searchMatches = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    if (!query) return [];
-    return index
-      .filter((s) => s.n.toLowerCase().includes(query) || s.u.includes(query))
-      .sort((a, z) => a.n.localeCompare(z.n));
-  }, [index, q]);
-  const CAP = 250;
-  const searchResults = searchMatches.slice(0, CAP);
 
   const num = (n: number) => fmtNum(n, locale);
 
@@ -179,6 +189,9 @@ export default function SchoolFinder({
     </button>
   );
 
+  const searching = q.trim() !== "";
+  const nearList = nearest && (nearExpanded ? nearest : nearest.slice(0, NEAR_SHOWN));
+
   return (
     <div className="md:max-w-2xl">
       {/* 1 — GPS, the primary path */}
@@ -194,29 +207,88 @@ export default function SchoolFinder({
         {labels.nearMe}
       </button>
 
-      {gps === "loading" && !nearest && (
-        <p className="mt-3 text-sm font-semibold text-gov-ink">{labels.nearMeFinding}</p>
-      )}
-      {gps === "denied" && (
-        <p className="mt-3 rounded-xl bg-gov-tint p-3 text-sm text-gov-ink">
-          {labels.nearMeDenied}
-        </p>
-      )}
-      {nearest && nearest.length > 0 && (
+      {/* 2 — global search, right beneath the GPS button */}
+      <div className="mt-3 flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          inputMode="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={labels.searchAny}
+          aria-label={labels.searchAny}
+          className="min-h-[50px] w-full bg-transparent text-base text-gov-ink outline-none"
+        />
+      </div>
+      <p className="mt-1 text-xs text-muted">{labels.searchNote}</p>
+
+      {/* results: search takes precedence, else GPS results */}
+      {searching ? (
         <section className="mt-4">
-          <h2 className="text-sm font-bold text-gov-ink">{labels.nearMeResults}</h2>
+          <p className="text-sm font-bold text-gov-ink">
+            {labels.schoolsFound.replace("{n}", num(searchMatches.length))}
+          </p>
           <ul className="mt-2 space-y-2.5">
-            {nearest.map(({ item, km }) => (
-              <li key={item.u}>
-                <Card s={item} km={km} />
+            {searchResults.map((s) => (
+              <li key={s.u}>
+                <Card s={s} />
               </li>
             ))}
+            {searchResults.length === 0 && (
+              <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
+                {labels.noResults}
+              </li>
+            )}
+            {searchMatches.length > searchResults.length && (
+              <li className="px-1 py-2 text-sm text-muted">
+                {labels.showingFirst
+                  .replace("{shown}", num(searchResults.length))
+                  .replace("{n}", num(searchMatches.length))}
+              </li>
+            )}
           </ul>
         </section>
+      ) : (
+        <>
+          {gps === "loading" && !nearest && (
+            <p className="mt-4 text-sm font-semibold text-gov-ink">{labels.nearMeFinding}</p>
+          )}
+          {gps === "denied" && (
+            <p className="mt-4 rounded-xl bg-gov-tint p-3 text-sm text-gov-ink">
+              {labels.nearMeDenied}
+            </p>
+          )}
+          {nearList && nearList.length > 0 && (
+            <section className="mt-4">
+              <h2 className="text-sm font-bold text-gov-ink">{labels.nearMeResults}</h2>
+              <ul className="mt-2 space-y-2.5">
+                {nearList.map(({ item, km }) => (
+                  <li key={item.u}>
+                    <Card s={item} km={km} />
+                  </li>
+                ))}
+              </ul>
+              {nearest && nearest.length > NEAR_SHOWN && (
+                <button
+                  type="button"
+                  onClick={() => setNearExpanded((x) => !x)}
+                  className="mt-3 min-h-[44px] w-full rounded-xl border-2 border-gov text-[15px] font-bold text-gov"
+                >
+                  {nearExpanded
+                    ? labels.showLess
+                    : labels.showMore.replace("{n}", num(nearest.length - NEAR_SHOWN))}
+                </button>
+              )}
+            </section>
+          )}
+        </>
       )}
 
-      {/* 2 — tap-only drill-down backup */}
-      <section className="mt-6">
+      {/* 3 — tap-only drill-down backup */}
+      <section className="mt-7 border-t border-gov-line pt-5">
         <h2 className="text-base font-bold text-gov-ink">{labels.stepFindTitle}</h2>
 
         {!block && (
@@ -264,54 +336,6 @@ export default function SchoolFinder({
           </>
         )}
       </section>
-
-      {/* 3 — typed search, demoted */}
-      <details className="mt-6 rounded-xl border border-gov-line bg-white px-4 py-3">
-        <summary className="cursor-pointer text-sm font-bold text-gov-ink">
-          {labels.typeSearchTitle}
-        </summary>
-        <div className="mt-3 flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M21 21l-4.3-4.3" />
-          </svg>
-          <input
-            type="search"
-            inputMode="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={labels.searchPlaceholder}
-            aria-label={labels.searchPlaceholder}
-            className="min-h-[48px] w-full bg-transparent text-base text-gov-ink outline-none"
-          />
-        </div>
-        {q.trim() !== "" && (
-          <>
-            <p className="mt-3 text-sm font-bold text-gov-ink">
-              {labels.schoolsFound.replace("{n}", num(searchMatches.length))}
-            </p>
-            <ul className="mt-2 space-y-2.5">
-              {searchResults.map((s) => (
-                <li key={s.u}>
-                  <Card s={s} />
-                </li>
-              ))}
-              {searchResults.length === 0 && (
-                <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
-                  {labels.noResults}
-                </li>
-              )}
-              {searchMatches.length > searchResults.length && (
-                <li className="px-1 py-2 text-sm text-muted">
-                  {labels.showingFirst
-                    .replace("{shown}", num(searchResults.length))
-                    .replace("{n}", num(searchMatches.length))}
-                </li>
-              )}
-            </ul>
-          </>
-        )}
-      </details>
     </div>
   );
 }

@@ -264,6 +264,9 @@ for u, c in canon.items():
 # (2026-07-06, docx mock: named schools with scores are now public by design).
 search = [
     {"u": s["udise"], "n": s["name"], "b": s["block"], "c": s["cluster"],
+     # setting (Urban/Rural) is the only extra geographical field the sources
+     # hold — no village/pincode/panchayat exist in any source file.
+     "st": (s.get("profile") or {}).get("area") or "",
      # floor(x+0.5) matches JS Math.round on the report page — python round()
      # is half-to-even and made 17 schools show a different /10 in Find.
      "s10": int(math.floor(s["overall"]["score"] / 10 + 0.5)), "band": s["overall"]["band"]}

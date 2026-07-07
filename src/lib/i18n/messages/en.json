@@ -452,6 +452,10 @@
     "switchBlock": "Change block",
     "downloadBlockPdf": "Download block report (PDF)",
     "downloadLorPdf": "Complete Learning-Outcome report (PDF)",
-    "downloadLorCsv": "Learning-Outcome data (CSV)"
+    "downloadLorCsv": "Learning-Outcome data (CSV)",
+    "searchAny": "Search by school, block, cluster or UDISE",
+    "searchNote": "Search matches school name, UDISE, block, cluster and setting.",
+    "showMore": "Show {n} more",
+    "showLess": "Show fewer"
   }
 }
