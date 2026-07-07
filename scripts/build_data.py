@@ -677,6 +677,105 @@ with open(os.path.join(DL, "items_clean.csv"), "w", encoding="utf-8", newline=""
                     i["correct_pct"], i["top_wrong_pct"], i["blank"]])
 print("  wrote downloads: block_aggregates.csv, cluster_league.csv, items_clean.csv")
 
+# ---------- researcher download suite (public, multiple cuts) -----------------
+# Granularity ceiling chosen by the owner (2026-07-07): anonymised student rows
+# are public. Anonymisation: Roll_Number destroyed and replaced by a pseudo id
+# randomly assigned within (school, grade); rows shuffled; no names/DOB exist in
+# the source. Residual small-class re-identification risk was flagged and accepted.
+import random as _random
+
+_rng = _random.Random(20260707)
+
+# 1) anonymised student-level (long: one row per student x subject)
+_stu_rows = []
+_pseudo = {}   # (udise, grade, roll) -> pseudo id within school+grade
+_counter = defaultdict(int)
+for row in read_csv("Studentwise_Scores.csv"):
+    u = udise(row["UDISE_Code"])
+    if u not in canon:
+        continue
+    grade = (row.get("Grade") or "").strip()
+    subj = (row.get("Subject") or "").strip()
+    pct = num(row.get("Perc"))
+    if not grade or not subj or pct is None:
+        continue
+    key = (u, grade, str(row.get("Roll_Number") or "").strip())
+    if key not in _pseudo:
+        _counter[(u, grade)] += 1
+        _pseudo[key] = _counter[(u, grade)]
+    _stu_rows.append([u, canon[u]["name"], canon[u]["block"], canon[u]["cluster"],
+                      grade, _pseudo[key], subj, pct])
+# shuffle then re-number pseudo ids in shuffled order so output order carries
+# no trace of the roll sequence
+_rng.shuffle(_stu_rows)
+with open(os.path.join(DL, "students_anonymised.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["udise", "school_name", "block", "cluster", "grade",
+                "student_pseudo_id", "subject", "pct_correct"])
+    w.writerows(_stu_rows)
+print(f"  wrote students_anonymised.csv ({len(_stu_rows)} rows)")
+
+# 2) school x grade x subject (finest safe aggregate)
+with open(os.path.join(DL, "school_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["udise", "school_name", "block", "cluster", "setting",
+                "grade", "subject", "pct_correct"])
+    for u, s in sorted(schools.items()):
+        st = (s.get("profile") or {}).get("area") or ""
+        for g in sorted(s["byGrade"]):
+            for subj in sorted(s["byGrade"][g]):
+                w.writerow([u, s["name"], s["block"], s["cluster"], st,
+                            g, subj, s["byGrade"][g][subj]])
+
+# 3) schools master (overall + band + coordinates)
+with open(os.path.join(DL, "schools_overall.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["udise", "school_name", "block", "cluster", "setting",
+                "overall_pct", "band", "score_out_of_10", "students_assessed",
+                "lat", "lon"])
+    for u, s in sorted(schools.items()):
+        st = (s.get("profile") or {}).get("area") or ""
+        coord = ll.get(u, {})
+        w.writerow([u, s["name"], s["block"], s["cluster"], st,
+                    s["overall"]["score"], s["overall"]["band"],
+                    int(math.floor(s["overall"]["score"] / 10 + 0.5)),
+                    s["assessedStudents"] or "",
+                    coord.get("lat") or "", coord.get("lon") or ""])
+
+# 4) block x grade x subject
+with open(os.path.join(DL, "block_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "grade", "subject", "pct_correct"])
+    for b in district_out["blocks"]:
+        for g, subs in (b.get("subjects") or {}).items():
+            for subj, v in sorted(subs.items()):
+                w.writerow([b["name"], g, subj, v])
+
+# 5) misconceptions by block + 6) best/weakest LOs by block (from officials slices)
+with open(os.path.join(DL, "misconceptions_by_block.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "grade", "subject", "q_no", "pct_chose_wrong",
+                "wrong_option", "correct_option", "question", "why_it_matters"])
+    for bname in sorted(blocks):
+        bslug = block_slugs[bname]
+        bj = json.load(open(os.path.join(OFF_DIR, "blocks", f"{bslug}.json"), encoding="utf-8"))
+        for m in bj.get("miscon", []):
+            w.writerow([bname, m["grade"], m["subject"], m["qno"], m.get("pct") or "",
+                        m["chosen"], m["correct"], m["stem"], m["text"]])
+with open(os.path.join(DL, "learning_outcomes_by_block.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "kind", "subject", "grade", "pct_correct", "learning_outcome"])
+    for bname in sorted(blocks):
+        bslug = block_slugs[bname]
+        bj = json.load(open(os.path.join(OFF_DIR, "blocks", f"{bslug}.json"), encoding="utf-8"))
+        for kind in ("top", "bottom"):
+            for subj, rows_ in (bj.get("skills", {}).get(kind) or {}).items():
+                for r in rows_:
+                    w.writerow([bname, "strength" if kind == "top" else "gap",
+                                subj, r["grade"], r["pct"], r["skill"]])
+print("  wrote researcher cuts: school_grade_subject, schools_overall, "
+      "block_grade_subject, misconceptions_by_block, learning_outcomes_by_block")
+
 # ---------- QA / coverage ----------------------------------------------------
 
 set_canon = set(canon)

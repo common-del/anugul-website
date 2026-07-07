@@ -2,12 +2,15 @@ import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import Link from "next/link";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import Stars from "@/components/Stars";
+import PrintButton from "@/components/PrintButton";
+import { getBlock, getBlockSlugs, getCluster, getClusterIndex } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import { BAND_TEXT, type BandKey } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
 import schoolsData from "@/data/schools.json";
 
 type School = {
@@ -60,6 +63,21 @@ export default function PrincipalPage({
     { n: 2, title: v.pa2Title, text: v.pa2Text },
     { n: 3, title: v.pa3Title, text: v.pa3Text },
   ];
+
+  // cluster + block context (head one-pager): own cluster's schools, position
+  // in the block, and the block's common wrong answers to discuss with staff
+  const clusterEntry = getClusterIndex().find(
+    (c) => c.cluster === s.cluster && c.block === s.block,
+  );
+  const cluster = clusterEntry ? getCluster(clusterEntry.slug) : null;
+  const blockSlug = getBlockSlugs().find((b) => b.name === s.block)?.slug;
+  const block = blockSlug ? getBlock(blockSlug) : null;
+  const blockSchools = block?.bands.overall?.schools ?? [];
+  const blockRank = blockSchools.length
+    ? blockSchools.length -
+      [...blockSchools].sort((a, z) => a.score - z.score).findIndex((x) => x.udise === s.udise)
+    : null;
+  const miscon = (block?.miscon ?? []).slice(0, 4);
 
   return (
     <PageShell>
@@ -173,6 +191,102 @@ export default function PrincipalPage({
             ))}
           </div>
         </section>
+
+        <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+          {/* your cluster */}
+          {cluster && (
+            <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <h2 className="text-lg font-bold text-gov-ink">{v.myClusterT}</h2>
+              <p className="mt-1 text-sm text-muted">
+                {s.cluster} · {t.officials.clusterRankLine
+                  .replace("{rank}", num(cluster.rank))
+                  .replace("{of}", num(cluster.of))
+                  .replace("{block}", s.block)}
+              </p>
+              <ul className="mt-2 divide-y divide-gov-line text-sm">
+                {cluster.schools.map((cs) => (
+                  <li
+                    key={cs.udise}
+                    className={`flex items-center justify-between gap-2 px-1 py-1.5 ${
+                      cs.udise === s.udise ? "rounded-lg bg-gov-tint font-bold" : ""
+                    }`}
+                  >
+                    <span className="min-w-0 truncate text-gov-ink">
+                      {cs.name}
+                      {cs.udise === s.udise && (
+                        <span className="ml-2 rounded-full bg-gov px-2 py-0.5 text-[10px] font-bold text-white">
+                          {v.youHere}
+                        </span>
+                      )}
+                    </span>
+                    <span className="flex shrink-0 items-center gap-2">
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[11px] font-bold"
+                        style={{
+                          backgroundColor: BAND_COLOR[cs.band],
+                          color: cs.band === "needs" ? "#12233d" : "#fff",
+                        }}
+                      >
+                        {t.band[cs.band]}
+                      </span>
+                      <span className="w-10 text-right font-semibold tabular-nums" style={{ color: BAND_TEXT[cs.band] }}>
+                        {num(Math.round(cs.score))}%
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* your block */}
+          {block && blockSlug && (
+            <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <h2 className="text-lg font-bold text-gov-ink">{v.myBlockT}</h2>
+              <p className="mt-1 text-sm text-muted">
+                {s.block}
+                {blockRank ? (
+                  <>
+                    {" · "}
+                    <span className="font-semibold text-gov-ink">
+                      {num(blockRank)} / {num(blockSchools.length)}
+                    </span>
+                  </>
+                ) : null}
+              </p>
+              <Link
+                href={`/${locale}/gov/${blockSlug}/`}
+                className="mt-3 inline-flex min-h-[46px] items-center gap-2 rounded-xl border-2 border-gov px-4 text-[14px] font-bold text-gov"
+              >
+                {v.openBlockReport} →
+              </Link>
+
+              {miscon.length > 0 && (
+                <>
+                  <h3 className="mt-5 text-base font-bold text-gov-ink">{v.blockMisconT}</h3>
+                  <p className="mt-1 text-sm text-muted">{v.blockMisconD}</p>
+                  <div className="mt-2 space-y-2.5">
+                    {miscon.map((c, i) => (
+                      <article key={i} className="rounded-xl bg-gov-tint p-3.5">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gov-mid">
+                          {t.grades[c.grade as keyof typeof t.grades] ?? c.grade} ·{" "}
+                          {t.subjects[c.subject as keyof typeof t.subjects] ?? c.subject}
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-gov-ink">{c.stem}</p>
+                        <p className="mt-1 text-xs text-muted">{c.text}</p>
+                      </article>
+                    ))}
+                  </div>
+                </>
+              )}
+            </section>
+          )}
+        </div>
+
+        {/* printable one-pager */}
+        <div className="no-print mt-6">
+          <PrintButton label={t.officials.printPage} />
+        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>

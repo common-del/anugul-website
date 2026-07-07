@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
@@ -66,6 +67,18 @@ export default function GovPage({ params }: { params: { locale: string } }) {
             labels={{ allBlocks: v.districtAllBlocks, hint: v.clickBlockHint }}
           />
         </section>
+
+        {/* researcher data hub */}
+        <Link
+          href={`/${locale}/gov/data/`}
+          className="mt-6 flex items-center justify-between gap-3 rounded-2xl border-2 border-gov bg-white p-5 hover:bg-gov-tint"
+        >
+          <span>
+            <span className="block text-lg font-extrabold text-gov-ink">{v.dataHubT}</span>
+            <span className="mt-0.5 block text-sm text-muted">{v.dataHubD}</span>
+          </span>
+          <span aria-hidden className="text-xl text-gov">→</span>
+        </Link>
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>

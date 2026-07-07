@@ -608,6 +608,78 @@
           "government"
         ]
       }
+    ],
+    "dataHubT": "Data & Analysis",
+    "dataHubD": "District-wide analysis and the full data catalogue for your own research.",
+    "dataTitle": "Data & Analysis",
+    "dataIntro": "How Angul's results break down — and every dataset behind this site, downloadable for your own analysis.",
+    "dataViewsT": "District analysis",
+    "aboveClusterT": "Schools scoring far above their own cluster",
+    "aboveClusterD": "Bright spots per block — worth a visit to learn what works.",
+    "bandsByBlockT": "Schools in the four bands, by block",
+    "loTopT": "Strongest learning outcomes (district)",
+    "misconIntroData": "Questions where many children across the district chose the same wrong answer. The full set is in the downloads below.",
+    "dlCatalogT": "Download the data",
+    "dlCatalogIntro": "Every cut of the SAKSHAM data behind this site, as CSV. Student rows are anonymised — roll numbers are removed and rows shuffled; in very small classes a row may still be guessable, so handle with care. No names exist in any file.",
+    "dlOpenBlue": "Advanced research view (item bank, psychometrics)",
+    "schoolsWord2": "schools",
+    "myClusterT": "Your cluster",
+    "myBlockT": "Your block",
+    "blockMisconT": "Common wrong answers in your block",
+    "blockMisconD": "Real questions where many children chose the same wrong answer — worth discussing with your teachers.",
+    "openBlockReport": "Open your block report",
+    "youHere": "Your school",
+    "dataFiles": [
+      {
+        "file": "students_anonymised.csv",
+        "label": "Student-level scores (anonymised)",
+        "desc": "One row per student per subject: school, block, cluster, grade, pseudo-ID, % correct. 128,504 rows."
+      },
+      {
+        "file": "school_grade_subject.csv",
+        "label": "School × grade × subject",
+        "desc": "Every school's score in every assessed grade and subject, with block, cluster and setting."
+      },
+      {
+        "file": "schools_overall.csv",
+        "label": "Schools master (with coordinates)",
+        "desc": "One row per school: overall %, band, /10 score, students assessed, latitude/longitude."
+      },
+      {
+        "file": "cluster_league.csv",
+        "label": "Cluster league (all blocks)",
+        "desc": "Every cluster's score, schools and students, with best and worst school."
+      },
+      {
+        "file": "block_grade_subject.csv",
+        "label": "Block × grade × subject",
+        "desc": "Each block's average in every grade and subject."
+      },
+      {
+        "file": "block_aggregates.csv",
+        "label": "Block aggregates",
+        "desc": "Overall, grade-wise, % below 50 and % proficient for the eight blocks."
+      },
+      {
+        "file": "learning_outcomes.csv",
+        "label": "Learning outcomes (district, per item)",
+        "desc": "All 151 assessed items: LO code, description, grade level, cognitive tag, % correct."
+      },
+      {
+        "file": "learning_outcomes_by_block.csv",
+        "label": "Learning outcomes by block",
+        "desc": "Each block's strongest and weakest learning outcomes with % correct."
+      },
+      {
+        "file": "misconceptions_by_block.csv",
+        "label": "Misconceptions by block",
+        "desc": "Every common-wrong-answer question per block, with options and explanation."
+      },
+      {
+        "file": "items_clean.csv",
+        "label": "Item bank with difficulty & discrimination",
+        "desc": "All validated items with psychometrics (difficulty, discrimination) for measurement research."
+      }
     ]
   }
 }
