@@ -687,6 +687,15 @@
     "misTry": "Try:",
     "misStimCap": "Item stem / stimulus, as printed in the question paper",
     "misIndicative": "* Indicative only: based on very few pupils or a single question, so read it with caution.",
-    "misOrderNote": "The specific wrong answer many pupils pick, with what it reveals and a teaching response. Ordered by how many pupils fell for it."
+    "misOrderNote": "The specific wrong answer many pupils pick, with what it reveals and a teaching response. Ordered by how many pupils fell for it.",
+    "privacyP1": "This site shows school-level results from the SAKSHAM assessment. It never shows any individual child's result, name or personal detail.",
+    "privacyP2": "The site does not ask for, or store, any personal information from visitors. No login is needed. The downloadable research data is anonymised — roll numbers are removed and rows are shuffled.",
+    "privacyP3": "For any question about the data on this site, contact the District Education Office, Angul (see Contact Us).",
+    "termsP1": "The scores and reports on this site are published by the School & Mass Education Department, Government of Odisha, from the SAKSHAM assessment of Grade 5 and Grade 8, to help parents, school heads and officials understand and improve learning.",
+    "termsP2": "The data may be used and shared freely for education, research and reporting, with attribution to SAKSHAM / Government of Odisha. It must not be used to rank, shame or penalise individual children or teachers.",
+    "termsP3": "Scores describe one assessment round and should be read together with the school's context.",
+    "a11yP1": "This site is built to be usable by everyone: Odia first with an English toggle, large type, high contrast, big touch targets, and it works on low-cost phones and slow connections.",
+    "a11yP2": "Report cards can be downloaded as PDFs, and every score is shown as text as well as stars so it does not depend on colour alone.",
+    "a11yP3": "If any part of this site is hard to use — with a screen reader, keyboard or otherwise — please tell us via Contact Us so we can fix it."
   }
 }

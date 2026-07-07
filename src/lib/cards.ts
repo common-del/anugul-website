@@ -1,10 +1,9 @@
 import cardList from "../../public/data/pdf-cards.json";
 
-// Compressed printed report cards hosted on Vercel Blob (store: parent-report).
-// URL shape: <BASE>/cards/<UDISE>.pdf  (uploaded with addRandomSuffix:false).
-export const CARD_BASE =
-  "https://hzvbydclz8z1ageu.public.blob.vercel-storage.com/cards";
-
+// Printed report cards are self-hosted in the deploy (public/data/cards and
+// public/data/hcards). Blob hosting was retired 2026-07-07: exceeding the
+// Hobby write cap got the whole store blocked (403 on reads), breaking every
+// download — local static files have no such failure mode.
 const cardSet = new Set(cardList as string[]);
 
 export function hasCard(udise: string): boolean {
@@ -12,7 +11,7 @@ export function hasCard(udise: string): boolean {
 }
 
 export function cardUrl(udise: string): string {
-  return `${CARD_BASE}/${udise}.pdf`;
+  return `/data/cards/${udise}.pdf`;
 }
 
 // Page-1 preview image of the printed card (in-repo, public/data/cardimg).
@@ -22,8 +21,7 @@ export function cardImg(udise: string): string {
 }
 
 // Official School-Head report cards (3-page, with the how-to-read guide),
-// hosted on Vercel Blob under hcards/ — kept out of the repo/deploy so builds
-// and clones stay lean. Manifest: public/data/hcards.json.
+// self-hosted at public/data/hcards. Manifest: public/data/hcards.json.
 import hcardList from "../../public/data/hcards.json";
 
 const hcardSet = new Set(hcardList as string[]);
@@ -33,5 +31,5 @@ export function hasHcard(udise: string): boolean {
 }
 
 export function hcardUrl(udise: string): string {
-  return `${CARD_BASE.replace("/cards", "/hcards")}/${udise}.pdf`;
+  return `/data/hcards/${udise}.pdf`;
 }
