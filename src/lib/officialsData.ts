@@ -85,6 +85,25 @@ export function getCluster(slug: string): ClusterSlice {
 export function getMisconceptions(): MisconCard[] {
   return readJson("misconceptions.json");
 }
+// Full-fidelity misconception library (from the SAKSHAM Academic LO report):
+// complete stem/xstem, all options (with Odia originals), key/trap, stimulus
+// image path, misconception + teaching note; per-unit response percentages.
+export type MislibCard = {
+  lo: string; stem: string; xstem?: string;
+  opts: Record<string, string>; oopts?: Record<string, string>;
+  key: string; trap: string; mis: string; note: string; img?: string;
+};
+export type MisuRow = {
+  g: string; sub: string; qno: number;
+  trap_pct: number; key_pct: number; n: number; conf: string;
+};
+export function getMislib(): {
+  cards: Record<string, MislibCard>;
+  units: Record<string, MisuRow[]>;
+} {
+  return readJson("mislib.json");
+}
+
 export function getItems(): {
   grade: string; subject: string; q_no: number; lo: string; desc: string;
   gl: string; cog: string | null; correct_pct: number; top_wrong_pct: number;

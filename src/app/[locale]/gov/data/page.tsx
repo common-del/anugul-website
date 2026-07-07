@@ -7,12 +7,13 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, type BandKey } from "@/lib/bands";
+import MisconFull from "@/components/MisconFull";
 import {
   getBlock,
   getBlockSlugs,
   getDistrictOfficials,
   getItems,
-  getMisconceptions,
+  getMislib,
 } from "@/lib/officialsData";
 
 export function generateStaticParams() {
@@ -54,7 +55,7 @@ export default function GovDataPage({
   const items = getItems();
   const topLos = [...items].sort((a, z) => z.correct_pct - a.correct_pct).slice(0, 5);
   const bottomLos = [...items].sort((a, z) => a.correct_pct - z.correct_pct).slice(0, 5);
-  const miscons = getMisconceptions().slice(0, 4);
+  const mislib = getMislib();
 
   return (
     <PageShell>
@@ -224,20 +225,18 @@ export default function GovDataPage({
           </div>
         </div>
 
-        {/* misconceptions (sample) */}
-        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+        {/* misconceptions — full fidelity (never truncated), district view */}
+        <section className="mt-6">
           <h2 className="text-lg font-bold text-gov-ink">{o.misconTitle}</h2>
-          <p className="mt-1 text-sm text-muted">{v.misconIntroData}</p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {miscons.map((c, i) => (
-              <article key={i} className="rounded-xl bg-gov-tint p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gov-mid">
-                  {grade(c.grade)} · {subj(c.subject)}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-gov-ink">{c.stem}</p>
-                <p className="mt-1 text-xs text-muted">{c.text}</p>
-              </article>
-            ))}
+          <div className="mt-2">
+            <MisconFull
+              cards={mislib.cards}
+              rows={mislib.units.ALL ?? []}
+              copy={v}
+              subjectLabels={t.subjects}
+              gradeLabels={t.grades}
+              locale={locale}
+            />
           </div>
         </section>
 

@@ -20,3 +20,18 @@ export function cardUrl(udise: string): string {
 export function cardImg(udise: string): string {
   return `/data/cardimg/${udise}.webp`;
 }
+
+// Official School-Head report cards (3-page, with the how-to-read guide),
+// hosted on Vercel Blob under hcards/ — kept out of the repo/deploy so builds
+// and clones stay lean. Manifest: public/data/hcards.json.
+import hcardList from "../../public/data/hcards.json";
+
+const hcardSet = new Set(hcardList as string[]);
+
+export function hasHcard(udise: string): boolean {
+  return hcardSet.has(udise);
+}
+
+export function hcardUrl(udise: string): string {
+  return `${CARD_BASE.replace("/cards", "/hcards")}/${udise}.pdf`;
+}

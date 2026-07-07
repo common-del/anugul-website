@@ -680,6 +680,13 @@
         "label": "Item bank with difficulty & discrimination",
         "desc": "All validated items with psychometrics (difficulty, discrimination) for measurement research."
       }
-    ]
+    ],
+    "misAnswerTag": "answer ✓ · {pct}% chose this",
+    "misTrapTag": "most-chosen wrong answer · {pct}% chose this",
+    "misLabel": "Misconception:",
+    "misTry": "Try:",
+    "misStimCap": "Item stem / stimulus, as printed in the question paper",
+    "misIndicative": "* Indicative only: based on very few pupils or a single question, so read it with caution.",
+    "misOrderNote": "The specific wrong answer many pupils pick, with what it reveals and a teaching response. Ordered by how many pupils fell for it."
   }
 }

@@ -6,7 +6,9 @@ import Link from "next/link";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import Stars from "@/components/Stars";
 import PrintButton from "@/components/PrintButton";
-import { getBlock, getBlockSlugs, getCluster, getClusterIndex } from "@/lib/officialsData";
+import MisconFull from "@/components/MisconFull";
+import { hasHcard, hcardUrl } from "@/lib/cards";
+import { getBlock, getBlockSlugs, getCluster, getClusterIndex, getMislib } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
@@ -77,7 +79,9 @@ export default function PrincipalPage({
     ? blockSchools.length -
       [...blockSchools].sort((a, z) => a.score - z.score).findIndex((x) => x.udise === s.udise)
     : null;
-  const miscon = (block?.miscon ?? []).slice(0, 4);
+  // full-fidelity misconception annexure for this block (never truncated)
+  const mislib = getMislib();
+  const misconRows = mislib.units[`B::${s.block}`] ?? [];
 
   return (
     <PageShell>
@@ -156,20 +160,22 @@ export default function PrincipalPage({
             </div>
           ))}
 
-          {/* WhatsApp first (heavier); principal-specific PDF generated at build */}
+          {/* WhatsApp first (heavier); official School-Head PDF from Blob */}
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
             <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
-            <a
-              href={`/data/pcards/${s.udise}.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border-2 border-gov px-4 text-[14px] font-bold text-gov"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
-              </svg>
-              {v.downloadPdf}
-            </a>
+            {hasHcard(s.udise) && (
+              <a
+                href={hcardUrl(s.udise)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border-2 border-gov px-4 text-[14px] font-bold text-gov"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
+                </svg>
+                {v.downloadPdf}
+              </a>
+            )}
           </div>
         </section>
 
@@ -261,27 +267,27 @@ export default function PrincipalPage({
                 {v.openBlockReport} →
               </Link>
 
-              {miscon.length > 0 && (
-                <>
-                  <h3 className="mt-5 text-base font-bold text-gov-ink">{v.blockMisconT}</h3>
-                  <p className="mt-1 text-sm text-muted">{v.blockMisconD}</p>
-                  <div className="mt-2 space-y-2.5">
-                    {miscon.map((c, i) => (
-                      <article key={i} className="rounded-xl bg-gov-tint p-3.5">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gov-mid">
-                          {t.grades[c.grade as keyof typeof t.grades] ?? c.grade} ·{" "}
-                          {t.subjects[c.subject as keyof typeof t.subjects] ?? c.subject}
-                        </p>
-                        <p className="mt-1 text-sm font-semibold text-gov-ink">{c.stem}</p>
-                        <p className="mt-1 text-xs text-muted">{c.text}</p>
-                      </article>
-                    ))}
-                  </div>
-                </>
-              )}
             </section>
           )}
         </div>
+
+        {/* block misconceptions annexure — full fidelity, never truncated */}
+        {misconRows.length > 0 && (
+          <section className="mt-6">
+            <h2 className="text-lg font-bold text-gov-ink">{v.blockMisconT}</h2>
+            <p className="mt-1 text-sm text-muted">{v.blockMisconD}</p>
+            <div className="mt-3">
+              <MisconFull
+                cards={mislib.cards}
+                rows={misconRows}
+                copy={t.v2}
+                subjectLabels={t.subjects}
+                gradeLabels={t.grades}
+                locale={locale}
+              />
+            </div>
+          </section>
+        )}
 
         {/* printable one-pager */}
         <div className="no-print mt-6">

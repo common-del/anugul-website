@@ -12,3 +12,6 @@ next-env.d.ts
 
 # NOTE: src/data/ is intentionally committed (aggregated, non-sensitive).
 # Raw/individual source data lives outside the repo and is never committed.
+
+# School-Head PDFs are staged here for Blob upload only — never committed
+public/data/hcards/

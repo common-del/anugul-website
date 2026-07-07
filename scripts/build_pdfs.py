@@ -1,9 +1,11 @@
 """Generates the downloadable PDFs for the v2 site (all vector, bilingual):
 
-  public/data/pcards/<udise>.pdf                    principal report cards (1 page)
   public/data/downloads/blocks/<slug>.pdf           block report cards (8)
   public/data/downloads/learning_outcomes_report.pdf  full LO report (district)
   public/data/downloads/learning_outcomes.csv         same as data
+
+(School-Head cards are NOT generated here — the official PDFs ship to
+public/data/hcards from SAKSHAM_Code/Colocated/output/Angul/_mobile.)
 
 Uses PyMuPDF's insert_htmlbox (Story engine — proper Odia shaping, verified)
 with Noto Sans Oriya, and subset_fonts() so each file stays small.
@@ -72,66 +74,8 @@ def esc(x):
     return str(x).replace("&", "&amp;").replace("<", "&lt;")
 
 
-# ---------------- principal cards ----------------
-def bar(v10, fill="#444444"):
-    cells = "".join(
-        f'<td style="width:9%;background-color:{fill if i < v10 else "#e4e4e4"};height:9px;border-bottom:none;"></td>'
-        for i in range(10)
-    )
-    return f'<table style="width:100%"><tr>{cells}</tr></table>'
-
-
-# block top per (block, grade, subject)
-top = {}
-for s in sch.values():
-    for g, subs in s["byGrade"].items():
-        for sub, v in subs.items():
-            k = (s["block"], g, sub)
-            if v > top.get(k, 0):
-                top[k] = v
-
-PC_DIR = os.path.join(ROOT, "public", "data", "pcards")
-os.makedirs(PC_DIR, exist_ok=True)
-t0 = time.time()
-n = 0
-for u, s in sch.items():
-    rows = []
-    for g in sorted(s["byGrade"]):
-        rows.append(
-            f'<tr><th colspan="4">{esc(GRADE_OD.get(g, g))} · {esc(g)}</th></tr>'
-        )
-        for sub in sorted(s["byGrade"][g]):
-            mine = s10(s["byGrade"][g][sub])
-            tp = s10(top.get((s["block"], g, sub), 0))
-            rows.append(
-                "<tr>"
-                f"<td style='width:26%'>{esc(SUBJ_OD.get(sub, sub))}<br/><span class='muted'>{esc(sub)}</span></td>"
-                f"<td style='width:30%'>{bar(mine)}</td>"
-                f"<td style='width:14%'><b>{mine}</b>/10</td>"
-                f"<td style='width:30%'>{bar(tp, '#8a8a8a')}<span class='muted'>ଟପ୍ · top {tp}/10</span></td>"
-                "</tr>"
-            )
-    overall = s10(s["overall"]["score"])
-    block_top_overall = s10(max(x["overall"]["score"] for x in sch.values() if x["block"] == s["block"]))
-    html = f"""
-<div class="hdr"><h1>SAKSHAM · ଶିକ୍ଷାବର୍ଷ 2025-26</h1>
-<p>ପ୍ରଧାନ ଶିକ୍ଷକଙ୍କ ରିପୋର୍ଟ କାର୍ଡ · Principal's Report Card</p></div>
-<h2>{esc(s['name'])}</h2>
-<p class="muted">UDISE {u} · {esc(s['block'])} · {esc(s['cluster'])}</p>
-<p><span class="big">ଆମ ବିଦ୍ୟାଳୟ · Our school: {overall}/10</span>
-&nbsp;&nbsp;<span class="muted">ଟପ୍ ବିଦ୍ୟାଳୟ (ବ୍ଲକ୍) · Block top: {block_top_overall}/10</span></p>
-<table>{''.join(rows)}</table>
-<h2>ଆପଣ କ'ଣ କରିବେ · What you should do</h2>
-<p>1. ରିପୋର୍ଟ କାର୍ଡ ପଢ଼ନ୍ତୁ ଓ ବୁଝନ୍ତୁ · Read and understand the report card.</p>
-<p>2. ସମ୍ପୃକ୍ତ ଶିକ୍ଷକଙ୍କ ସହ ଆଲୋଚନା କରନ୍ତୁ · Discuss the results with the respective teachers.</p>
-<p>3. DIET ଓ CRCCଙ୍କ ଯୋଜନା କାର୍ଯ୍ୟକାରୀ କରନ୍ତୁ · Follow the academic support plan shared by DIET &amp; CRCCs.</p>
-"""
-    page_pdf([html], os.path.join(PC_DIR, f"{u}.pdf"))
-    n += 1
-    if n % 300 == 0:
-        print(f"  pcards {n}/{len(sch)} ({time.time()-t0:.0f}s)", flush=True)
-sizes = [os.path.getsize(os.path.join(PC_DIR, f)) for f in os.listdir(PC_DIR)]
-print(f"pcards: {n} files, avg {sum(sizes)//len(sizes)//1024} KB, total {sum(sizes)//1024//1024} MB")
+# principal cards: superseded by the official School-Head PDFs shipped to
+# public/data/hcards (source: SAKSHAM_Code/Colocated/output/Angul/_mobile).
 
 # ---------------- block report PDFs ----------------
 OFF = os.path.join(ROOT, "src", "data", "officials")
