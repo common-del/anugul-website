@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { fmtNum } from "@/lib/format";
 import { BAND_TEXT, type BandKey } from "@/lib/bands";
+import Stars from "@/components/Stars";
 import type { Locale } from "@/lib/i18n/config";
 
 type Item = { u: string; n: string; b: string; c: string; st: string; s10: number; band: BandKey };
@@ -160,18 +161,23 @@ export default function SchoolFinder({
         {s.b} · {s.c}
         {km != null ? ` · ${labels.kmAway.replace("{km}", num(Math.round(km * 10) / 10))}` : ""}
       </span>
-      <span className="mt-2 flex items-center justify-between">
-        <span className="text-xs text-muted">
-          {labels.overallScore}{" "}
-          <span
-            className="text-lg font-extrabold tabular-nums"
-            style={{ color: BAND_TEXT[s.band] }}
-          >
-            {num(s.s10)}
+      <span className="mt-2 flex items-center justify-between gap-2">
+        <span className="min-w-0">
+          <span className="text-xs text-muted">
+            {labels.overallScore}{" "}
+            <span
+              className="text-lg font-extrabold tabular-nums"
+              style={{ color: BAND_TEXT[s.band] }}
+            >
+              {num(s.s10)}
+            </span>
+            <span className="font-semibold">/{num(10)}</span>
           </span>
-          <span className="font-semibold">/{num(10)}</span>
+          <span className="mt-0.5 block">
+            <Stars score={s.s10} size={12} label={`${num(s.s10)}/${num(10)}`} />
+          </span>
         </span>
-        <span className="rounded-lg bg-gov px-4 py-2 text-sm font-bold text-white">
+        <span className="shrink-0 rounded-lg bg-gov px-4 py-2 text-sm font-bold text-white">
           {labels.openReport}
         </span>
       </span>

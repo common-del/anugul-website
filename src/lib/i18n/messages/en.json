@@ -456,6 +456,8 @@
     "searchAny": "Search by school, block, cluster or UDISE",
     "searchNote": "Search matches school name, UDISE, block, cluster and setting.",
     "showMore": "Show {n} more",
-    "showLess": "Show fewer"
+    "showLess": "Show fewer",
+    "printedCardTitle": "Your printed report card",
+    "printedCardTap": "Tap the card to download it (PDF)"
   }
 }

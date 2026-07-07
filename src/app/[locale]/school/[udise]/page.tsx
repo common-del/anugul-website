@@ -5,7 +5,8 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import VideoEmbed from "@/components/VideoEmbed";
-import { hasCard, cardUrl } from "@/lib/cards";
+import Stars from "@/components/Stars";
+import { hasCard, cardUrl, cardImg } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
@@ -237,6 +238,34 @@ export default function SchoolPage({
           </ul>
         </section>
 
+        {/* printed report card — page-1 image, tap to download the full PDF */}
+        {hasCard(s.udise) && (
+          <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
+            <h2 className="text-base font-bold text-gov-ink">{v.printedCardTitle}</h2>
+            <p className="mt-1 text-sm text-muted">{v.printedCardTap}</p>
+            <a
+              href={cardUrl(s.udise)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-3 block w-full max-w-sm"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={cardImg(s.udise)}
+                alt={`${s.name} — ${v.printedCardTitle}`}
+                loading="lazy"
+                className="w-full rounded-lg border border-gov-line shadow-sm transition group-hover:shadow-md"
+              />
+              <span className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-gov">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
+                </svg>
+                {v.downloadPdf}
+              </span>
+            </a>
+          </section>
+        )}
+
         <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           <div className="space-y-5">
             {/* subject scores /10 */}
@@ -262,15 +291,8 @@ export default function SchoolPage({
                               {num(v10)}/{num(10)}
                             </span>
                           </div>
-                          <div className="mt-1 flex gap-[3px]" aria-hidden>
-                            {Array.from({ length: 10 }).map((_, i) => (
-                              <span
-                                key={i}
-                                className={`h-3 flex-1 rounded-[3px] ${
-                                  i < v10 ? "bg-gov" : "bg-gov-tint"
-                                }`}
-                              />
-                            ))}
+                          <div className="mt-1">
+                            <Stars score={v10} size={18} label={`${num(v10)}/${num(10)}`} />
                           </div>
                         </div>
                       );
@@ -281,34 +303,9 @@ export default function SchoolPage({
               {grades.length === 0 && (
                 <p className="mt-2 text-sm text-muted">{t.report.fewStudents}</p>
               )}
-              {/* WhatsApp carries more weight than the PDF download (user call) */}
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+              {/* Download lives on the printed-card image above; WhatsApp here */}
+              <div className="mt-5">
                 <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
-                {hasCard(s.udise) && (
-                  <a
-                    href={cardUrl(s.udise)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border-2 border-gov px-4 text-[14px] font-bold text-gov"
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden
-                    >
-                      <path d="M12 3v12" />
-                      <path d="M7 10l5 5 5-5" />
-                      <path d="M5 21h14" />
-                    </svg>
-                    {v.downloadPdf}
-                  </a>
-                )}
               </div>
             </section>
             {/* explainer video — click-to-play embedded player */}
@@ -383,6 +380,9 @@ export default function SchoolPage({
                             {n.km != null
                               ? ` · ${v.kmAway.replace("{km}", num(n.km))}`
                               : ""}
+                          </span>
+                          <span className="mt-1 block">
+                            <Stars score={n.s10} size={11} label={`${num(n.s10)}/${num(10)}`} />
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-2">

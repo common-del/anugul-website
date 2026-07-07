@@ -3,6 +3,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
+import Stars from "@/components/Stars";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
@@ -60,19 +61,6 @@ export default function PrincipalPage({
     { n: 3, title: v.pa3Title, text: v.pa3Text },
   ];
 
-  const Ladder = ({ value, top }: { value: number; top?: boolean }) => (
-    <div className="flex gap-[3px]" aria-hidden>
-      {Array.from({ length: 10 }).map((_, i) => (
-        <span
-          key={i}
-          className={`h-3 flex-1 rounded-[3px] ${
-            i < value ? (top ? "bg-accent" : "bg-gov") : "bg-gov-tint"
-          }`}
-        />
-      ))}
-    </div>
-  );
-
   return (
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack role="none" />
@@ -105,10 +93,10 @@ export default function PrincipalPage({
           <h2 className="text-lg font-bold text-gov-ink">{v.subjectsTitle}</h2>
           <div className="mt-2 flex flex-wrap gap-4 text-xs font-semibold">
             <span className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded bg-gov" /> {v.ourSchool}
+              <Stars score={1} max={1} size={13} /> {v.ourSchool}
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded bg-accent" /> {v.blockTop}
+              <Stars score={1} max={1} size={13} tone="accent" /> {v.blockTop}
             </span>
           </div>
           {grades.map((g) => (
@@ -134,8 +122,14 @@ export default function PrincipalPage({
                         </span>
                       </div>
                       <div className="mt-1 space-y-1">
-                        <Ladder value={mine} />
-                        <Ladder value={top} top />
+                        <div className="flex items-center gap-2">
+                          <span className="w-20 shrink-0 text-xs text-muted">{v.ourSchool}</span>
+                          <Stars score={mine} size={15} label={`${v.ourSchool} ${num(mine)}/${num(10)}`} />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-20 shrink-0 text-xs text-muted">{v.blockTop}</span>
+                          <Stars score={top} size={15} tone="accent" label={`${v.blockTop} ${num(top)}/${num(10)}`} />
+                        </div>
                       </div>
                     </div>
                   );

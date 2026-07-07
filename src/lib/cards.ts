@@ -14,3 +14,9 @@ export function hasCard(udise: string): boolean {
 export function cardUrl(udise: string): string {
   return `${CARD_BASE}/${udise}.pdf`;
 }
+
+// Page-1 preview image of the printed card (in-repo, public/data/cardimg).
+// Same set as the hosted PDFs, so hasCard() also gates the image.
+export function cardImg(udise: string): string {
+  return `/data/cardimg/${udise}.webp`;
+}
