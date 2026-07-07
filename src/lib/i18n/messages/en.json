@@ -460,6 +460,154 @@
     "printedCardTitle": "Your printed report card",
     "printedCardTap": "Tap the card to download it (PDF)",
     "roleHead": "School Head",
-    "headFindIntro": "Open your school's report card and see what to do as the School Head."
+    "headFindIntro": "Open your school's report card and see what to do as the School Head.",
+    "faqIntro": "Search, or browse by who you are.",
+    "faqSearch": "Search questions…",
+    "faqGroupsLabel": "Browse by",
+    "faqAll": "All",
+    "faqParents": "Parents",
+    "faqHeads": "School Heads",
+    "faqResearchers": "Researchers",
+    "faqGovernment": "Government",
+    "faqNoResults": "No questions match your search.",
+    "faqStillTitle": "Still have questions?",
+    "faqStillText": "Write to the District Education Office, Angul.",
+    "resTitle": "Resources",
+    "resIntro": "Understand the report card, how the scores are made, and what to do next.",
+    "resVideosT": "Videos",
+    "resVideosD": "Short films that explain the report card and how to use it.",
+    "resMethodT": "Methodology",
+    "resMethodD": "How the assessment works and how the scores are calculated.",
+    "resDownloadsT": "Downloads",
+    "resDownloadsD": "Reports and data you can download.",
+    "resToolkitT": "Toolkit",
+    "resToolkitD": "Simple steps to act on the report card.",
+    "resAwarenessFilm": "Awareness film",
+    "resExplainer": "How to read your report card",
+    "methodP1": "SAKSHAM assesses children in Grade 5 and Grade 8 across the main subjects — Odia, English, Maths and EVS in Grade 5, and Odia, English, Maths, Science and Social Studies in Grade 8. The assessment is external, so the results are independent of the school’s own marking.",
+    "methodP2": "For each subject, the share of questions children answer correctly becomes the subject score. The overall score is the school’s average performance, shown out of 10 for parents (for example, 62% is 6 out of 10) and as a percentage in the Researcher view.",
+    "methodP3": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Urgent (25% and below). Only school-level averages are ever shown — never an individual child’s result.",
+    "dlLor": "Complete Learning-Outcome report (PDF)",
+    "dlLorCsv": "Learning-Outcome data (CSV)",
+    "dlBlocks": "Block aggregates (CSV)",
+    "dlBlockCards": "Block report cards",
+    "toolkitStepsT": "Three questions for the next SMC meeting",
+    "toolkitS1": "Our school scored ___ out of 10. What is the plan to improve this year?",
+    "toolkitS2": "Our weakest subject is ___. What extra help will children get in it?",
+    "toolkitS3": "A nearby school scores higher with the same resources. What are they doing differently?",
+    "toolkitHowT": "How to use the report card",
+    "toolkitH1": "Find your school and open its report card.",
+    "toolkitH2": "Watch the short explainer video to understand the score.",
+    "toolkitH3": "Take the card to the next parent or SMC meeting and ask the three questions above.",
+    "toolkitH4": "Next year, check whether the score has improved.",
+    "contactEmailL": "Email",
+    "contactPhoneL": "Phone",
+    "contactPending": "To be updated",
+    "contactName": "Your name",
+    "contactNamePh": "Your name",
+    "contactMsg": "Your message",
+    "contactMsgPh": "Write your message",
+    "contactSend": "Send",
+    "contactSubject": "Angul Schools — enquiry",
+    "contactNoEmail": "Sending will be enabled once the office email is added.",
+    "faqItems": [
+      {
+        "id": "what",
+        "q": "What is the Saksham School Report Card?",
+        "a": "It is a simple card that shows how well children in a school are learning, based on the SAKSHAM assessment of Grade 5 and Grade 8 students in Angul district. It gives the school one overall score out of 10, plus a score for each subject, so parents and teachers can see where the school does well and where it needs support.",
+        "tags": [
+          "parents",
+          "heads",
+          "researchers",
+          "government"
+        ]
+      },
+      {
+        "id": "overall",
+        "q": "How is the overall score out of 10 calculated?",
+        "a": "Children answer the SAKSHAM test in each subject. The share of questions they get right becomes a percentage, and the overall score is that percentage brought to a 0–10 scale — for example, 62% shows as 6 out of 10. A higher score means more children are answering more questions correctly.",
+        "tags": [
+          "parents",
+          "heads"
+        ]
+      },
+      {
+        "id": "subjects",
+        "q": "What do the subject scores mean?",
+        "a": "Each subject — Odia, English, Maths, EVS, Science or Social Studies — has its own score out of 10, shown as stars. It tells you how children in that school are doing in that subject against the full mark. Low subject scores show where children need the most help.",
+        "tags": [
+          "parents",
+          "heads"
+        ]
+      },
+      {
+        "id": "bands",
+        "q": "What do the colour bands mean?",
+        "a": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Urgent (25% and below). The band is a quick way to see where a school stands without reading the numbers.",
+        "tags": [
+          "parents",
+          "heads",
+          "researchers",
+          "government"
+        ]
+      },
+      {
+        "id": "useparent",
+        "q": "How can I use the report card as a parent?",
+        "a": "Look at your school’s score and its weakest subjects, watch the short explainer video, and take the card to the next parent or School Management Committee (SMC) meeting. Ask the school head what the plan is to improve the weak areas, and compare with nearby schools that are doing better.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "who",
+        "q": "Who conducts the assessment?",
+        "a": "SAKSHAM is a learning assessment run under the School & Mass Education Department, Government of Odisha. Grade 5 and Grade 8 children are assessed externally, so the results are independent of the school’s own marking.",
+        "tags": [
+          "parents",
+          "heads",
+          "researchers",
+          "government"
+        ]
+      },
+      {
+        "id": "often",
+        "q": "How often is the report card updated?",
+        "a": "The card shown here is for the 2025-26 assessment year. It is refreshed when a new round of SAKSHAM results becomes available, so you can track whether your school improves over time.",
+        "tags": [
+          "parents",
+          "heads",
+          "government"
+        ]
+      },
+      {
+        "id": "compare",
+        "q": "Can I compare my school with other schools?",
+        "a": "Yes. Each report card lists the nearest schools with their scores, so you can see how your school compares locally. Researchers and officials can also open block-level reports that rank clusters and schools.",
+        "tags": [
+          "parents",
+          "heads",
+          "researchers"
+        ]
+      },
+      {
+        "id": "notlisted",
+        "q": "What if my school is not listed?",
+        "a": "A few schools could not be matched to the assessment data and do not have a card yet. If you cannot find your school, please contact the District Education Office, Angul (see Contact Us) with the school name and UDISE code.",
+        "tags": [
+          "parents",
+          "heads"
+        ]
+      },
+      {
+        "id": "download",
+        "q": "Can I download the data?",
+        "a": "Yes. The Researcher view offers the complete Learning-Outcome report and a data sheet (CSV), and each block report card can be downloaded as a PDF.",
+        "tags": [
+          "researchers",
+          "government"
+        ]
+      }
+    ]
   }
 }
