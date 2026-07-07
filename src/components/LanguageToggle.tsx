@@ -33,8 +33,8 @@ export default function LanguageToggle({ current }: { current: string }) {
 
   return (
     <div className="no-print flex shrink-0 items-center gap-0.5 rounded-full bg-gov-tint p-0.5 ring-1 ring-gov-line">
-      {seg("en", "EN", "English")}
       {seg("od", "ଓଡ଼ିଆ", "ଓଡ଼ିଆ")}
+      {seg("en", "EN", "English")}
     </div>
   );
 }

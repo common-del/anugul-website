@@ -432,6 +432,26 @@
     "reportsFindDesc": "Search for your school and open its report card.",
     "reportsDistrictT": "District overview",
     "reportsDistrictDesc": "How Angul district and all its blocks are doing.",
-    "reportsBlocksT": "Block report cards"
+    "reportsBlocksT": "Block report cards",
+    "filmClose": "Close",
+    "nearMe": "Schools near me",
+    "nearMeFinding": "Finding schools near you…",
+    "nearMeDenied": "Location not available on this phone. Find your school step by step below.",
+    "nearMeResults": "Schools nearest to you",
+    "stepFindTitle": "Find your school step by step",
+    "chooseBlock": "1. Choose your block",
+    "chooseCluster": "2. Choose your area (cluster)",
+    "pickSchool": "3. Tap your school",
+    "changeSel": "Change",
+    "typeSearchTitle": "Can you type? Search by name or UDISE",
+    "bandStripTitle": "Where this school stands",
+    "bandStripLine": "This school is in the “{band}” band ({desc}).",
+    "whatYouCanDo": "What you can do",
+    "doAsk": "At the next parent or SMC meeting, ask: “Our school scored {n}/10. What is the plan to improve this year?”",
+    "doCompare": "Compare with the nearby schools below. If one scores higher, ask what they do differently.",
+    "switchBlock": "Change block",
+    "downloadBlockPdf": "Download block report (PDF)",
+    "downloadLorPdf": "Complete Learning-Outcome report (PDF)",
+    "downloadLorCsv": "Learning-Outcome data (CSV)"
   }
 }

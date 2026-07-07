@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import { BAND_TEXT, type BandKey } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
 import schoolsData from "@/data/schools.json";
 
 type Profile = {
@@ -166,6 +166,76 @@ export default function SchoolPage({
           </div>
         </section>
 
+        {/* plain-language band strip (docx follow-up): where this school stands */}
+        <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
+          <h2 className="text-base font-bold text-gov-ink">{v.bandStripTitle}</h2>
+          <div className="relative mt-7" aria-hidden>
+            <div
+              className="absolute -top-5 z-10 -translate-x-1/2 text-gov-ink"
+              style={{ left: `${Math.min(Math.max(s.overall.score, 3), 97)}%` }}
+            >
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+                <path d="M8 12L0 0h16z" />
+              </svg>
+            </div>
+            <div className="flex h-6 overflow-hidden rounded-lg">
+              {(["urgent", "needs", "developing", "excelling"] as BandKey[]).map((k) => (
+                <div key={k} className="flex-1" style={{ backgroundColor: BAND_COLOR[k] }} />
+              ))}
+            </div>
+            <div className="mt-1.5 grid grid-cols-4 gap-1 text-center">
+              {(["urgent", "needs", "developing", "excelling"] as BandKey[]).map((k) => (
+                <div key={k} className="min-w-0">
+                  <div
+                    className="truncate text-[11px] font-bold leading-tight"
+                    style={{ color: BAND_TEXT[k] }}
+                  >
+                    {t.band[k]}
+                  </div>
+                  <div className="text-[10.5px] leading-tight text-muted">
+                    {
+                      {
+                        urgent: v.bandDescUrgent,
+                        needs: v.bandDescNeeds,
+                        developing: v.bandDescDeveloping,
+                        excelling: v.bandDescExcelling,
+                      }[k]
+                    }
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="mt-3 text-sm text-gov-ink">
+            {v.bandStripLine
+              .replace("{band}", t.band[s.overall.band])
+              .replace(
+                "{desc}",
+                {
+                  urgent: v.bandDescUrgent,
+                  needs: v.bandDescNeeds,
+                  developing: v.bandDescDeveloping,
+                  excelling: v.bandDescExcelling,
+                }[s.overall.band],
+              )}
+          </p>
+        </section>
+
+        {/* what you can do */}
+        <section className="mt-5 rounded-2xl bg-gov-tint p-5">
+          <h2 className="text-base font-bold text-gov-ink">{v.whatYouCanDo}</h2>
+          <ul className="mt-2 space-y-2 text-sm text-gov-ink">
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+              {v.doAsk.replace("{n}", num(overall10))}
+            </li>
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+              {v.doCompare}
+            </li>
+          </ul>
+        </section>
+
         <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           <div className="space-y-5">
             {/* subject scores /10 */}
@@ -210,17 +280,19 @@ export default function SchoolPage({
               {grades.length === 0 && (
                 <p className="mt-2 text-sm text-muted">{t.report.fewStudents}</p>
               )}
-              <div className="mt-5 flex flex-wrap gap-3">
+              {/* WhatsApp carries more weight than the PDF download (user call) */}
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
                 {hasCard(s.udise) && (
                   <a
                     href={cardUrl(s.udise)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-xl bg-gov px-5 text-[15px] font-bold text-white active:brightness-110"
+                    className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border-2 border-gov px-4 text-[14px] font-bold text-gov"
                   >
                     <svg
-                      width="17"
-                      height="17"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -236,7 +308,6 @@ export default function SchoolPage({
                     {v.downloadPdf}
                   </a>
                 )}
-                <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
               </div>
             </section>
             {/* explainer video */}

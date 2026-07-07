@@ -778,6 +778,11 @@ dump(OUT, "district.json", district_out)
 dump(OUT, "_qa.json", qa)
 # client assets for the Find page — name/block/cluster + /10 score + map
 dump(PUBLIC, "search-index.json", search)
+# coordinates for the "Schools near me" GPS path (only schools that have them)
+geo = [{"u": u, "lat": round(v["lat"], 5), "lon": round(v["lon"], 5)}
+       for u, v in ll.items()
+       if u in schools and v.get("lat") is not None and v.get("lon") is not None]
+dump(PUBLIC, "geo.json", geo)
 dump(PUBLIC, "district-map.json", district_map)
 
 # per-school compact records for the client-side Compare view (one file each,

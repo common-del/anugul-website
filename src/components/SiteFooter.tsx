@@ -42,7 +42,7 @@ export default function SiteFooter({
             <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/seal-of-odisha.svg"
+                src="/odisha-logo.png"
                 alt={v.govOdisha}
                 className="h-9 w-9 object-contain"
               />

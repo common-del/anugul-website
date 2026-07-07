@@ -7,22 +7,40 @@ import { BAND_TEXT, type BandKey } from "@/lib/bands";
 import type { Locale } from "@/lib/i18n/config";
 
 type Item = { u: string; n: string; b: string; c: string; s10: number; band: BandKey };
+type Geo = { u: string; lat: number; lon: number };
 
 type Labels = {
+  nearMe: string;
+  nearMeFinding: string;
+  nearMeDenied: string;
+  nearMeResults: string;
+  stepFindTitle: string;
+  chooseBlock: string;
+  chooseCluster: string;
+  pickSchool: string;
+  changeSel: string;
+  typeSearchTitle: string;
   searchPlaceholder: string;
-  filtersLabel: string;
-  blockLabel: string;
-  clusterLabel: string;
-  allOption: string;
   schoolsFound: string;
   openReport: string;
   overallScore: string;
   noResults: string;
   showingFirst: string;
+  kmAway: string;
 };
 
-// v2 finder (docx mock): search + Block/Cluster dropdowns (no District — all
-// Angul), result cards with the /10 score. Block choice stays in ?block=.
+function havKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }) {
+  const r = (d: number) => (d * Math.PI) / 180;
+  const h =
+    Math.sin(r(b.lat - a.lat) / 2) ** 2 +
+    Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(r(b.lon - a.lon) / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(h));
+}
+
+// v3 finder: GPS "Schools near me" is the primary path, a tap-only drill-down
+// (Block → Cluster → short list) is the backup, and typed search is demoted to
+// a collapsible for people who can type. ?near=1 auto-starts GPS; ?block=
+// deep-links the drill-down.
 export default function SchoolFinder({
   locale,
   labels,
@@ -31,9 +49,12 @@ export default function SchoolFinder({
   labels: Labels;
 }) {
   const [index, setIndex] = useState<Item[]>([]);
-  const [q, setQ] = useState("");
+  const [geo, setGeo] = useState<Geo[] | null>(null);
+  const [gps, setGps] = useState<"idle" | "loading" | "denied">("idle");
+  const [pos, setPos] = useState<{ lat: number; lon: number } | null>(null);
   const [block, setBlockState] = useState("");
   const [cluster, setCluster] = useState("");
+  const [q, setQ] = useState("");
 
   const setBlock = (name: string) => {
     setBlockState(name);
@@ -44,153 +65,253 @@ export default function SchoolFinder({
     window.history.replaceState(null, "", url);
   };
 
+  const locate = () => {
+    setGps("loading");
+    if (!navigator.geolocation) {
+      setGps("denied");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        setPos({ lat: p.coords.latitude, lon: p.coords.longitude });
+        setGps("idle");
+      },
+      () => setGps("denied"),
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 },
+    );
+    if (!geo) {
+      fetch("/data/geo.json")
+        .then((r) => r.json())
+        .then(setGeo)
+        .catch(() => {});
+    }
+  };
+
   useEffect(() => {
-    const initial = new URLSearchParams(window.location.search).get("block");
-    if (initial) setBlockState(initial);
+    const params = new URLSearchParams(window.location.search);
+    const b = params.get("block");
+    if (b) setBlockState(b);
     fetch("/data/search-index.json")
       .then((r) => r.json())
       .then(setIndex)
       .catch(() => {});
+    if (params.get("near") === "1") locate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const blocks = useMemo(
-    () => [...new Set(index.map((s) => s.b))].sort(),
-    [index],
-  );
+  const byU = useMemo(() => new Map(index.map((s) => [s.u, s])), [index]);
+  const nearest = useMemo(() => {
+    if (!pos || !geo || !index.length) return null;
+    return geo
+      .map((g) => ({ g, km: havKm(pos, g) }))
+      .sort((a, z) => a.km - z.km)
+      .slice(0, 12)
+      .map(({ g, km }) => ({ item: byU.get(g.u), km }))
+      .filter((x): x is { item: Item; km: number } => !!x.item);
+  }, [pos, geo, index, byU]);
+
+  const blocks = useMemo(() => [...new Set(index.map((s) => s.b))].sort(), [index]);
   const clusters = useMemo(
     () =>
-      [...new Set(index.filter((s) => !block || s.b === block).map((s) => s.c))].sort(),
+      block
+        ? [...new Set(index.filter((s) => s.b === block).map((s) => s.c))].sort()
+        : [],
     [index, block],
   );
+  const drillSchools = useMemo(
+    () =>
+      block && cluster
+        ? index
+            .filter((s) => s.b === block && s.c === cluster)
+            .sort((a, z) => a.n.localeCompare(z.n))
+        : [],
+    [index, block, cluster],
+  );
 
-  const active = q.trim() !== "" || block !== "" || cluster !== "";
-  const matches = useMemo(() => {
-    if (!active) return [];
+  const searchMatches = useMemo(() => {
     const query = q.trim().toLowerCase();
+    if (!query) return [];
     return index
-      .filter(
-        (s) =>
-          (!query || s.n.toLowerCase().includes(query) || s.u.includes(query)) &&
-          (!block || s.b === block) &&
-          (!cluster || s.c === cluster),
-      )
+      .filter((s) => s.n.toLowerCase().includes(query) || s.u.includes(query))
       .sort((a, z) => a.n.localeCompare(z.n));
-  }, [index, q, block, cluster, active]);
-  // 250 covers the largest block (Pallahara, 221) so browsing by block always
-  // shows every school; the note below appears if a broad text search exceeds it.
+  }, [index, q]);
   const CAP = 250;
-  const results = matches.slice(0, CAP);
+  const searchResults = searchMatches.slice(0, CAP);
 
-  const selectCls =
-    "min-h-[46px] flex-1 rounded-xl border border-gov-line bg-white px-3 text-[15px] font-semibold text-gov-ink";
+  const num = (n: number) => fmtNum(n, locale);
+
+  const Card = ({ s, km }: { s: Item; km?: number }) => (
+    <Link
+      href={`/${locale}/school/${s.u}/`}
+      className="block rounded-xl border border-gov-line bg-white p-4 active:bg-gov-tint"
+    >
+      <span className="font-bold text-gov-ink">{s.n}</span>
+      <span className="mt-0.5 block text-xs text-muted">
+        {s.b} · {s.c}
+        {km != null ? ` · ${labels.kmAway.replace("{km}", num(Math.round(km * 10) / 10))}` : ""}
+      </span>
+      <span className="mt-2 flex items-center justify-between">
+        <span className="text-xs text-muted">
+          {labels.overallScore}{" "}
+          <span
+            className="text-lg font-extrabold tabular-nums"
+            style={{ color: BAND_TEXT[s.band] }}
+          >
+            {num(s.s10)}
+          </span>
+          <span className="font-semibold">/{num(10)}</span>
+        </span>
+        <span className="rounded-lg bg-gov px-4 py-2 text-sm font-bold text-white">
+          {labels.openReport}
+        </span>
+      </span>
+    </Link>
+  );
+
+  const chip = (label: string, onClick: () => void) => (
+    <button
+      key={label}
+      type="button"
+      onClick={onClick}
+      className="min-h-[48px] rounded-xl bg-white px-4 text-[15px] font-semibold text-gov ring-1 ring-gov-line active:bg-gov-tint"
+    >
+      {label}
+    </button>
+  );
 
   return (
     <div className="md:max-w-2xl">
-      <div className="flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden
-          className="shrink-0 text-muted"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.3-4.3" />
+      {/* 1 — GPS, the primary path */}
+      <button
+        type="button"
+        onClick={locate}
+        className="flex min-h-[60px] w-full items-center justify-center gap-2.5 rounded-xl bg-gov px-6 text-[18px] font-extrabold text-white shadow-sm active:brightness-110"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11z" />
+          <circle cx="12" cy="10" r="2.5" />
         </svg>
-        <input
-          type="search"
-          inputMode="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={labels.searchPlaceholder}
-          aria-label={labels.searchPlaceholder}
-          className="min-h-[50px] w-full bg-transparent text-base text-gov-ink outline-none"
-        />
-      </div>
+        {labels.nearMe}
+      </button>
 
-      <p className="mt-4 text-sm font-bold text-gov-ink">{labels.filtersLabel}</p>
-      <div className="mt-2 flex gap-3">
-        <label className="flex flex-1 flex-col gap-1 text-xs font-semibold text-muted">
-          {labels.blockLabel}
-          <select
-            value={block}
-            onChange={(e) => setBlock(e.target.value)}
-            className={selectCls}
-          >
-            <option value="">{labels.allOption}</option>
-            {blocks.map((b) => (
-              <option key={b} value={b}>{b}</option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-1 flex-col gap-1 text-xs font-semibold text-muted">
-          {labels.clusterLabel}
-          <select
-            value={cluster}
-            onChange={(e) => setCluster(e.target.value)}
-            className={selectCls}
-          >
-            <option value="">{labels.allOption}</option>
-            {clusters.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      {active && (
-        <>
-          <p className="mt-5 text-sm font-bold text-gov-ink">
-            {labels.schoolsFound.replace("{n}", fmtNum(matches.length, locale))}
-          </p>
-          <ul className="mt-2 space-y-2.5">
-            {results.map((s) => (
-              <li key={s.u}>
-                <Link
-                  href={`/${locale}/school/${s.u}/`}
-                  className="block rounded-xl border border-gov-line bg-white p-4 active:bg-gov-tint"
-                >
-                  <span className="font-bold text-gov-ink">{s.n}</span>
-                  <span className="mt-0.5 block text-xs text-muted">
-                    UDISE: {s.u} · {s.b} · {s.c}
-                  </span>
-                  <span className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-muted">
-                      {labels.overallScore}{" "}
-                      <span
-                        className="text-lg font-extrabold tabular-nums"
-                        style={{ color: BAND_TEXT[s.band] }}
-                      >
-                        {fmtNum(s.s10, locale)}
-                      </span>
-                      <span className="font-semibold">/{fmtNum(10, locale)}</span>
-                    </span>
-                    <span className="rounded-lg bg-gov px-4 py-2 text-sm font-bold text-white">
-                      {labels.openReport}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-            {results.length === 0 && (
-              <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
-                {labels.noResults}
-              </li>
-            )}
-            {matches.length > results.length && (
-              <li className="px-1 py-2 text-sm text-muted">
-                {labels.showingFirst
-                  .replace("{shown}", fmtNum(results.length, locale))
-                  .replace("{n}", fmtNum(matches.length, locale))}
-              </li>
-            )}
-          </ul>
-        </>
+      {gps === "loading" && !nearest && (
+        <p className="mt-3 text-sm font-semibold text-gov-ink">{labels.nearMeFinding}</p>
       )}
+      {gps === "denied" && (
+        <p className="mt-3 rounded-xl bg-gov-tint p-3 text-sm text-gov-ink">
+          {labels.nearMeDenied}
+        </p>
+      )}
+      {nearest && nearest.length > 0 && (
+        <section className="mt-4">
+          <h2 className="text-sm font-bold text-gov-ink">{labels.nearMeResults}</h2>
+          <ul className="mt-2 space-y-2.5">
+            {nearest.map(({ item, km }) => (
+              <li key={item.u}>
+                <Card s={item} km={km} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 2 — tap-only drill-down backup */}
+      <section className="mt-6">
+        <h2 className="text-base font-bold text-gov-ink">{labels.stepFindTitle}</h2>
+
+        {!block && (
+          <>
+            <p className="mt-2 text-sm font-semibold text-muted">{labels.chooseBlock}</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {blocks.map((b) => chip(b, () => setBlock(b)))}
+            </div>
+          </>
+        )}
+
+        {block && (
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
+            <span className="font-bold text-gov-ink">{block}</span>
+            {cluster && <span className="font-bold text-gov-ink">· {cluster}</span>}
+            <button
+              type="button"
+              onClick={() => (cluster ? setCluster("") : setBlock(""))}
+              className="font-semibold text-gov underline underline-offset-2"
+            >
+              {labels.changeSel}
+            </button>
+          </p>
+        )}
+
+        {block && !cluster && (
+          <>
+            <p className="mt-2 text-sm font-semibold text-muted">{labels.chooseCluster}</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {clusters.map((c) => chip(c, () => setCluster(c)))}
+            </div>
+          </>
+        )}
+
+        {block && cluster && (
+          <>
+            <p className="mt-2 text-sm font-semibold text-muted">{labels.pickSchool}</p>
+            <ul className="mt-2 space-y-2.5">
+              {drillSchools.map((s) => (
+                <li key={s.u}>
+                  <Card s={s} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+
+      {/* 3 — typed search, demoted */}
+      <details className="mt-6 rounded-xl border border-gov-line bg-white px-4 py-3">
+        <summary className="cursor-pointer text-sm font-bold text-gov-ink">
+          {labels.typeSearchTitle}
+        </summary>
+        <div className="mt-3 flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <input
+            type="search"
+            inputMode="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={labels.searchPlaceholder}
+            aria-label={labels.searchPlaceholder}
+            className="min-h-[48px] w-full bg-transparent text-base text-gov-ink outline-none"
+          />
+        </div>
+        {q.trim() !== "" && (
+          <>
+            <p className="mt-3 text-sm font-bold text-gov-ink">
+              {labels.schoolsFound.replace("{n}", num(searchMatches.length))}
+            </p>
+            <ul className="mt-2 space-y-2.5">
+              {searchResults.map((s) => (
+                <li key={s.u}>
+                  <Card s={s} />
+                </li>
+              ))}
+              {searchResults.length === 0 && (
+                <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
+                  {labels.noResults}
+                </li>
+              )}
+              {searchMatches.length > searchResults.length && (
+                <li className="px-1 py-2 text-sm text-muted">
+                  {labels.showingFirst
+                    .replace("{shown}", num(searchResults.length))
+                    .replace("{n}", num(searchMatches.length))}
+                </li>
+              )}
+            </ul>
+          </>
+        )}
+      </details>
     </div>
   );
 }

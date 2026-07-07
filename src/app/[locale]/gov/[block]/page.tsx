@@ -4,6 +4,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
+import BlockSwitcher from "@/components/BlockSwitcher";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
@@ -102,7 +103,15 @@ export default function GovBlockPage({
       <SiteHeader locale={locale} t={t} showBack role="orgs" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* header */}
-        <p className="text-sm font-semibold text-gov-mid">{v.blockReport}</p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-gov-mid">{v.blockReport}</p>
+          <BlockSwitcher
+            locale={locale}
+            current={b.name}
+            slugs={Object.fromEntries(getBlockSlugs().map((x) => [x.name, x.slug]))}
+            labels={{ switchBlock: v.switchBlock, allBlocks: v.districtAllBlocks }}
+          />
+        </div>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">{b.name}</h1>
           <div className="text-right">
@@ -328,6 +337,29 @@ export default function GovBlockPage({
         <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
           <div className="mt-3 flex flex-col gap-2">
+            <a
+              href={`/data/downloads/blocks/${b.slug}.pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-gov underline underline-offset-2"
+            >
+              {v.downloadBlockPdf} ↓
+            </a>
+            <a
+              href="/data/downloads/learning_outcomes_report.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-gov underline underline-offset-2"
+            >
+              {v.downloadLorPdf} ↓
+            </a>
+            <a
+              href="/data/downloads/learning_outcomes.csv"
+              download
+              className="font-semibold text-gov underline underline-offset-2"
+            >
+              {v.downloadLorCsv} ↓
+            </a>
             <Link href={`/${locale}/gov/`} className="font-semibold text-gov underline underline-offset-2">
               {v.otherBlockReports} →
             </Link>

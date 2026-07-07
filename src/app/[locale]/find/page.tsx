@@ -20,21 +20,27 @@ export default function FindPage({ params }: { params: { locale: string } }) {
       <SiteHeader locale={locale} t={t} showBack />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         <h1 className="text-2xl font-extrabold text-gov-ink">{v.findTitle}</h1>
-        <p className="mt-1 text-muted">{v.findIntro}</p>
         <div className="mt-4">
           <SchoolFinder
             locale={locale}
             labels={{
+              nearMe: v.nearMe,
+              nearMeFinding: v.nearMeFinding,
+              nearMeDenied: v.nearMeDenied,
+              nearMeResults: v.nearMeResults,
+              stepFindTitle: v.stepFindTitle,
+              chooseBlock: v.chooseBlock,
+              chooseCluster: v.chooseCluster,
+              pickSchool: v.pickSchool,
+              changeSel: v.changeSel,
+              typeSearchTitle: v.typeSearchTitle,
               searchPlaceholder: t.find.searchPlaceholder,
-              filtersLabel: v.filtersLabel,
-              blockLabel: v.blockLabel,
-              clusterLabel: v.clusterLabel,
-              allOption: v.allOption,
               schoolsFound: v.schoolsFound,
               openReport: v.openReport,
               overallScore: v.overallScore,
               noResults: t.find.noResults,
               showingFirst: v.showingFirst,
+              kmAway: v.kmAway,
             }}
           />
         </div>
