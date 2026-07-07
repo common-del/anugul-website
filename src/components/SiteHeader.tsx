@@ -20,12 +20,13 @@ export default function SiteHeader({
   t: Messages;
   showBack?: boolean;
   active?: "home" | "reports" | "none";
-  role?: "parent" | "orgs" | "none";
+  role?: "parent" | "researcher" | "head" | "none";
 }) {
   const v = t.v2;
   const roles = [
     { href: `/${locale}/`, label: v.roleParent, current: role === "parent" },
-    { href: `/${locale}/gov/`, label: v.roleOrgs, current: role === "orgs" },
+    { href: `/${locale}/gov/`, label: v.roleOrgs, current: role === "researcher" },
+    { href: `/${locale}/school-head/`, label: v.roleHead, current: role === "head" },
   ];
   // TODO: replace seal with the School & Mass Education Dept logo when the
   // file is supplied (Drive link in the mock doc is not accessible here).

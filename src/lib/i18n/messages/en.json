@@ -330,7 +330,7 @@
     "govOdisha": "Government of Odisha",
     "iAmA": "I am a:",
     "roleParent": "Parent",
-    "roleOrgs": "Government and Orgs",
+    "roleOrgs": "Researcher",
     "navHome": "Home",
     "navReports": "Reports",
     "navHelp": "Help",
@@ -458,6 +458,8 @@
     "showMore": "Show {n} more",
     "showLess": "Show fewer",
     "printedCardTitle": "Your printed report card",
-    "printedCardTap": "Tap the card to download it (PDF)"
+    "printedCardTap": "Tap the card to download it (PDF)",
+    "roleHead": "School Head",
+    "headFindIntro": "Open your school's report card and see what to do as the School Head."
   }
 }

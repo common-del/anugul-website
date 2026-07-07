@@ -40,7 +40,7 @@ export default function GovPage({ params }: { params: { locale: string } }) {
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack role="orgs" />
+      <SiteHeader locale={locale} t={t} showBack role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">{v.govTitle}</h1>
         <p className="mt-1 text-muted">{v.govIntro}</p>

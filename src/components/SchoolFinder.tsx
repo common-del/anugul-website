@@ -50,9 +50,11 @@ const NEAR_MAX = 25; // most we ever list
 export default function SchoolFinder({
   locale,
   labels,
+  dest = "school",
 }: {
   locale: Locale;
   labels: Labels;
+  dest?: "school" | "principal";
 }) {
   const [index, setIndex] = useState<Item[]>([]);
   const [geo, setGeo] = useState<Geo[] | null>(null);
@@ -153,7 +155,7 @@ export default function SchoolFinder({
 
   const Card = ({ s, km }: { s: Item; km?: number }) => (
     <Link
-      href={`/${locale}/school/${s.u}/`}
+      href={`/${locale}/${dest}/${s.u}/`}
       className="block rounded-xl border border-gov-line bg-white p-4 active:bg-gov-tint"
     >
       <span className="font-bold text-gov-ink">{s.n}</span>

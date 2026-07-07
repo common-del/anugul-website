@@ -63,7 +63,7 @@ export default function PrincipalPage({
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack role="none" />
+      <SiteHeader locale={locale} t={t} showBack role="head" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         <section className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <div className="min-w-0">

@@ -100,7 +100,7 @@ export default function GovBlockPage({
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack role="orgs" />
+      <SiteHeader locale={locale} t={t} showBack role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* header */}
         <div className="flex flex-wrap items-center justify-between gap-3">
