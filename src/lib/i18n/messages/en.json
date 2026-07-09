@@ -769,6 +769,7 @@
     "dlPdfRowD": "Full block report card with all metrics",
     "dlCsvRowT": "Download CSV Data",
     "dlCsvRowD": "Raw data for further analysis",
-    "shareRowD": "Share summary with your team"
+    "shareRowD": "Share summary with your team",
+    "pageOneOf": "Page 1 of {n}"
   }
 }

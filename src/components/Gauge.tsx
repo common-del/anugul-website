@@ -16,11 +16,14 @@ export default function Gauge({
   color?: string;
 }) {
   const v = Math.max(0, Math.min(100, value));
-  // Semi-circle from 180° to 0°, radius 40, centre (50,50).
+  // Semi-circle from 180° to 0°, radius 40, centre (50,50). The swept angle is
+  // 180°·v/100, which never exceeds 180°, so the SVG large-arc-flag must be 0
+  // for every value — setting it to 1 (an earlier bug) made the arc take the
+  // long way through the bottom of the circle and get clipped away.
   const angle = Math.PI * (1 - v / 100);
   const x = 50 + 40 * Math.cos(angle);
   const y = 50 - 40 * Math.sin(angle);
-  const large = v > 50 ? 1 : 0;
+  const large = 0;
   return (
     <div className="text-center">
       <svg viewBox="0 0 100 58" className="mx-auto w-full max-w-[180px]" aria-hidden>

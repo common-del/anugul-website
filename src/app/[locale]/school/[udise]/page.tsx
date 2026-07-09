@@ -171,8 +171,10 @@ export default function SchoolPage({
           </div>
         </section>
 
-        {/* HERO: report card (left) | video + what you can do (right) */}
-        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:space-y-0">
+        {/* HERO: report card (left) | video + what you can do (right).
+            items-start: each column sizes to its own content — the right
+            column must never stretch to match the left. */}
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           {/* left — the report card, first and largest */}
           <section className="flex flex-col gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.yourReportCard}</h2>
@@ -184,6 +186,8 @@ export default function SchoolPage({
                     alt={`${s.name} — ${v.yourReportCard}`}
                     enlargeLabel={v.enlargeCard}
                     closeLabel={v.closeCard}
+                    pageLabel={v.pageOneOf}
+                    digits={locale === "od" ? "୦୧୨୩୪୫୬୭୮୯" : undefined}
                   />
                 </div>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -220,7 +224,7 @@ export default function SchoolPage({
                 />
               </div>
             </section>
-            <section className="flex-1 gov-card p-5">
+            <section className="gov-card p-5">
               <h2 className="text-base font-bold text-gov-ink">{v.whatYouCanDo}</h2>
               <ul className="mt-2 space-y-2 text-sm text-gov-ink">
                 <li className="flex items-start gap-2">

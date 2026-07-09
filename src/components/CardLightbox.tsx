@@ -2,32 +2,77 @@
 
 import { useState } from "react";
 
-// Report-card image with an enlarge control (expand icon, bottom-left) that
-// opens the full card in a full-screen, scrollable overlay so parents can read
-// the whole thing. Escape / backdrop / Close button dismiss it.
+// Report-card preview + lightbox. The preview is a TEASER: capped at a fixed
+// height for every school regardless of page count; anything taller is
+// cropped with a white fade at the bottom edge and a "Page 1 of N" badge.
+// The enlarge control opens the full, uncropped document (all pages) in a
+// full-screen scrollable overlay. Page count is derived from the stacked
+// image's aspect ratio (one A4 page ≈ 1.414 h/w), so it needs no extra data.
+const CAP_PX = 384; // preview height cap (= Tailwind max-h-96)
+const A4_RATIO = 1.414;
+
 export default function CardLightbox({
   src,
   alt,
   enlargeLabel,
   closeLabel,
+  pageLabel, // e.g. "Page 1 of {n}"
+  digits, // optional localised digit set, e.g. "୦୧୨୩୪୫୬୭୮୯"
 }: {
   src: string;
   alt: string;
   enlargeLabel: string;
   closeLabel: string;
+  pageLabel: string;
+  digits?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [pages, setPages] = useState(1);
+  const [cropped, setCropped] = useState(false);
+
+  // Runs from BOTH onLoad and the ref callback: a cached image can be
+  // complete before hydration attaches onLoad, which would otherwise leave
+  // the crop fade and page badge unset.
+  const measure = (img: HTMLImageElement | null) => {
+    if (!img || !img.complete || !img.naturalWidth) return;
+    const ratio = img.naturalHeight / img.naturalWidth;
+    setPages(Math.max(1, Math.round(ratio / A4_RATIO)));
+    const w = img.offsetWidth || img.parentElement?.offsetWidth || 0;
+    setCropped(w * ratio > CAP_PX + 1);
+  };
+
+  const local = (n: number) =>
+    String(n)
+      .split("")
+      .map((d) => (digits ? digits[Number(d)] ?? d : d))
+      .join("");
 
   return (
     <>
-      <div className="relative">
+      <div
+        className="relative overflow-hidden rounded-lg border border-gov-line shadow-sm"
+        style={{ maxHeight: CAP_PX }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={alt}
           loading="lazy"
-          className="w-full rounded-lg border border-gov-line shadow-sm"
+          ref={measure}
+          onLoad={(e) => measure(e.currentTarget)}
+          className="w-full"
         />
+        {cropped && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent"
+          />
+        )}
+        {pages > 1 && (
+          <span className="absolute bottom-2 right-2 rounded-full bg-gov-ink/85 px-2.5 py-1 text-[11px] font-bold text-white">
+            {pageLabel.replace("{n}", local(pages))}
+          </span>
+        )}
         <button
           type="button"
           onClick={() => setOpen(true)}
