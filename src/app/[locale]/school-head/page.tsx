@@ -25,7 +25,7 @@ export default function SchoolHeadPage({
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack role="head" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-        <h1 className="text-2xl font-extrabold text-gov-ink">{v.findTitle}</h1>
+        <h1 className="text-2xl font-extrabold leading-tight text-gov">{v.findTitle}</h1>
         <p className="mt-1 text-muted">{v.headFindIntro}</p>
 
         {/* informational strip (School Head only): four equal tiles floating

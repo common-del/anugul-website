@@ -216,9 +216,11 @@ export default function SchoolFinder({
   const nearList = nearest && (nearExpanded ? nearest : nearest.slice(0, NEAR_SHOWN));
 
   return (
-    <div className="md:grid md:grid-cols-2 md:items-start md:gap-5">
+    // With the tip (School Head variant) the two route cards stretch to equal
+    // height for symmetry — the tinted tip panel grows to fill the difference.
+    <div className={`md:grid md:grid-cols-2 md:gap-5 ${tip ? "md:items-stretch" : "md:items-start"}`}>
       {/* Route A — search by typing, with GPS as the quieter fallback beside it */}
-      <div className="rounded-2xl border border-gov-line bg-white p-4 shadow-card">
+      <div className={`rounded-2xl border border-gov-line bg-white p-4 shadow-card ${tip ? "md:flex md:flex-col" : ""}`}>
         <div className="flex gap-2">
           <div className="flex flex-[2] items-center gap-2 rounded-xl border border-gov-line bg-white px-3 shadow-sm focus-within:border-gov">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
@@ -250,7 +252,7 @@ export default function SchoolFinder({
         <p className="mt-1.5 text-xs text-muted">{labels.searchNote}</p>
 
         {tip && (
-          <div className="mt-3 flex items-center gap-3 rounded-xl bg-gov-tint p-3.5">
+          <div className="mt-3 flex items-center gap-3 rounded-xl bg-gov-tint p-3.5 md:flex-1">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gov">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0012 3z" />
