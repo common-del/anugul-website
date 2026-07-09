@@ -146,6 +146,10 @@ print("block PDFs: 8 written")
 items = json.load(open(os.path.join(OFF, "items.json"), encoding="utf-8"))
 by_lo = {}
 for i in items:
+    # Known G8 cross-tagging: OD-coded LOs appearing under a non-Odia subject
+    # are mislabelled in the source — excluded here as everywhere else.
+    if str(i["lo"]).startswith("OD") and i["subject"] != "Odia":
+        continue
     key = (i["grade"], i["subject"], i["lo"])
     e = by_lo.setdefault(key, {"grade": i["grade"], "subject": i["subject"], "lo": i["lo"],
                                "desc": "", "pcts": []})
