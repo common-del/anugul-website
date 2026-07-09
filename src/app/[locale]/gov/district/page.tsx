@@ -286,6 +286,7 @@ export default function DistrictReportPage({
               { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", primary: true },
               { t: v.dlDistCsvT, d: v.dlDistCsvD, href: "/data/downloads/schools_overall.csv", primary: false },
               { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", primary: false },
+              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", primary: false },
             ].map((c) => (
               <div key={c.t} className="flex flex-col rounded-xl border border-gov-line bg-white p-4 shadow-sm">
                 <div className="text-sm font-extrabold text-gov-ink">{c.t}</div>
