@@ -770,6 +770,25 @@
     "dlCsvRowT": "Download CSV Data",
     "dlCsvRowD": "Raw data for further analysis",
     "shareRowD": "Share summary with your team",
-    "pageOneOf": "Page 1 of {n}"
+    "pageOneOf": "Page 1 of {n}",
+    "homeAboutT": "About Saksham",
+    "homeAboutBody": "Saksham is the Government of Odisha's initiative to assess learning outcomes of **Grade 5 and Grade 8** students in government schools. **School Report Cards** provide reliable information on learning performance to help parents, schools and education officials make **informed decisions for better learning**.",
+    "homeDykT": "Did you know?",
+    "dyk1T": "First competency-based assessment",
+    "dyk1D": "of Grade 5 & Grade 8 students in Odisha.",
+    "dyk2T": "Aligned with the National Education Policy 2020",
+    "dyk2D": "Focus on learning outcomes and foundational skills.",
+    "dyk3T": "Comprehensive and reliable",
+    "dyk3D": "Conducted across all government schools in Anugola.",
+    "dyk4T": "For informed decisions",
+    "dyk4D": "Empowering parents, schools and officials to support every child's learning.",
+    "statSchoolsL": "Schools Assessed",
+    "statSchoolsC": "95% of total schools",
+    "statStudentsL": "Students Assessed",
+    "statStudentsC": "Grade 5 & Grade 8",
+    "statBlocksL": "Blocks Covered",
+    "statBlocksC": "Anugola District",
+    "statDataL": "Government Data",
+    "statDataC": "Verified & Reliable"
   }
 }
