@@ -1,10 +1,10 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
-import GovBlockPicker from "@/components/GovBlockPicker";
 import Gauge from "@/components/Gauge";
 import { mapBandColor } from "@/components/DistrictMapBands";
 import SubjectsVsDistrict, { type SubjectRow } from "@/components/SubjectsVsDistrict";
@@ -426,13 +426,29 @@ export default function GovBlockPage({
         <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
           <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.blockOverview}</h2>
-            <div className="mt-3">
-              <GovBlockPicker
-                locale={locale}
-                slugs={slugs}
-                labels={{ allBlocks: v.districtAllBlocks, hint: v.clickBlockHint }}
-              />
-            </div>
+            {/* No map here (owner, 2026-07-10) — just the eight block links,
+                alphabetical, two columns of four. */}
+            <ul className="mt-3 grid grid-cols-2 gap-2.5">
+              {getBlockSlugs()
+                .slice()
+                .sort((a, z) => a.name.localeCompare(z.name))
+                .map((x) => (
+                  <li key={x.slug}>
+                    <Link
+                      href={`/${locale}/gov/${x.slug}/`}
+                      aria-current={x.slug === b.slug ? "page" : undefined}
+                      className={`flex min-h-[48px] items-center justify-between gap-2 rounded-xl px-4 text-sm font-bold ring-1 shadow-sm transition ${
+                        x.slug === b.slug
+                          ? "bg-gov text-white ring-gov"
+                          : "bg-white text-gov-dark ring-gov-line hover:bg-gov-tint"
+                      }`}
+                    >
+                      <span className="truncate">{x.name}</span>
+                      <span aria-hidden className={x.slug === b.slug ? "text-white/80" : "text-gov"}>→</span>
+                    </Link>
+                  </li>
+                ))}
+            </ul>
           </section>
 
           <section className="gov-card p-5">

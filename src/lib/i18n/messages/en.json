@@ -799,6 +799,24 @@
     "headBannerT": "Your leadership makes a difference",
     "headBannerB": "Use data to identify strengths, address learning gaps and create better outcomes for every student.",
     "dlMisPdfT": "Misconceptions Report (PDF)",
-    "dlMisPdfD": "The 15 most important wrong answers students chose — and how to re-teach them"
+    "dlMisPdfD": "The 15 most important wrong answers students chose — and how to re-teach them",
+    "headWhatT": "What should you do as a School Head?",
+    "headWhatD": "Three simple steps to turn this report card into action.",
+    "dietFull": "District Institute of Education and Training",
+    "crccFull": "Cluster Resource Centre Coordinators",
+    "tileMgmt": "School Management Type",
+    "tileClasses": "Classes",
+    "tileStudents": "Students",
+    "tileTeachers": "Teachers",
+    "tileUdise": "UDISE Code",
+    "tileCluster": "Cluster",
+    "headExploreT": "Explore More Reports",
+    "headExploreD": "Use these reports to understand learning levels and plan better.",
+    "exp1T": "Block Learning Outcome Report",
+    "exp1D": "View how every Learning Outcome performed across your block.",
+    "exp2T": "Block Performance Report",
+    "exp2D": "View overall performance of schools in your block across subjects, grades and clusters.",
+    "exp3T": "District Performance Report",
+    "exp3D": "View performance of all blocks in Anugola district and key indicators."
   }
 }
