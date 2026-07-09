@@ -664,15 +664,25 @@ with open(os.path.join(DL, "block_aggregates.csv"), "w", encoding="utf-8", newli
                     district["below50"].get(b), district["proficiency"].get(b)])
 with open(os.path.join(DL, "cluster_league.csv"), "w", encoding="utf-8", newline="") as f:
     w = csv.writer(f)
-    w.writerow(["block", "cluster", "score", "students", "schools", "best_school", "worst_school"])
+    # Scale convention (owner, 2026-07-09): SCHOOL-level numbers are always
+    # /10 in downloads; cluster/block/district stay %. best/worst school here
+    # are school-level, so they ship on the 10-point scale.
+    w.writerow(["block", "cluster", "score", "students", "schools",
+                "best_school_out_of_10", "worst_school_out_of_10"])
     for bname, bd in sorted(blocks.items()):
         for r in bd["cluster_league"]["rows"]:
             w.writerow([bname, r["cluster"], r["score"], r["students"], r["schools"],
-                        r["best_school"], r["worst_school"]])
+                        int(math.floor(r["best_school"] / 10 + 0.5)),
+                        int(math.floor(r["worst_school"] / 10 + 0.5))])
+# Owner decision 2026-07-09: three LOs the LO report excludes at LO level are
+# dropped from every CSV so the downloads agree with each other.
+LO_DROP = {"E 409", "M 804", "OD 709"}
 with open(os.path.join(DL, "items_clean.csv"), "w", encoding="utf-8", newline="") as f:
     w = csv.writer(f)
     w.writerow(["grade", "subject", "q_no", "lo", "gl", "desc", "correct_pct", "top_wrong_pct", "blank_pct"])
     for i in items_clean:
+        if str(i["lo"]).strip() in LO_DROP:
+            continue
         w.writerow([i["grade"], i["subject"], i["q_no"], i["lo"], i["gl"], i["desc"],
                     i["correct_pct"], i["top_wrong_pct"], i["blank"]])
 print("  wrote downloads: block_aggregates.csv, cluster_league.csv, items_clean.csv")
@@ -737,17 +747,18 @@ with open(os.path.join(DL, "students_anonymised_README.txt"), "w", encoding="utf
     )
 print("  wrote students_anonymised_README.txt")
 
-# 2) school x grade x subject (finest safe aggregate)
+# 2) school x grade x subject (finest safe aggregate). Scale convention:
+# school-level numbers ship /10 (whole), never %.
 with open(os.path.join(DL, "school_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f)
     w.writerow(["udise", "school_name", "block", "cluster", "setting",
-                "grade", "subject", "pct_correct"])
+                "grade", "subject", "score_out_of_10"])
     for u, s in sorted(schools.items()):
         st = (s.get("profile") or {}).get("area") or ""
         for g in sorted(s["byGrade"]):
             for subj in sorted(s["byGrade"][g]):
                 w.writerow([u, s["name"], s["block"], s["cluster"], st,
-                            g, subj, s["byGrade"][g][subj]])
+                            g, subj, int(math.floor(s["byGrade"][g][subj] / 10 + 0.5))])
 
 # 3) schools master. Owner decision 2026-07-09: downloads must NOT carry
 # lat/lon, overall_pct or band — only the /10 score shown on the site.

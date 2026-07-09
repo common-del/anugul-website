@@ -93,8 +93,20 @@ export default function GovBlockPage({
     },
     bestCluster && { l: v.bestCluster, val: bestCluster.cluster, n: pct(bestCluster.score), good: true },
     worstCluster && { l: v.clusterNeedsSupport, val: worstCluster.cluster, n: pct(worstCluster.score), good: false },
-    bestSchool && { l: v.bestSchool, val: bestSchool.name, n: pct(bestSchool.score), good: true },
-    worstSchool && { l: v.schoolNeedsSupport, val: worstSchool.name, n: pct(worstSchool.score), good: false },
+    // Scale convention: school-level numbers show /10, never % (admin units
+    // — cluster/block/district — stay %).
+    bestSchool && {
+      l: v.bestSchool,
+      val: bestSchool.name,
+      n: `${num(Math.round(bestSchool.score / 10))}/${num(10)}`,
+      good: true,
+    },
+    worstSchool && {
+      l: v.schoolNeedsSupport,
+      val: worstSchool.name,
+      n: `${num(Math.round(worstSchool.score / 10))}/${num(10)}`,
+      good: false,
+    },
     {
       l: v.vsDistrictShortL,
       val: fill(v.vsDistrictShortV, { block: pct(b.headline.overall), district: pct(distAvg) }),

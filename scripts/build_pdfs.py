@@ -144,11 +144,16 @@ print("block PDFs: 8 written")
 # assess the same LO, pct_correct is the simple mean across those questions
 # (questions_assessed says how many the figure is based on).
 items = json.load(open(os.path.join(OFF, "items.json"), encoding="utf-8"))
+# Owner decision 2026-07-09: these LOs have no block-level data in the LO
+# report — dropped from every LO download so the files agree.
+LO_DROP = {"E 409", "M 804", "OD 709"}
 by_lo = {}
 for i in items:
     # Known G8 cross-tagging: OD-coded LOs appearing under a non-Odia subject
     # are mislabelled in the source — excluded here as everywhere else.
     if str(i["lo"]).startswith("OD") and i["subject"] != "Odia":
+        continue
+    if str(i["lo"]).strip() in LO_DROP:
         continue
     key = (i["grade"], i["subject"], i["lo"])
     e = by_lo.setdefault(key, {"grade": i["grade"], "subject": i["subject"], "lo": i["lo"],
