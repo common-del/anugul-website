@@ -46,7 +46,7 @@ export default function GovPage({ params }: { params: { locale: string } }) {
         <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">{v.govTitle}</h1>
         <p className="mt-1 text-muted">{v.govIntro}</p>
 
-        <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-5 gov-card p-5">
           <h2 className="text-sm font-bold uppercase tracking-wide text-gov-mid">
             {v.districtOverview}
           </h2>

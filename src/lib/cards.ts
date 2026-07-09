@@ -1,9 +1,15 @@
 import cardList from "../../public/data/pdf-cards.json";
 
-// Printed report cards are self-hosted in the deploy (public/data/cards and
-// public/data/hcards). Blob hosting was retired 2026-07-07: exceeding the
-// Hobby write cap got the whole store blocked (403 on reads), breaking every
-// download — local static files have no such failure mode.
+// Asset base URLs. Default to the in-repo /data paths (self-hosted in the
+// deploy). Set the NEXT_PUBLIC_*_BASE env vars (no trailing slash) to serve the
+// PDFs / preview images from a CDN / object store instead — that lets the
+// ~470 MB of report-card assets leave the Vercel deploy. Cutover steps:
+// scripts/OFFLOAD_PDFS.md.
+//   e.g. NEXT_PUBLIC_CARD_BASE=https://cdn.example.com/cards
+const CARD_BASE = process.env.NEXT_PUBLIC_CARD_BASE || "/data/cards";
+const CARDIMG_BASE = process.env.NEXT_PUBLIC_CARDIMG_BASE || "/data/cardimg";
+const HCARD_BASE = process.env.NEXT_PUBLIC_HCARD_BASE || "/data/hcards";
+
 const cardSet = new Set(cardList as string[]);
 
 export function hasCard(udise: string): boolean {
@@ -11,13 +17,13 @@ export function hasCard(udise: string): boolean {
 }
 
 export function cardUrl(udise: string): string {
-  return `/data/cards/${udise}.pdf`;
+  return `${CARD_BASE}/${udise}.pdf`;
 }
 
 // Page-1 preview image of the printed card (in-repo, public/data/cardimg).
 // Same set as the hosted PDFs, so hasCard() also gates the image.
 export function cardImg(udise: string): string {
-  return `/data/cardimg/${udise}.webp`;
+  return `${CARDIMG_BASE}/${udise}.webp`;
 }
 
 // Official School-Head report cards (3-page, with the how-to-read guide),
@@ -31,5 +37,5 @@ export function hasHcard(udise: string): boolean {
 }
 
 export function hcardUrl(udise: string): string {
-  return `/data/hcards/${udise}.pdf`;
+  return `${HCARD_BASE}/${udise}.pdf`;
 }

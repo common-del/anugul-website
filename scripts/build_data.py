@@ -899,6 +899,16 @@ for u, s in schools.items():
         json.dump(rec, f, ensure_ascii=False, separators=(",", ":"))
 print(f"  wrote {len(schools)} per-school JSON -> public/data/school/")
 
+# --- apply official unit renames (district + blocks) to all emitted data -----
+# Govt renamed (2026): Angul->Anugola, Athamallik->Athamalik, Pallahara->
+# Palalahada, Talcher->Talachera. Slugs/filenames keep the original spelling so
+# URLs + PDF references stay stable; only display VALUES change. Idempotent.
+try:
+    from apply_unit_renames import apply as _apply_unit_renames
+    _apply_unit_renames()
+except Exception as _e:
+    print("  WARN: unit rename post-process skipped:", _e)
+
 print("\n--- QA summary ---")
 print(json.dumps(qa, ensure_ascii=False, indent=2)[:2000])
 print(f"\nDONE. {len(schools)} school records -> {OUT}")

@@ -89,7 +89,7 @@ export default function GovBlockPicker({
         <select
           defaultValue=""
           onChange={(e) => e.target.value && go(e.target.value)}
-          className="min-h-[48px] w-full rounded-xl border border-gov-line bg-white px-3 text-[15px] font-semibold text-gov-ink"
+          className="min-h-[48px] w-full rounded-xl border border-gov-line bg-white px-3 text-[15px] font-semibold text-gov-ink shadow-sm"
         >
           <option value="">{labels.allBlocks}</option>
           {names.map((n) => (
@@ -102,7 +102,7 @@ export default function GovBlockPicker({
               key={n}
               type="button"
               onClick={() => go(n)}
-              className="min-h-[44px] rounded-full bg-white px-4 text-sm font-semibold text-gov ring-1 ring-gov-line hover:bg-gov-tint"
+              className="min-h-[44px] rounded-full bg-white px-4 text-sm font-semibold text-gov ring-1 ring-gov-line shadow-sm transition-shadow hover:bg-gov-tint hover:shadow"
             >
               {n}
             </button>

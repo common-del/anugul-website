@@ -1,9 +1,9 @@
 {
   "site": {
-    "name": "Angul Schools",
-    "strapline": "Angul, Odisha | Know Your School's Performance",
+    "name": "Anugola Schools",
+    "strapline": "Anugola, Odisha | Know Your School's Performance",
     "subtitle": "SAKSHAM - Student Assessment for Knowledge, Skills & Competency-based Achievement Mapping",
-    "description": "See how schools in Angul, Odisha are performing on the SAKSHAM assessment.",
+    "description": "See how schools in Anugola, Odisha are performing on the SAKSHAM assessment.",
     "tagline": "Because every parent deserves to know",
     "copyright": "© 2026 Government of Odisha"
   },
@@ -61,7 +61,7 @@
   },
   "footerLinks": {
     "aboutSaksham": "About SAKSHAM",
-    "aboutAngul": "About Angul"
+    "aboutAngul": "About Anugola"
   },
   "aboutSaksham": {
     "title": "About SAKSHAM",
@@ -254,7 +254,7 @@
     "hubDownloads": "Open data downloads",
     "printPage": "Print this page",
     "methodsParas": [
-      "SAKSHAM is a census assessment of government schools in Angul district: 1,361 schools and 28,079 children in Grades 5 and 8, tested over two days.",
+      "SAKSHAM is a census assessment of government schools in Anugola district: 1,361 schools and 28,079 children in Grades 5 and 8, tested over two days.",
       "Grade 5 answered 60 questions (Odia, English, Maths, EVS); Grade 8 answered 100 (Odia, English, Maths, Science, Social Studies). All questions were multiple-choice with one mark each.",
       "A child's subject score is the percentage of that subject's questions answered correctly. A child's overall score is the average of their subject scores. A school's score is the average of its children's overall scores. The pass line used throughout is 50%.",
       "Bands: Needs urgent support (0–25), Needs support (26–50), Developing (51–75), Excelling (76–100). Bands are derived from the displayed rounded score.",
@@ -267,7 +267,7 @@
     "dlClusters": "Cluster league, all blocks (CSV)",
     "dlItems": "Item bank with difficulty (CSV)",
     "inputsTitle": "What schools have",
-    "inputsIntro": "Inputs shown next to the result. In Angul these explain little of the score difference — read them for entitlement and targeting, not to explain a score.",
+    "inputsIntro": "Inputs shown next to the result. In Anugola these explain little of the score difference — read them for entitlement and targeting, not to explain a score.",
     "inputsCoverage": "Input data covers {withData} of {total} schools.",
     "inputsNoData": "No UDISE input data here yet. Request the extract for {block}.",
     "inputsBasics": "Basics in place: {n} of 8 on average",
@@ -316,7 +316,7 @@
     "neighboursKm": "{km} km"
   },
   "analytics": {
-    "title": "How is Angul doing?",
+    "title": "How is Anugola doing?",
     "intro": "District and block-wise results from the SAKSHAM assessment.",
     "districtExplain": "Average score across all assessed government schools.",
     "schoolsAssessed": "schools assessed",
@@ -330,7 +330,7 @@
     "govOdisha": "Government of Odisha",
     "iAmA": "I am a:",
     "roleParent": "Parent",
-    "roleOrgs": "Researcher",
+    "roleOrgs": "Govt/Orgs",
     "navHome": "Home",
     "navReports": "Reports",
     "navHelp": "Help",
@@ -359,7 +359,7 @@
     "faqTitle": "Frequently Asked Questions",
     "resourcesTitle": "Resources",
     "contactTitle": "Contact Us",
-    "contactOffice": "District Education Office, Angul",
+    "contactOffice": "District Education Office, Anugola",
     "findTitle": "Find Your School",
     "findIntro": "Search by school name or UDISE code",
     "filtersLabel": "Filters (optional)",
@@ -383,7 +383,7 @@
     "followUs": "Follow us:",
     "districtAllBlocks": "District / All Blocks",
     "clickBlockHint": "Click a block on the map, or choose from the list.",
-    "districtOverview": "Angul district at a glance",
+    "districtOverview": "Anugola district at a glance",
     "districtAverage": "District average",
     "topBlock": "Top block",
     "blockReport": "Block Report Card",
@@ -431,7 +431,7 @@
     "reportsFindT": "Your school's report card",
     "reportsFindDesc": "Search for your school and open its report card.",
     "reportsDistrictT": "District overview",
-    "reportsDistrictDesc": "How Angul district and all its blocks are doing.",
+    "reportsDistrictDesc": "How Anugola district and all its blocks are doing.",
     "reportsBlocksT": "Block report cards",
     "filmClose": "Close",
     "nearMe": "Schools near me",
@@ -467,11 +467,11 @@
     "faqAll": "All",
     "faqParents": "Parents",
     "faqHeads": "School Heads",
-    "faqResearchers": "Researchers",
+    "faqResearchers": "Government / Organizations",
     "faqGovernment": "Government",
     "faqNoResults": "No questions match your search.",
     "faqStillTitle": "Still have questions?",
-    "faqStillText": "Write to the District Education Office, Angul.",
+    "faqStillText": "Write to the District Education Office, Anugola.",
     "resTitle": "Resources",
     "resIntro": "Understand the report card, how the scores are made, and what to do next.",
     "resVideosT": "Videos",
@@ -508,13 +508,13 @@
     "contactMsg": "Your message",
     "contactMsgPh": "Write your message",
     "contactSend": "Send",
-    "contactSubject": "Angul Schools — enquiry",
+    "contactSubject": "Anugola Schools — enquiry",
     "contactNoEmail": "Sending will be enabled once the office email is added.",
     "faqItems": [
       {
         "id": "what",
         "q": "What is the Saksham School Report Card?",
-        "a": "It is a simple card that shows how well children in a school are learning, based on the SAKSHAM assessment of Grade 5 and Grade 8 students in Angul district. It gives the school one overall score out of 10, plus a score for each subject, so parents and teachers can see where the school does well and where it needs support.",
+        "a": "It is a simple card that shows how well children in a school are learning, based on the SAKSHAM assessment of Grade 5 and Grade 8 students in Anugola district. It gives the school one overall score out of 10, plus a score for each subject, so parents and teachers can see where the school does well and where it needs support.",
         "tags": [
           "parents",
           "heads",
@@ -593,7 +593,7 @@
       {
         "id": "notlisted",
         "q": "What if my school is not listed?",
-        "a": "A few schools could not be matched to the assessment data and do not have a card yet. If you cannot find your school, please contact the District Education Office, Angul (see Contact Us) with the school name and UDISE code.",
+        "a": "A few schools could not be matched to the assessment data and do not have a card yet. If you cannot find your school, please contact the District Education Office, Anugola (see Contact Us) with the school name and UDISE code.",
         "tags": [
           "parents",
           "heads"
@@ -612,7 +612,7 @@
     "dataHubT": "Data & Analysis",
     "dataHubD": "District-wide analysis and the full data catalogue for your own research.",
     "dataTitle": "Data & Analysis",
-    "dataIntro": "How Angul's results break down — and every dataset behind this site, downloadable for your own analysis.",
+    "dataIntro": "How Anugola's results break down — and every dataset behind this site, downloadable for your own analysis.",
     "dataViewsT": "District analysis",
     "aboveClusterT": "Schools scoring far above their own cluster",
     "aboveClusterD": "Bright spots per block — worth a visit to learn what works.",
@@ -690,12 +690,25 @@
     "misOrderNote": "The specific wrong answer many pupils pick, with what it reveals and a teaching response. Ordered by how many pupils fell for it.",
     "privacyP1": "This site shows school-level results from the SAKSHAM assessment. It never shows any individual child's result, name or personal detail.",
     "privacyP2": "The site does not ask for, or store, any personal information from visitors. No login is needed. The downloadable research data is anonymised — roll numbers are removed and rows are shuffled.",
-    "privacyP3": "For any question about the data on this site, contact the District Education Office, Angul (see Contact Us).",
+    "privacyP3": "For any question about the data on this site, contact the District Education Office, Anugola (see Contact Us).",
     "termsP1": "The scores and reports on this site are published by the School & Mass Education Department, Government of Odisha, from the SAKSHAM assessment of Grade 5 and Grade 8, to help parents, school heads and officials understand and improve learning.",
     "termsP2": "The data may be used and shared freely for education, research and reporting, with attribution to SAKSHAM / Government of Odisha. It must not be used to rank, shame or penalise individual children or teachers.",
     "termsP3": "Scores describe one assessment round and should be read together with the school's context.",
     "a11yP1": "This site is built to be usable by everyone: Odia first with an English toggle, large type, high contrast, big touch targets, and it works on low-cost phones and slow connections.",
     "a11yP2": "Report cards can be downloaded as PDFs, and every score is shown as text as well as stars so it does not depend on colour alone.",
-    "a11yP3": "If any part of this site is hard to use — with a screen reader, keyboard or otherwise — please tell us via Contact Us so we can fix it."
+    "a11yP3": "If any part of this site is hard to use — with a screen reader, keyboard or otherwise — please tell us via Contact Us so we can fix it.",
+    "filmDesc": "What Anugola's school report card means for your child",
+    "viewReportAria": "View report for {name}, overall score {n} out of {max}",
+    "yourReportCard": "Your School Report Card",
+    "downloadReportCard": "Download Report Card",
+    "enlargeCard": "Enlarge report card",
+    "closeCard": "Close",
+    "viewMoreDetails": "View more details",
+    "viewLessDetails": "Hide details",
+    "infraAvailable": "Infrastructure available",
+    "infraNotAvailable": "Infrastructure not available",
+    "smcFormation": "SMC formation",
+    "yes": "Yes",
+    "no": "No"
   }
 }

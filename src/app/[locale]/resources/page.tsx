@@ -23,7 +23,7 @@ export default function ResourcesPage({
   const t = getDict(locale);
   const v = t.v2;
 
-  const card = "group rounded-2xl border border-gov-line bg-white";
+  const card = "group gov-card";
   const summary =
     "flex cursor-pointer items-start justify-between gap-3 p-5";
   const chev = "shrink-0 text-gov transition-transform group-open:rotate-45";

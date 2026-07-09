@@ -7,6 +7,6 @@ export default function PageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-white">{children}</div>
+    <div className="flex min-h-screen flex-col bg-gov-canvas">{children}</div>
   );
 }

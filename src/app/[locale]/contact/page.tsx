@@ -38,7 +38,7 @@ export default function ContactPage({
           {v.contactTitle}
         </h1>
 
-        <section className="mt-4 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-4 gov-card p-5">
           <p className="font-bold text-gov-ink">{v.contactOffice}</p>
           <dl className="mt-3 space-y-1.5 text-sm">
             {rows.map((r) => (

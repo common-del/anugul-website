@@ -128,7 +128,7 @@ export default function GovBlockPage({
         </div>
 
         {/* overview */}
-        <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-5 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.blockOverview}</h2>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
@@ -152,7 +152,7 @@ export default function GovBlockPage({
         </section>
 
         {/* grade-wise scores */}
-        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.gradeWiseScores}</h2>
           <div className="mt-3 grid grid-cols-2 gap-3">
             {[
@@ -173,7 +173,7 @@ export default function GovBlockPage({
         </section>
 
         {/* key insights */}
-        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">
             {fill(v.keyInsights, { block: b.name })}
           </h2>
@@ -200,7 +200,7 @@ export default function GovBlockPage({
 
         <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           {/* subjects vs district */}
-          <section className="rounded-2xl border border-gov-line bg-white p-5">
+          <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.subjectVsDistrictT}</h2>
             {Object.entries(b.rel_subject).map(([g, rows]) => (
               <div key={g} className="mt-3">
@@ -228,7 +228,7 @@ export default function GovBlockPage({
           </section>
 
           {/* schools by band */}
-          <section className="rounded-2xl border border-gov-line bg-white p-5">
+          <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.bandSegregation}</h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {BAND_ORDER.map((k) =>
@@ -261,7 +261,7 @@ export default function GovBlockPage({
         </div>
 
         {/* cluster performance */}
-        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.clusterPerformance}</h2>
           <div className="mt-3 space-y-1.5">
             {clusters.map((c) => {
@@ -291,7 +291,7 @@ export default function GovBlockPage({
         {(bestLos.length > 0 || weakLos.length > 0) && (
           <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
             {bestLos.length > 0 && (
-              <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <section className="gov-card p-5">
                 <h2 className="text-lg font-bold text-gov-ink">{v.bestLosT}</h2>
                 <ul className="mt-2 divide-y divide-gov-line text-sm">
                   {bestLos.slice(0, 8).map((h, i) => (
@@ -311,7 +311,7 @@ export default function GovBlockPage({
               </section>
             )}
             {weakLos.length > 0 && (
-              <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <section className="gov-card p-5">
                 <h2 className="text-lg font-bold text-gov-ink">{v.weakestLosT}</h2>
                 <ul className="mt-2 divide-y divide-gov-line text-sm">
                   {weakLos.slice(0, 8).map((h, i) => (
@@ -334,7 +334,7 @@ export default function GovBlockPage({
         )}
 
         {/* downloads + actions */}
-        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
           <div className="mt-3 flex flex-col gap-2">
             <a

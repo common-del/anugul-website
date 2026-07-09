@@ -2,13 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Latin default; Odia pages lead with the Odia face. Both self-hosted via
-   next/font (no runtime Google Fonts). */
+/* Reusable surfaces. A card is a white panel that floats on the pale gray-green
+   canvas with a soft shadow — restrained depth, not decoration. Padding stays
+   on the element so it can vary per use. */
+@layer components {
+  .gov-card {
+    @apply rounded-2xl border border-gov-line bg-white shadow-card;
+  }
+  /* A clickable card: same panel, but lifts slightly on hover/focus. */
+  .gov-card-link {
+    @apply gov-card transition-shadow duration-150 hover:shadow-lift focus-visible:shadow-lift;
+  }
+}
+
+/* Latin default (Public Sans, the USWDS typeface); Odia pages lead with the
+   Odia face (Noto Sans Oriya). Both self-hosted via next/font (no runtime
+   Google Fonts). Full Public Sans fallback stack for consistent rendering. */
 :root {
-  --font-primary: var(--font-latin), system-ui, sans-serif;
+  --font-primary: var(--font-latin), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 html[lang="or"] {
-  --font-primary: var(--font-odia), var(--font-latin), system-ui, sans-serif;
+  --font-primary: var(--font-odia), var(--font-latin), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
 }
 
 html {

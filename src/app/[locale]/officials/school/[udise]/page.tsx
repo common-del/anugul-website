@@ -14,7 +14,7 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
 import type { BandKey } from "@/lib/bands";
-import schoolsData from "@/data/schools.json";
+import { getSchools } from "@/lib/schools";
 
 type School = {
   udise: string; name: string; block: string; cluster: string;
@@ -26,7 +26,7 @@ type School = {
   neighbours: { udise: string; km: number | null }[];
 };
 
-const schools = schoolsData as unknown as Record<string, School>;
+const schools = getSchools() as unknown as Record<string, School>;
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>

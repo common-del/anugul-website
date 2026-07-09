@@ -41,7 +41,7 @@ export default function ContactForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={labels.namePh}
-          className="mt-1 min-h-[48px] w-full rounded-xl border border-gov-line bg-white px-4 text-base text-gov-ink outline-none focus:border-gov"
+          className="mt-1 min-h-[48px] w-full rounded-xl border border-gov-line bg-white px-4 text-base text-gov-ink shadow-sm outline-none focus:border-gov"
         />
       </label>
       <label className="block">
@@ -51,7 +51,7 @@ export default function ContactForm({
           onChange={(e) => setMsg(e.target.value)}
           placeholder={labels.msgPh}
           rows={5}
-          className="mt-1 w-full rounded-xl border border-gov-line bg-white px-4 py-3 text-base text-gov-ink outline-none focus:border-gov"
+          className="mt-1 w-full rounded-xl border border-gov-line bg-white px-4 py-3 text-base text-gov-ink shadow-sm outline-none focus:border-gov"
         />
       </label>
       <button

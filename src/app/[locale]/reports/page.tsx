@@ -60,7 +60,7 @@ export default function ReportsPage({
         <p className="mt-1 text-muted">{v.reportsIntro}</p>
 
         {/* Angul district at a glance */}
-        <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-5 gov-card p-5">
           <h2 className="text-sm font-bold uppercase tracking-wide text-gov-mid">
             {v.districtOverview}
           </h2>
@@ -92,7 +92,7 @@ export default function ReportsPage({
               <li key={b.slug}>
                 <Link
                   href={`/${locale}/gov/${b.slug}/`}
-                  className="flex min-h-[56px] items-center justify-between gap-3 rounded-xl border border-gov-line bg-white px-4 hover:bg-gov-tint"
+                  className="flex min-h-[56px] items-center justify-between gap-3 rounded-xl border border-gov-line bg-white px-4 shadow-card transition-shadow hover:bg-gov-tint hover:shadow-lift"
                 >
                   <span className="font-bold text-gov-ink">{b.name}</span>
                   <span className="flex items-center gap-2">

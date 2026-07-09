@@ -11,7 +11,7 @@ export default function RootRedirect() {
   return (
     <main className="p-8 text-center text-muted">
       <a href="/od/" className="text-brand underline">
-        Angul Schools · ଅନୁଗୁଳ ବିଦ୍ୟାଳୟ
+        Anugola Schools · ଅନୁଗୁଳ ବିଦ୍ୟାଳୟ
       </a>
     </main>
   );

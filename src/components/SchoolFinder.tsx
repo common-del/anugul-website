@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { fmtNum } from "@/lib/format";
-import { BAND_TEXT, type BandKey } from "@/lib/bands";
+import type { BandKey } from "@/lib/bands";
 import Stars from "@/components/Stars";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -30,6 +30,7 @@ type Labels = {
   noResults: string;
   showingFirst: string;
   kmAway: string;
+  viewReportAria: string;
 };
 
 function havKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }) {
@@ -153,36 +154,46 @@ export default function SchoolFinder({
 
   const num = (n: number) => fmtNum(n, locale);
 
+  // Whole card is one focusable link (no separate button); score is the green
+  // focal number; enlarged filled stars; chevron signals "tap to open".
   const Card = ({ s, km }: { s: Item; km?: number }) => (
     <Link
       href={`/${locale}/${dest}/${s.u}/`}
-      className="block rounded-xl border border-gov-line bg-white p-4 active:bg-gov-tint"
+      aria-label={labels.viewReportAria
+        .replace("{name}", s.n)
+        .replace("{n}", num(s.s10))
+        .replace("{max}", num(10))}
+      className="flex items-center gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-card transition hover:bg-gov-tint hover:shadow-lift active:bg-gov-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
     >
-      <span className="font-bold text-gov-ink">{s.n}</span>
-      <span className="mt-0.5 block text-xs text-muted">
-        {s.b} · {s.c}
-        {km != null ? ` · ${labels.kmAway.replace("{km}", num(Math.round(km * 10) / 10))}` : ""}
-      </span>
-      <span className="mt-2 flex items-center justify-between gap-2">
-        <span className="min-w-0">
-          <span className="text-xs text-muted">
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-bold text-gov-ink">{s.n}</span>
+        <span className="mt-0.5 block truncate text-xs text-muted">
+          {s.b} · {s.c}
+          {km != null ? ` · ${labels.kmAway.replace("{km}", num(Math.round(km * 10) / 10))}` : ""}
+        </span>
+        <span className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <Stars score={s.s10} size={20} label={`${num(s.s10)}/${num(10)}`} />
+          <span className="text-xs font-semibold text-muted">
             {labels.overallScore}{" "}
-            <span
-              className="text-lg font-extrabold tabular-nums"
-              style={{ color: BAND_TEXT[s.band] }}
-            >
-              {num(s.s10)}
-            </span>
-            <span className="font-semibold">/{num(10)}</span>
+            <span className="text-xl font-extrabold tabular-nums text-gov">{num(s.s10)}</span>
+            <span className="font-bold text-gov">/{num(10)}</span>
           </span>
-          <span className="mt-0.5 block">
-            <Stars score={s.s10} size={12} label={`${num(s.s10)}/${num(10)}`} />
-          </span>
-        </span>
-        <span className="shrink-0 rounded-lg bg-gov px-4 py-2 text-sm font-bold text-white">
-          {labels.openReport}
         </span>
       </span>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+        className="shrink-0 text-gov"
+      >
+        <path d="M9 6l6 6-6 6" />
+      </svg>
     </Link>
   );
 
@@ -191,7 +202,7 @@ export default function SchoolFinder({
       key={label}
       type="button"
       onClick={onClick}
-      className="min-h-[48px] rounded-xl bg-white px-4 text-[15px] font-semibold text-gov ring-1 ring-gov-line active:bg-gov-tint"
+      className="min-h-[48px] rounded-xl bg-white px-4 text-[15px] font-semibold text-gov ring-1 ring-gov-line shadow-sm transition hover:bg-gov-tint hover:ring-gov active:bg-gov-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
     >
       {label}
     </button>
@@ -201,107 +212,106 @@ export default function SchoolFinder({
   const nearList = nearest && (nearExpanded ? nearest : nearest.slice(0, NEAR_SHOWN));
 
   return (
-    <div className="md:max-w-2xl">
-      {/* 1 — GPS, the primary path */}
-      <button
-        type="button"
-        onClick={locate}
-        className="flex min-h-[60px] w-full items-center justify-center gap-2.5 rounded-xl bg-gov px-6 text-[18px] font-extrabold text-white shadow-sm active:brightness-110"
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11z" />
-          <circle cx="12" cy="10" r="2.5" />
-        </svg>
-        {labels.nearMe}
-      </button>
+    <div className="md:grid md:grid-cols-2 md:items-start md:gap-5">
+      {/* Route A — search by typing, with GPS as the quieter fallback beside it */}
+      <div className="rounded-2xl border border-gov-line bg-white p-4 shadow-card">
+        <div className="flex gap-2">
+          <div className="flex flex-[2] items-center gap-2 rounded-xl border border-gov-line bg-white px-3 shadow-sm focus-within:border-gov">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" />
+            </svg>
+            <input
+              type="search"
+              inputMode="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={labels.searchAny}
+              aria-label={labels.searchAny}
+              className="min-h-[50px] w-full bg-transparent text-base text-gov-ink outline-none"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={locate}
+            className="flex min-h-[50px] flex-1 items-center justify-center gap-1.5 rounded-xl border-2 border-gov px-2 text-[13px] font-bold text-gov transition hover:bg-gov-tint"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
+              <path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+            <span className="truncate">{labels.nearMe}</span>
+          </button>
+        </div>
+        <p className="mt-1.5 text-xs text-muted">{labels.searchNote}</p>
 
-      {/* 2 — global search, right beneath the GPS button */}
-      <div className="mt-3 flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.3-4.3" />
-        </svg>
-        <input
-          type="search"
-          inputMode="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={labels.searchAny}
-          aria-label={labels.searchAny}
-          className="min-h-[50px] w-full bg-transparent text-base text-gov-ink outline-none"
-        />
-      </div>
-      <p className="mt-1 text-xs text-muted">{labels.searchNote}</p>
-
-      {/* results: search takes precedence, else GPS results */}
-      {searching ? (
-        <section className="mt-4">
-          <p className="text-sm font-bold text-gov-ink">
-            {labels.schoolsFound.replace("{n}", num(searchMatches.length))}
-          </p>
-          <ul className="mt-2 space-y-2.5">
-            {searchResults.map((s) => (
-              <li key={s.u}>
-                <Card s={s} />
-              </li>
-            ))}
-            {searchResults.length === 0 && (
-              <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
-                {labels.noResults}
-              </li>
-            )}
+        {searching ? (
+          <section className="mt-3">
+            <p className="text-sm font-bold text-gov-ink">
+              {labels.schoolsFound.replace("{n}", num(searchMatches.length))}
+            </p>
+            <ul className="mt-2 max-h-[22rem] space-y-2.5 overflow-y-auto pr-1">
+              {searchResults.map((s) => (
+                <li key={s.u}>
+                  <Card s={s} />
+                </li>
+              ))}
+              {searchResults.length === 0 && (
+                <li className="rounded-xl border border-gov-line bg-white px-4 py-4 text-sm text-muted">
+                  {labels.noResults}
+                </li>
+              )}
+            </ul>
             {searchMatches.length > searchResults.length && (
-              <li className="px-1 py-2 text-sm text-muted">
+              <p className="mt-2 px-1 text-xs text-muted">
                 {labels.showingFirst
                   .replace("{shown}", num(searchResults.length))
                   .replace("{n}", num(searchMatches.length))}
-              </li>
+              </p>
             )}
-          </ul>
-        </section>
-      ) : (
-        <>
-          {gps === "loading" && !nearest && (
-            <p className="mt-4 text-sm font-semibold text-gov-ink">{labels.nearMeFinding}</p>
-          )}
-          {gps === "denied" && (
-            <p className="mt-4 rounded-xl bg-gov-tint p-3 text-sm text-gov-ink">
-              {labels.nearMeDenied}
-            </p>
-          )}
-          {nearList && nearList.length > 0 && (
-            <section className="mt-4">
-              <h2 className="text-sm font-bold text-gov-ink">{labels.nearMeResults}</h2>
-              <ul className="mt-2 space-y-2.5">
-                {nearList.map(({ item, km }) => (
-                  <li key={item.u}>
-                    <Card s={item} km={km} />
-                  </li>
-                ))}
-              </ul>
-              {nearest && nearest.length > NEAR_SHOWN && (
-                <button
-                  type="button"
-                  onClick={() => setNearExpanded((x) => !x)}
-                  className="mt-3 min-h-[44px] w-full rounded-xl border-2 border-gov text-[15px] font-bold text-gov"
-                >
-                  {nearExpanded
-                    ? labels.showLess
-                    : labels.showMore.replace("{n}", num(nearest.length - NEAR_SHOWN))}
-                </button>
-              )}
-            </section>
-          )}
-        </>
-      )}
+          </section>
+        ) : (
+          <>
+            {gps === "loading" && !nearest && (
+              <p className="mt-3 text-sm font-semibold text-gov-ink">{labels.nearMeFinding}</p>
+            )}
+            {gps === "denied" && (
+              <p className="mt-3 rounded-xl bg-gov-tint p-3 text-sm text-gov-ink">
+                {labels.nearMeDenied}
+              </p>
+            )}
+            {nearList && nearList.length > 0 && (
+              <section className="mt-3">
+                <h2 className="text-sm font-bold text-gov-ink">{labels.nearMeResults}</h2>
+                <ul className="mt-2 space-y-2.5">
+                  {nearList.map(({ item, km }) => (
+                    <li key={item.u}>
+                      <Card s={item} km={km} />
+                    </li>
+                  ))}
+                </ul>
+                {nearest && nearest.length > NEAR_SHOWN && (
+                  <button
+                    type="button"
+                    onClick={() => setNearExpanded((x) => !x)}
+                    className="mt-3 min-h-[44px] w-full rounded-xl border-2 border-gov text-[15px] font-bold text-gov transition hover:bg-gov-tint"
+                  >
+                    {nearExpanded
+                      ? labels.showLess
+                      : labels.showMore.replace("{n}", num(nearest.length - NEAR_SHOWN))}
+                  </button>
+                )}
+              </section>
+            )}
+          </>
+        )}
+      </div>
 
-      {/* 3 — tap-only drill-down backup */}
-      <section className="mt-7 border-t border-gov-line pt-5">
-        <h2 className="text-base font-bold text-gov-ink">{labels.stepFindTitle}</h2>
-
+      {/* Route B — step by step: block → cluster → school (equal-weight column) */}
+      <div className="mt-4 rounded-2xl border border-gov-line bg-white p-4 shadow-card md:mt-0">
         {!block && (
           <>
-            <p className="mt-2 text-sm font-semibold text-muted">{labels.chooseBlock}</p>
+            <p className="text-sm font-semibold text-muted">{labels.chooseBlock}</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
               {blocks.map((b) => chip(b, () => setBlock(b)))}
             </div>
@@ -309,7 +319,7 @@ export default function SchoolFinder({
         )}
 
         {block && (
-          <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
+          <p className="flex flex-wrap items-center gap-x-2 text-sm">
             <span className="font-bold text-gov-ink">{block}</span>
             {cluster && <span className="font-bold text-gov-ink">· {cluster}</span>}
             <button
@@ -334,7 +344,7 @@ export default function SchoolFinder({
         {block && cluster && (
           <>
             <p className="mt-2 text-sm font-semibold text-muted">{labels.pickSchool}</p>
-            <ul className="mt-2 space-y-2.5">
+            <ul className="mt-2 max-h-[22rem] space-y-2.5 overflow-y-auto pr-1">
               {drillSchools.map((s) => (
                 <li key={s.u}>
                   <Card s={s} />
@@ -343,7 +353,7 @@ export default function SchoolFinder({
             </ul>
           </>
         )}
-      </section>
+      </div>
     </div>
   );
 }

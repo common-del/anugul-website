@@ -42,7 +42,7 @@ export default function FaqAccordion({
 
   return (
     <div>
-      <div className="flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 focus-within:border-gov">
+      <div className="flex items-center gap-2 rounded-xl border border-gov-line bg-white px-4 shadow-sm focus-within:border-gov">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden className="shrink-0 text-muted">
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.3-4.3" />
@@ -65,10 +65,10 @@ export default function FaqAccordion({
             type="button"
             onClick={() => setGroup(g)}
             aria-pressed={group === g}
-            className={`min-h-[40px] rounded-full px-4 text-sm font-semibold ring-1 ${
+            className={`min-h-[40px] rounded-full px-4 text-sm font-semibold ring-1 shadow-sm transition-shadow ${
               group === g
                 ? "bg-gov text-white ring-gov"
-                : "bg-white text-gov-dark ring-gov-line hover:bg-gov-tint"
+                : "bg-white text-gov-dark ring-gov-line hover:bg-gov-tint hover:shadow"
             }`}
           >
             {labels.groups[g]}
@@ -78,7 +78,7 @@ export default function FaqAccordion({
 
       <div className="mt-4 space-y-2.5">
         {filtered.map((it) => (
-          <details key={it.id} className="group rounded-xl border border-gov-line bg-white">
+          <details key={it.id} className="group gov-card">
             <summary className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3.5 font-bold text-gov-ink">
               {it.q}
               <span aria-hidden className="shrink-0 text-gov transition-transform group-open:rotate-45">

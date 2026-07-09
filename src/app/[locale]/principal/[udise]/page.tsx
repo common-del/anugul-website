@@ -13,7 +13,7 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
-import schoolsData from "@/data/schools.json";
+import { getSchools } from "@/lib/schools";
 
 type School = {
   udise: string; name: string; block: string; cluster: string;
@@ -21,7 +21,7 @@ type School = {
   byGrade: Record<string, Record<string, number>>;
   assessedStudents: number | null;
 };
-const schools = schoolsData as unknown as Record<string, School>;
+const schools = getSchools() as unknown as Record<string, School>;
 const score10 = (pct: number) => Math.round(pct / 10);
 
 export function generateStaticParams() {
@@ -111,7 +111,7 @@ export default function PrincipalPage({
         </section>
 
         {/* our school vs block top, per subject */}
-        <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-5 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.subjectsTitle}</h2>
           <div className="mt-2 flex flex-wrap gap-4 text-xs font-semibold">
             <span className="flex items-center gap-1.5">
@@ -185,7 +185,7 @@ export default function PrincipalPage({
           <p className="mt-1 text-muted">{v.principalActionsIntro}</p>
           <div className="mt-3 space-y-3">
             {actions.map((a) => (
-              <div key={a.n} className="flex items-start gap-3 rounded-2xl border border-gov-line bg-white p-4">
+              <div key={a.n} className="flex items-start gap-3 gov-card p-4">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gov text-base font-extrabold text-white">
                   {num(a.n)}
                 </span>
@@ -201,7 +201,7 @@ export default function PrincipalPage({
         <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           {/* your cluster */}
           {cluster && (
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h2 className="text-lg font-bold text-gov-ink">{v.myClusterT}</h2>
               <p className="mt-1 text-sm text-muted">
                 {s.cluster} · {t.officials.clusterRankLine
@@ -247,7 +247,7 @@ export default function PrincipalPage({
 
           {/* your block */}
           {block && blockSlug && (
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h2 className="text-lg font-bold text-gov-ink">{v.myBlockT}</h2>
               <p className="mt-1 text-sm text-muted">
                 {s.block}

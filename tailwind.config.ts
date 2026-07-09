@@ -22,6 +22,9 @@ const config: Config = {
           deep: "#0B3B2A",
           mid: "#187A57",
           ink: "#143726",
+          // page canvas (pale gray-green) — white cards sit on top of this to
+          // create restrained depth; tint is a step deeper for inner chips.
+          canvas: "#F0F5F2",
           tint: "#EDF5F0",
           line: "#D5E4DB",
         },
@@ -37,6 +40,19 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-primary)", "system-ui", "sans-serif"],
+      },
+      // Restrained depth for a government design-system feel (GOV.UK / USWDS):
+      // soft, low-alpha, green-tinted shadows — never heavy or coloured.
+      boxShadow: {
+        card: "0 1px 2px 0 rgb(20 55 38 / 0.05), 0 4px 12px -3px rgb(20 55 38 / 0.08)",
+        lift: "0 2px 6px -1px rgb(20 55 38 / 0.10), 0 12px 26px -6px rgb(20 55 38 / 0.16)",
+        header: "0 1px 0 0 rgb(20 55 38 / 0.06), 0 4px 12px -6px rgb(20 55 38 / 0.14)",
+      },
+      // Light gradients for the header / nav / footer bands only.
+      backgroundImage: {
+        "gov-masthead": "linear-gradient(180deg, #FFFFFF 0%, #F4F9F6 100%)",
+        "gov-nav": "linear-gradient(180deg, #10634A 0%, #0A452F 100%)",
+        "gov-footer": "linear-gradient(180deg, #0B3B2A 0%, #072A1E 100%)",
       },
     },
   },

@@ -27,7 +27,7 @@ export default function BlockSwitcher({
           router.push(val === "" ? `/${locale}/gov/` : `/${locale}/gov/${slugs[val]}/`);
         }}
         aria-label={labels.switchBlock}
-        className="min-h-[44px] rounded-xl border border-gov-line bg-white px-3 text-[14px] font-semibold text-gov-ink"
+        className="min-h-[44px] rounded-xl border border-gov-line bg-white px-3 text-[14px] font-semibold text-gov-ink shadow-sm"
       >
         <option value="">{labels.allBlocks}</option>
         {Object.keys(slugs)

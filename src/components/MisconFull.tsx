@@ -52,7 +52,7 @@ export default function MisconFull({
           return (
             <article
               key={id}
-              className="rounded-2xl border border-gov-line bg-white p-5"
+              className="gov-card p-5"
               style={{ breakInside: "avoid" }}
             >
               <p className="flex flex-wrap items-center gap-2 text-xs">

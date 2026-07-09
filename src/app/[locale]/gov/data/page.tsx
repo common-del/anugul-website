@@ -71,7 +71,7 @@ export default function GovDataPage({
         <div className="mt-3 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           <div className="space-y-5">
             {/* variance decomposition */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h3 className="text-base font-bold text-gov-ink">{o.varianceTitle}</h3>
               <p className="mt-1 text-sm text-muted">{o.varianceIntro}</p>
               <div className="mt-3 space-y-2">
@@ -93,7 +93,7 @@ export default function GovDataPage({
             </section>
 
             {/* children below 50% in every subject, by block */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h3 className="text-base font-bold text-gov-ink">{o.failingTitle}</h3>
               <div className="overflow-x-auto">
                 <table className="mt-2 w-full min-w-[320px] text-sm">
@@ -134,7 +134,7 @@ export default function GovDataPage({
             </section>
 
             {/* above-cluster bright spots */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h3 className="text-base font-bold text-gov-ink">{v.aboveClusterT}</h3>
               <p className="mt-1 text-sm text-muted">{v.aboveClusterD}</p>
               <ul className="mt-2 divide-y divide-gov-line text-sm">
@@ -154,7 +154,7 @@ export default function GovDataPage({
 
           <div className="space-y-5">
             {/* band distribution by block */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h3 className="text-base font-bold text-gov-ink">{v.bandsByBlockT}</h3>
               <div className="mt-3 space-y-2.5">
                 {blocks.map(({ name, slug, data }) => {
@@ -196,7 +196,7 @@ export default function GovDataPage({
             </section>
 
             {/* strongest / weakest LOs (district) */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            <section className="gov-card p-5">
               <h3 className="text-base font-bold text-gov-ink">{v.loTopT}</h3>
               <ul className="mt-2 divide-y divide-gov-line text-sm">
                 {topLos.map((i) => (
@@ -241,7 +241,7 @@ export default function GovDataPage({
         </section>
 
         {/* download catalogue */}
-        <section className="mt-6 rounded-2xl border border-gov-line bg-white p-5">
+        <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.dlCatalogT}</h2>
           <p className="mt-1 text-sm text-muted">{v.dlCatalogIntro}</p>
           <ul className="mt-3 divide-y divide-gov-line">

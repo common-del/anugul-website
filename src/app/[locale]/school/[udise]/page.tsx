@@ -6,13 +6,14 @@ import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import VideoEmbed from "@/components/VideoEmbed";
 import Stars from "@/components/Stars";
+import CardLightbox from "@/components/CardLightbox";
 import { hasCard, cardUrl, cardImg } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
-import schoolsData from "@/data/schools.json";
+import type { BandKey } from "@/lib/bands";
+import { getSchools } from "@/lib/schools";
 
 type Profile = {
   classRange: string | null;
@@ -38,14 +39,14 @@ type School = {
   neighbours: { udise: string; km: number | null }[];
 };
 
-const schools = schoolsData as unknown as Record<string, School>;
+const schools = getSchools() as unknown as Record<string, School>;
 
 // Block-wise "how to read your report card" explainer videos (YouTube IDs,
 // from the approved mock-up doc).
 const EXPLAINER: Record<string, string> = {
-  Angul: "gn9tbf-tLkA",
-  Athamallik: "r04dfh8Gq94",
-  Talcher: "lq_Z0Ikqlag",
+  Anugola: "gn9tbf-tLkA",
+  Athamalik: "r04dfh8Gq94",
+  Talachera: "lq_Z0Ikqlag",
 };
 const EXPLAINER_DEFAULT = "OcBdapIlGHM";
 
@@ -90,7 +91,6 @@ export default function SchoolPage({
   const v = t.v2;
   const num = (n: number) => fmtNum(n, locale);
   const overall10 = score10(s.overall.score);
-  const grades = Object.keys(s.byGrade).sort();
 
   const neighbours = (s.neighbours ?? [])
     // the source CSV occasionally lists a school as its own neighbour
@@ -120,6 +120,21 @@ export default function SchoolPage({
   if (s.profile?.enrolment != null) about.push({ label: t.profile.students, value: num(s.profile.enrolment) });
   if (s.profile?.teachers != null) about.push({ label: t.profile.teachers, value: num(s.profile.teachers) });
 
+  // Infrastructure lists for the About accordion; SMC pulled out as its own row.
+  const SMC_KEY = "SMC formed";
+  const bLabel = (k: string) => (t.peerCard.basics as Record<string, string>)[k] ?? k;
+  const infraIn = (s.inputs?.basicsIn ?? []).filter((k) => k !== SMC_KEY).map(bLabel);
+  const infraOut = (s.inputs?.basicsOut ?? []).filter((k) => k !== SMC_KEY).map(bLabel);
+  const smcFormed = s.inputs?.basicsIn?.includes(SMC_KEY)
+    ? true
+    : s.inputs?.basicsOut?.includes(SMC_KEY)
+      ? false
+      : null;
+  // Nearby-card tint by /10 bucket (8-10 green, 5-7 amber, 0-4 red) — muted so
+  // AA holds; score + stars remain the primary signal.
+  const tintFor = (s10: number) =>
+    s10 >= 8 ? "#E6F3EA" : s10 >= 5 ? "#FCF1DD" : "#FBE7E5";
+
   return (
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack active="reports" />
@@ -127,32 +142,20 @@ export default function SchoolPage({
         {/* header row */}
         <section className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-muted">
-              {v.youAre}{" "}
-              <span className="rounded-full bg-gov px-2.5 py-0.5 text-[11px] font-bold text-white">
-                {v.roleParent}
-              </span>
-            </p>
-            <h1 className="mt-2 text-2xl font-extrabold leading-tight text-gov-ink">
+            <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
               {s.name}
             </h1>
-            <p className="mt-1 text-sm text-muted">
-              UDISE: {s.udise} · {s.block} · {s.cluster}
+            <p className="mt-1.5 text-sm font-bold text-gov-ink">
+              UDISE: {s.udise} | {s.block} | {s.cluster}
               {s.assessedStudents
-                ? ` · ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
+                ? ` | ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
                 : ""}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+              <div className="text-sm font-bold uppercase tracking-wide text-gov-ink">
                 {v.overallScore}
-              </div>
-              <div
-                className="text-[13px] font-bold"
-                style={{ color: BAND_TEXT[s.overall.band] }}
-              >
-                {t.band[s.overall.band]}
               </div>
             </div>
             <div className="grid h-[74px] w-[74px] shrink-0 place-items-center rounded-full bg-gov">
@@ -168,148 +171,46 @@ export default function SchoolPage({
           </div>
         </section>
 
-        {/* plain-language band strip (docx follow-up): where this school stands */}
-        <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
-          <h2 className="text-base font-bold text-gov-ink">{v.bandStripTitle}</h2>
-          <div className="relative mt-7" aria-hidden>
-            <div
-              className="absolute -top-5 z-10 -translate-x-1/2 text-gov-ink"
-              style={{ left: `${Math.min(Math.max(s.overall.score, 3), 97)}%` }}
-            >
-              <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
-                <path d="M8 12L0 0h16z" />
-              </svg>
-            </div>
-            <div className="flex h-6 overflow-hidden rounded-lg">
-              {(["urgent", "needs", "developing", "excelling"] as BandKey[]).map((k) => (
-                <div key={k} className="flex-1" style={{ backgroundColor: BAND_COLOR[k] }} />
-              ))}
-            </div>
-            <div className="mt-1.5 grid grid-cols-4 gap-1 text-center">
-              {(["urgent", "needs", "developing", "excelling"] as BandKey[]).map((k) => (
-                <div key={k} className="min-w-0">
-                  <div
-                    className="truncate text-[11px] font-bold leading-tight"
-                    style={{ color: BAND_TEXT[k] }}
+        {/* HERO: report card (left) | video + what you can do (right) */}
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:space-y-0">
+          {/* left — the report card, first and largest */}
+          <section className="flex flex-col gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.yourReportCard}</h2>
+            {hasCard(s.udise) ? (
+              <>
+                <div className="mt-3">
+                  <CardLightbox
+                    src={cardImg(s.udise)}
+                    alt={`${s.name} — ${v.yourReportCard}`}
+                    enlargeLabel={v.enlargeCard}
+                    closeLabel={v.closeCard}
+                  />
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <a
+                    href={cardUrl(s.udise)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
                   >
-                    {t.band[k]}
-                  </div>
-                  <div className="text-[10.5px] leading-tight text-muted">
-                    {
-                      {
-                        urgent: v.bandDescUrgent,
-                        needs: v.bandDescNeeds,
-                        developing: v.bandDescDeveloping,
-                        excelling: v.bandDescExcelling,
-                      }[k]
-                    }
-                  </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
+                    </svg>
+                    {v.downloadReportCard}
+                  </a>
+                  <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
                 </div>
-              ))}
-            </div>
-          </div>
-          <p className="mt-3 text-sm text-gov-ink">
-            {v.bandStripLine
-              .replace("{band}", t.band[s.overall.band])
-              .replace(
-                "{desc}",
-                {
-                  urgent: v.bandDescUrgent,
-                  needs: v.bandDescNeeds,
-                  developing: v.bandDescDeveloping,
-                  excelling: v.bandDescExcelling,
-                }[s.overall.band],
-              )}
-          </p>
-        </section>
-
-        {/* what you can do */}
-        <section className="mt-5 rounded-2xl bg-gov-tint p-5">
-          <h2 className="text-base font-bold text-gov-ink">{v.whatYouCanDo}</h2>
-          <ul className="mt-2 space-y-2 text-sm text-gov-ink">
-            <li className="flex items-start gap-2">
-              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
-              {v.doAsk.replace("{n}", num(overall10))}
-            </li>
-            <li className="flex items-start gap-2">
-              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
-              {v.doCompare}
-            </li>
-          </ul>
-        </section>
-
-        {/* printed report card — page-1 image, tap to download the full PDF */}
-        {hasCard(s.udise) && (
-          <section className="mt-5 rounded-2xl border border-gov-line bg-white p-5">
-            <h2 className="text-base font-bold text-gov-ink">{v.printedCardTitle}</h2>
-            <p className="mt-1 text-sm text-muted">{v.printedCardTap}</p>
-            <a
-              href={cardUrl(s.udise)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group mt-3 block w-full max-w-sm"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={cardImg(s.udise)}
-                alt={`${s.name} — ${v.printedCardTitle}`}
-                loading="lazy"
-                className="w-full rounded-lg border border-gov-line shadow-sm transition group-hover:shadow-md"
-              />
-              <span className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-gov">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
-                </svg>
-                {v.downloadPdf}
-              </span>
-            </a>
-          </section>
-        )}
-
-        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
-          <div className="space-y-5">
-            {/* subject scores /10 */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
-              <h2 className="text-lg font-bold text-gov-ink">{v.subjectsTitle}</h2>
-              {grades.map((g) => (
-                <div key={g} className="mt-3">
-                  {grades.length > 1 && (
-                    <h3 className="text-sm font-bold text-gov-ink">
-                      {t.grades[g as keyof typeof t.grades] ?? g}
-                    </h3>
-                  )}
-                  <div className="mt-2 space-y-2.5">
-                    {Object.entries(s.byGrade[g]).map(([subj, pct]) => {
-                      const v10 = score10(pct);
-                      return (
-                        <div key={subj}>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gov-ink">
-                              {t.subjects[subj as keyof typeof t.subjects] ?? subj}
-                            </span>
-                            <span className="font-bold tabular-nums text-gov-ink">
-                              {num(v10)}/{num(10)}
-                            </span>
-                          </div>
-                          <div className="mt-1">
-                            <Stars score={v10} size={18} label={`${num(v10)}/${num(10)}`} />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              {grades.length === 0 && (
-                <p className="mt-2 text-sm text-muted">{t.report.fewStudents}</p>
-              )}
-              {/* Download lives on the printed-card image above; WhatsApp here */}
-              <div className="mt-5">
+              </>
+            ) : (
+              <div className="mt-4">
                 <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
               </div>
-            </section>
-            {/* explainer video — click-to-play embedded player */}
-            <section className="rounded-2xl border border-gov-line bg-white p-5">
+            )}
+          </section>
+
+          {/* right — video (top) + what you can do (bottom) */}
+          <div className="flex flex-col gap-5">
+            <section className="gov-card p-5">
               <h2 className="text-base font-bold text-gov-ink">{v.watchTitle}</h2>
               <p className="mt-1 text-sm text-muted">{v.watchDesc}</p>
               <div className="mt-3">
@@ -319,13 +220,28 @@ export default function SchoolPage({
                 />
               </div>
             </section>
+            <section className="flex-1 gov-card p-5">
+              <h2 className="text-base font-bold text-gov-ink">{v.whatYouCanDo}</h2>
+              <ul className="mt-2 space-y-2 text-sm text-gov-ink">
+                <li className="flex items-start gap-2">
+                  <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+                  {v.doAsk.replace("{n}", num(overall10))}
+                </li>
+                <li className="flex items-start gap-2">
+                  <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+                  {v.doCompare}
+                </li>
+              </ul>
+            </section>
           </div>
+        </div>
 
-          <div className="space-y-5">
+        {/* About your school (left) | Nearby schools (right) */}
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
 
             {/* about your school */}
             {(about.length > 0 || s.inputs) && (
-              <section className="rounded-2xl border border-gov-line bg-white p-5">
+              <section className="gov-card p-5">
                 <h2 className="text-lg font-bold text-gov-ink">{v.aboutSchool}</h2>
                 {about.length > 0 && (
                   <div className="mt-3 grid grid-cols-2 gap-3">
@@ -342,58 +258,76 @@ export default function SchoolPage({
                     ))}
                   </div>
                 )}
-                {s.inputs?.basicsIn && s.inputs.basicsIn.length > 0 && (
-                  <p className="mt-3 text-sm text-gov-ink">
-                    <span className="font-semibold">{t.peerCard.rteBasicsIn}:</span>{" "}
-                    {s.inputs.basicsIn.map((b) => (t.peerCard.basics as Record<string, string>)[b] ?? b).join(", ")}
-                  </p>
-                )}
-                {s.inputs?.basicsOut && s.inputs.basicsOut.length > 0 && (
-                  <p className="mt-1 text-sm text-[#b3261e]">
-                    <span className="font-semibold">{t.peerCard.rteBasicsOut}:</span>{" "}
-                    {s.inputs.basicsOut.map((b) => (t.peerCard.basics as Record<string, string>)[b] ?? b).join(", ")}
-                  </p>
+                {(infraIn.length > 0 || infraOut.length > 0 || smcFormed !== null) && (
+                  <details className="group mt-4 rounded-xl border border-gov-line">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-bold text-gov [&::-webkit-details-marker]:hidden">
+                      <span className="group-open:hidden">{v.viewMoreDetails}</span>
+                      <span className="hidden group-open:inline">{v.viewLessDetails}</span>
+                      <span aria-hidden className="text-lg leading-none text-gov transition-transform group-open:rotate-45">+</span>
+                    </summary>
+                    <div className="space-y-3 border-t border-gov-line px-4 py-3 text-sm">
+                      {infraIn.length > 0 && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.infraAvailable}</p>
+                          <p className="mt-0.5 text-muted">{infraIn.join(", ")}</p>
+                        </div>
+                      )}
+                      {infraOut.length > 0 && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.infraNotAvailable}</p>
+                          <p className="mt-0.5 text-[#b3261e]">{infraOut.join(", ")}</p>
+                        </div>
+                      )}
+                      {smcFormed !== null && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.smcFormation}</p>
+                          <p className="mt-0.5 text-muted">{smcFormed ? v.yes : v.no}</p>
+                        </div>
+                      )}
+                    </div>
+                  </details>
                 )}
               </section>
             )}
 
             {/* nearby schools, named with /10 */}
             {neighbours.length > 0 && (
-              <section className="overflow-hidden rounded-2xl border border-gov-line bg-white">
+              <section className="overflow-hidden gov-card">
                 <div className="bg-gov px-5 py-3.5">
                   <h2 className="text-base font-bold text-white">{v.nearbyTitle}</h2>
                   <p className="mt-0.5 text-xs text-white/80">{v.nearbySub}</p>
                 </div>
-                <ul className="divide-y divide-gov-line">
+                <ul className="max-h-[28rem] divide-y divide-white/70 overflow-y-auto">
                   {neighbours.map((n) => (
                     <li key={n.udise}>
                       <Link
                         href={`/${locale}/school/${n.udise}/`}
-                        className="flex min-h-[60px] items-center justify-between gap-3 px-4 py-2.5 active:bg-gov-tint"
+                        aria-label={v.viewReportAria
+                          .replace("{name}", n.name)
+                          .replace("{n}", num(n.s10))
+                          .replace("{max}", num(10))}
+                        className="flex min-h-[64px] items-center justify-between gap-3 px-4 py-3 transition hover:brightness-[0.97]"
+                        style={{ backgroundColor: tintFor(n.s10) }}
                       >
                         <span className="min-w-0">
                           <span className="block truncate text-sm font-bold text-gov-ink">
                             {n.name}
                           </span>
-                          <span className="block text-xs text-muted">
-                            {n.cluster}
-                            {n.km != null
-                              ? ` · ${v.kmAway.replace("{km}", num(n.km))}`
-                              : ""}
-                          </span>
+                          {n.km != null && (
+                            <span className="mt-0.5 block text-xs font-bold text-gov-ink">
+                              {v.kmAway.replace("{km}", num(n.km))}
+                            </span>
+                          )}
                           <span className="mt-1 block">
-                            <Stars score={n.s10} size={11} label={`${num(n.s10)}/${num(10)}`} />
+                            <Stars score={n.s10} size={16} label={`${num(n.s10)}/${num(10)}`} />
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-2">
                           <span className="tabular-nums">
-                            <span
-                              className="text-lg font-extrabold"
-                              style={{ color: BAND_TEXT[n.band] }}
-                            >
+                            <span className="text-xl font-extrabold text-gov-ink">
                               {num(n.s10)}
                             </span>
-                            <span className="text-xs text-muted">/{num(10)}</span>
+                            <span className="text-xs text-gov-ink/70">/{num(10)}</span>
                           </span>
                           <svg
                             width="16"
@@ -416,7 +350,6 @@ export default function SchoolPage({
                 </ul>
               </section>
             )}
-          </div>
         </div>
       </main>
       <SiteFooter locale={locale} t={t} />
