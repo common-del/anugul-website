@@ -4,6 +4,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
+import BlockSwitcher from "@/components/BlockSwitcher";
 import Gauge from "@/components/Gauge";
 import DistrictMapBands, { MAP_BANDS, mapBandColor } from "@/components/DistrictMapBands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -120,15 +121,26 @@ export default function DistrictReportPage({
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-        {/* heading + share */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* top row: title | block switcher (centre) | WhatsApp (right) —
+            identical arrangement to the block report */}
+        <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr,auto,1fr]">
           <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
             {fill(v.distTitle, { name: district.name })}
           </h1>
-          <WhatsAppShare
-            label={v.shareWhatsApp}
-            text={fill(v.distTitle, { name: district.name })}
-          />
+          <div className="sm:justify-self-center">
+            <BlockSwitcher
+              locale={locale}
+              current=""
+              slugs={slugs}
+              labels={{ switchBlock: v.switchBlock, allBlocks: v.districtAllBlocks }}
+            />
+          </div>
+          <div className="sm:justify-self-end">
+            <WhatsAppShare
+              label={v.shareWhatsApp}
+              text={fill(v.distTitle, { name: district.name })}
+            />
+          </div>
         </div>
 
         {/* five summary cards */}

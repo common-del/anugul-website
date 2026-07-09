@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n/config";
 
-// In-page block switcher on the block report (mock shows District/Block selects
-// at the top of the block view). First option returns to District/All Blocks.
+// In-page block/district switcher, shared by the block report and the
+// district report (same top-row position on both). The "District / All
+// Blocks" option opens the district report; pass current="" on that page so
+// it shows as selected.
 export default function BlockSwitcher({
   locale,
   current,
@@ -12,7 +14,7 @@ export default function BlockSwitcher({
   labels,
 }: {
   locale: Locale;
-  current: string; // current block name
+  current: string; // current block name, or "" on the district report
   slugs: Record<string, string>; // name -> slug
   labels: { switchBlock: string; allBlocks: string };
 }) {
@@ -24,7 +26,7 @@ export default function BlockSwitcher({
         value={current}
         onChange={(e) => {
           const val = e.target.value;
-          router.push(val === "" ? `/${locale}/gov/` : `/${locale}/gov/${slugs[val]}/`);
+          router.push(val === "" ? `/${locale}/gov/district/` : `/${locale}/gov/${slugs[val]}/`);
         }}
         aria-label={labels.switchBlock}
         className="min-h-[44px] rounded-xl border border-gov-line bg-white px-3 text-[14px] font-semibold text-gov-ink shadow-sm"

@@ -149,17 +149,23 @@ export default function GovBlockPage({
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-        {/* ===== top panel: heading + summary cards ===== */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* ===== top row: title | block switcher (centre) | WhatsApp (right)
+               — same arrangement as the district report ===== */}
+        <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr,auto,1fr]">
           <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
             {v.blockReportCardT}
           </h1>
-          <BlockSwitcher
-            locale={locale}
-            current={b.name}
-            slugs={slugs}
-            labels={{ switchBlock: v.switchBlock, allBlocks: v.districtAllBlocks }}
-          />
+          <div className="sm:justify-self-center">
+            <BlockSwitcher
+              locale={locale}
+              current={b.name}
+              slugs={slugs}
+              labels={{ switchBlock: v.switchBlock, allBlocks: v.districtAllBlocks }}
+            />
+          </div>
+          <div className="sm:justify-self-end">
+            <WhatsAppShare label={v.shareWhatsApp} text={`${b.name} ${v.blockReportCardT}`} />
+          </div>
         </div>
 
         <div className="mt-4 grid gap-3 lg:grid-cols-2">
@@ -451,8 +457,10 @@ export default function GovBlockPage({
             </ul>
           </section>
 
+          {/* WhatsApp moved to the top row (owner, 2026-07-10) — panel is
+              downloads-only now */}
           <section className="gov-card p-5">
-            <h2 className="text-lg font-bold text-gov-ink">{v.downloadsShareT}</h2>
+            <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
             <div className="mt-3 space-y-2.5">
               <a
                 href={`/data/downloads/blocks/${b.slug}.pdf`}
@@ -477,10 +485,6 @@ export default function GovBlockPage({
                 </span>
                 <span aria-hidden className="text-gov">↓</span>
               </a>
-              <div className="rounded-xl border-2 border-gov bg-white p-4">
-                <span className="block pb-2 text-xs text-muted">{v.shareRowD}</span>
-                <WhatsAppShare label={v.shareWhatsApp} text={`${b.name} ${v.blockReportCardT}`} />
-              </div>
             </div>
           </section>
         </div>
