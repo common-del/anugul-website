@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import BlockReportsCard from "@/components/BlockReportsCard";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { getBlockSlugs } from "@/lib/officialsData";
@@ -54,40 +55,13 @@ export default function GovPage({ params }: { params: { locale: string } }) {
         </div>
 
         <div className="mx-auto mt-5 grid max-w-3xl gap-4 sm:grid-cols-2">
-          {/* Block Reports — expands to the 8-block chooser */}
-          <details className="group gov-card-link overflow-hidden">
-            <summary className="flex h-full cursor-pointer list-none flex-col items-center gap-3 p-6 text-center [&::-webkit-details-marker]:hidden">
-              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gov-tint text-gov">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <path d="M14 2v6h6" />
-                  <path d="M8 13h8M8 17h5" />
-                </svg>
-              </span>
-              <span className="text-lg font-extrabold text-gov-ink">{v.govBlockCardT}</span>
-              <span className="text-sm text-muted">{v.govBlockCardD}</span>
-              <span aria-hidden className="mt-auto grid h-9 w-9 place-items-center rounded-full bg-gov text-white transition-transform group-open:rotate-90">
-                →
-              </span>
-            </summary>
-            <div className="border-t border-gov-line bg-gov-tint/60 p-3">
-              <p className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                {v.govChooseBlock}
-              </p>
-              <ul className="grid grid-cols-2 gap-1.5">
-                {blocks.map((b) => (
-                  <li key={b.slug}>
-                    <Link
-                      href={`/${locale}/gov/${b.slug}/`}
-                      className="block rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gov-dark ring-1 ring-gov-line transition hover:bg-gov hover:text-white"
-                    >
-                      {b.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </details>
+          {/* Block Reports — button-driven 8-block chooser (client component;
+              a native <details> here was reported broken on some browsers) */}
+          <BlockReportsCard
+            locale={locale}
+            blocks={blocks}
+            labels={{ title: v.govBlockCardT, desc: v.govBlockCardD, choose: v.govChooseBlock }}
+          />
 
           {/* District Report */}
           <Link
