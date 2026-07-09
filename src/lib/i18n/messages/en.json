@@ -742,7 +742,7 @@
     "dlDistXlsxT": "District Report (Excel)",
     "dlDistXlsxD": "Blocks, schools and subject data in one workbook",
     "dlDistCsvT": "District Data (CSV)",
-    "dlDistCsvD": "Every school's overall score, band and location",
+    "dlDistCsvD": "Every school's score out of 10, with block and cluster",
     "dlLoCsvT": "Learning Outcomes (CSV)",
     "dlLoCsvD": "Learning-outcome level results for deeper analysis",
     "dlBtn": "Download",

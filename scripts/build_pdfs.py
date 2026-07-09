@@ -157,11 +157,12 @@ for e in los:
     e["n"] = len(e["pcts"])
     e["pct"] = round(sum(e["pcts"]) / e["n"], 1)
 
+# Owner decision 2026-07-09: no question-count column in the download.
 with open(os.path.join(DL, "learning_outcomes.csv"), "w", encoding="utf-8-sig", newline="") as fcsv:
     w = csv.writer(fcsv)
-    w.writerow(["grade", "subject", "lo_code", "lo_description", "questions_assessed", "pct_correct"])
+    w.writerow(["grade", "subject", "lo_code", "lo_description", "pct_correct"])
     for e in los:
-        w.writerow([e["grade"], e["subject"], e["lo"], e["desc"], e["n"], e["pct"]])
+        w.writerow([e["grade"], e["subject"], e["lo"], e["desc"], e["pct"]])
 
 pages, cur, count = [], "", 0
 header = """<div class="hdr"><h1>Learning-Outcome Report · Anugola district</h1>
@@ -171,12 +172,12 @@ last_group = None
 for e in los:
     grp = f"{e['grade']} · {e['subject']}"
     if grp != last_group:
-        cur += f"<h2>{esc(grp)}</h2><table><tr><th>LO</th><th>Description</th><th>Qs</th><th>%</th></tr>"
+        cur += f"<h2>{esc(grp)}</h2><table><tr><th>LO</th><th>Description</th><th>%</th></tr>"
         last_group = grp
         count += 2
     cls = "bad" if e["pct"] < 40 else ("good" if e["pct"] >= 75 else "")
     cur += (f"<tr><td>{esc(e['lo'])}</td><td>{esc(e['desc'][:140])}</td>"
-            f"<td>{e['n']}</td><td class='{cls}'>{e['pct']:.0f}</td></tr>")
+            f"<td class='{cls}'>{e['pct']:.0f}</td></tr>")
     count += 1
     if count >= 38:
         cur += "</table>"

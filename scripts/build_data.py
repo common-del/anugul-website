@@ -749,20 +749,17 @@ with open(os.path.join(DL, "school_grade_subject.csv"), "w", encoding="utf-8-sig
                 w.writerow([u, s["name"], s["block"], s["cluster"], st,
                             g, subj, s["byGrade"][g][subj]])
 
-# 3) schools master (overall + band + coordinates)
+# 3) schools master. Owner decision 2026-07-09: downloads must NOT carry
+# lat/lon, overall_pct or band — only the /10 score shown on the site.
 with open(os.path.join(DL, "schools_overall.csv"), "w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f)
     w.writerow(["udise", "school_name", "block", "cluster", "setting",
-                "overall_pct", "band", "score_out_of_10", "students_assessed",
-                "lat", "lon"])
+                "score_out_of_10", "students_assessed"])
     for u, s in sorted(schools.items()):
         st = (s.get("profile") or {}).get("area") or ""
-        coord = ll.get(u, {})
         w.writerow([u, s["name"], s["block"], s["cluster"], st,
-                    s["overall"]["score"], s["overall"]["band"],
                     int(math.floor(s["overall"]["score"] / 10 + 0.5)),
-                    s["assessedStudents"] or "",
-                    coord.get("lat") or "", coord.get("lon") or ""])
+                    s["assessedStudents"] or ""])
 
 # 4) block x grade x subject
 with open(os.path.join(DL, "block_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
