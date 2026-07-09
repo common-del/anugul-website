@@ -1,15 +1,19 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
+import GovBlockPicker from "@/components/GovBlockPicker";
+import Gauge from "@/components/Gauge";
+import { mapBandColor } from "@/components/DistrictMapBands";
+import SubjectsVsDistrict, { type SubjectRow } from "@/components/SubjectsVsDistrict";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { getBlock, getBlockSlugs, type BlockSlice } from "@/lib/officialsData";
+import districtData from "@/data/district.json";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -27,9 +31,16 @@ function fill(s: string, vars: Record<string, string | number>) {
   );
 }
 
-// Government & Orgs block report card (docx mock / hand-drawn spec), green theme.
-// Data from the officials block slice; the deep officer analytics stay at
-// /officials/block. TODO: per-block PDF + full LOR download (assets pending).
+type District = {
+  schoolsAssessed: number;
+  subjectMeans: Record<string, Record<string, number>>;
+};
+const district = districtData as unknown as District;
+
+// Block Report Card — full rebuild to the mock-up (Screen 5.2). No
+// year-over-year lines or "data as on" date (no prior cycle exists); grade
+// gauges compare vs the district's per-grade means. The on-page learning-
+// outcome breakdown was replaced by a download card, per the mock.
 export default function GovBlockPage({
   params,
 }: {
@@ -51,8 +62,16 @@ export default function GovBlockPage({
   const grade = (g: string) => t.grades[g as keyof typeof t.grades] ?? g;
 
   const overallBand = bandFromScore(b.headline.overall);
+  const distAvg = b.vs_best.overall.district_avg;
 
-  // key insights
+  // district per-grade means (same definition as the block headline figures)
+  const gradeMean = (g: string) => {
+    const m = district.subjectMeans[g] ?? {};
+    const vals = Object.values(m);
+    return vals.length ? vals.reduce((a, z) => a + z, 0) / vals.length : 0;
+  };
+
+  // ---- six key insights (computed) ----
   const allSubj = Object.entries(b.rel_subject).flatMap(([g, rows]) =>
     rows.map((r) => ({ ...r, grade: g })),
   );
@@ -65,18 +84,6 @@ export default function GovBlockPage({
   const schoolsAsc = b.bands.overall?.schools ?? [];
   const bestSchool = schoolsAsc[schoolsAsc.length - 1] ?? null;
   const worstSchool = schoolsAsc[0] ?? null;
-  // best & weakest learning outcomes (hand-drawn spec) from the block's
-  // skills top/bottom lists, flattened across subjects
-  const flattenSkills = (m: Record<string, { grade: string; skill: string; pct: number }[]>) =>
-    Object.entries(m ?? {}).flatMap(([sub, rows]) =>
-      rows.map((r) => ({ ...r, subject: sub })),
-    );
-  const bestLos = flattenSkills(b.skills?.top).sort((a, z) => z.pct - a.pct);
-  const weakLos = flattenSkills(b.skills?.bottom).sort((a, z) => a.pct - z.pct);
-  const subjectsCovered = [
-    ...new Set(Object.values(b.rel_subject).flatMap((rows) => rows.map((r) => r.subject))),
-  ];
-
   const insights = [
     bestSubj && {
       l: v.bestSubject,
@@ -88,299 +95,369 @@ export default function GovBlockPage({
     worstCluster && { l: v.clusterNeedsSupport, val: worstCluster.cluster, n: pct(worstCluster.score), good: false },
     bestSchool && { l: v.bestSchool, val: bestSchool.name, n: pct(bestSchool.score), good: true },
     worstSchool && { l: v.schoolNeedsSupport, val: worstSchool.name, n: pct(worstSchool.score), good: false },
+    {
+      l: v.vsDistrictShortL,
+      val: fill(v.vsDistrictShortV, { block: pct(b.headline.overall), district: pct(distAvg) }),
+      n: `${b.headline.overall >= distAvg ? "+" : ""}${num(Math.round((b.headline.overall - distAvg) * 10) / 10)}`,
+      good: b.headline.overall >= distAvg,
+    },
   ].filter(Boolean) as { l: string; val: string; n: string; good: boolean }[];
 
+  // ---- subjects vs district (toggle table data, pre-localised) ----
+  const gradesTable: Record<string, SubjectRow[]> = {};
+  for (const [g, rows] of Object.entries(b.rel_subject)) {
+    gradesTable[grade(g)] = rows.map((r) => ({
+      subject: subj(r.subject),
+      block: r.block,
+      district: r.district,
+      blockD: pct(r.block),
+      districtD: pct(r.district),
+      diffD: `${r.gap > 0 ? "+" : ""}${num(r.gap)}`,
+      diff: r.gap,
+    }));
+  }
+
+  // ---- schools by band ----
+  const counts = b.bands.overall?.counts ?? {};
+  const totalSchools = BAND_ORDER.reduce((a, k) => a + (counts[k] ?? 0), 0);
   const bandDesc: Record<BandKey, string> = {
     excelling: v.bandDescExcelling,
     developing: v.bandDescDeveloping,
     needs: v.bandDescNeeds,
     urgent: v.bandDescUrgent,
   };
+
   const maxCluster = clusters.length ? clusters[0].score : 100;
+  const subjectsCovered = [
+    ...new Set(Object.values(b.rel_subject).flatMap((rows) => rows.map((r) => r.subject))),
+  ];
+  const slugs = Object.fromEntries(getBlockSlugs().map((x) => [x.name, x.slug]));
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack role="researcher" />
+      <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-        {/* header */}
+        {/* ===== top panel: heading + summary cards ===== */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-gov-mid">{v.blockReport}</p>
+          <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
+            {v.blockReportCardT}
+          </h1>
           <BlockSwitcher
             locale={locale}
             current={b.name}
-            slugs={Object.fromEntries(getBlockSlugs().map((x) => [x.name, x.slug]))}
+            slugs={slugs}
             labels={{ switchBlock: v.switchBlock, allBlocks: v.districtAllBlocks }}
           />
         </div>
-        <div className="mt-1 flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
-          <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">{b.name}</h1>
-          <div className="text-right">
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-              {v.overallBlockScore}
+
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {/* card 1 — dominant */}
+          <div className="gov-card flex items-center gap-5 p-6">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="#0E5A40" aria-hidden className="shrink-0">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <div className="min-w-0">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                {v.overallBlockScore} · {b.name}
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-4xl font-extrabold tabular-nums" style={{ color: BAND_TEXT[overallBand] }}>
+                  {pct(b.headline.overall)}
+                </span>
+                <span
+                  className="rounded-full px-3 py-1 text-xs font-bold"
+                  style={{
+                    backgroundColor: BAND_COLOR[overallBand],
+                    color: overallBand === "needs" ? "#12233d" : "#fff",
+                  }}
+                >
+                  {t.band[overallBand]}
+                </span>
+              </div>
+              <div className="mt-1 text-sm text-muted">
+                {fill(v.vsDistrictAvg, { n: pct(distAvg) })}
+              </div>
             </div>
-            <div className="text-3xl font-extrabold tabular-nums" style={{ color: BAND_TEXT[overallBand] }}>
-              {pct(b.headline.overall)}
+          </div>
+          {/* cards 2-4 — uniform */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="gov-card p-4">
+              <div className="text-lg font-extrabold leading-tight text-gov-ink">
+                {num(b.headline.schools)}
+              </div>
+              <div className="mt-0.5 text-xs text-muted">{t.analytics.schoolsAssessed}</div>
+              <div className="mt-1 text-[11px] text-muted">
+                {fill(v.ofDistrictSchools, { n: num(district.schoolsAssessed) })}
+              </div>
             </div>
-            <div className="text-xs text-muted">
-              {fill(v.vsDistrictAvg, { n: pct(b.vs_best.overall.district_avg) })}
+            <div className="gov-card p-4">
+              <div className="text-lg font-extrabold leading-tight text-gov-ink">
+                {num(b.headline.students)}
+              </div>
+              <div className="mt-0.5 text-xs text-muted">{t.analytics.studentsAssessed}</div>
+              <div className="mt-1 text-[11px] text-muted">{v.loTag3}</div>
+            </div>
+            <div className="gov-card p-4">
+              <div className="text-[13px] font-extrabold leading-snug text-gov-ink">
+                {subjectsCovered.map(subj).join(" · ")}
+              </div>
+              <div className="mt-0.5 text-xs text-muted">{v.subjectsWord}</div>
             </div>
           </div>
         </div>
 
-        {/* overview */}
-        <section className="mt-5 gov-card p-5">
-          <h2 className="text-lg font-bold text-gov-ink">{v.blockOverview}</h2>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[
-              { v: num(b.headline.schools), l: t.analytics.schoolsAssessed },
-              { v: num(b.headline.students), l: t.analytics.studentsAssessed },
-              { v: `${grade("Grade 5")} & ${grade("Grade 8")}`, l: v.gradesCovered },
-              { v: subjectsCovered.map(subj).join(" · "), l: v.subjectsWord, small: true },
-            ].map((s) => (
-              <div key={s.l} className="rounded-xl bg-gov-tint p-3">
-                <div
-                  className={`font-extrabold leading-tight text-gov-ink ${
-                    s.small ? "text-[13px]" : "text-lg"
-                  }`}
-                >
-                  {s.v}
-                </div>
-                <div className="mt-0.5 text-xs text-muted">{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* grade-wise scores */}
-        <section className="mt-6 gov-card p-5">
-          <h2 className="text-lg font-bold text-gov-ink">{v.gradeWiseScores}</h2>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            {[
-              { g: "Grade 5", val: b.headline.g5 },
-              { g: "Grade 8", val: b.headline.g8 },
-            ].map((x) => (
-              <div key={x.g} className="rounded-xl bg-gov-tint p-3">
-                <div
-                  className="text-2xl font-extrabold tabular-nums"
-                  style={{ color: BAND_TEXT[bandFromScore(x.val)] }}
-                >
-                  {pct(x.val)}
-                </div>
-                <div className="mt-0.5 text-xs text-muted">{grade(x.g)}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* key insights */}
+        {/* ===== key insights (6 cards, sentiment-tinted) ===== */}
         <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">
             {fill(v.keyInsights, { block: b.name })}
           </h2>
-          <ul className="mt-3 space-y-2">
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {insights.map((ins) => (
-              <li
+              <div
                 key={ins.l}
-                className="flex items-center justify-between gap-3 rounded-xl bg-gov-tint px-4 py-2.5"
+                className="rounded-xl p-3.5"
+                style={{ backgroundColor: ins.good ? "#E6F3EA" : "#FBE7E5" }}
               >
-                <span className="min-w-0">
-                  <span className="block text-xs font-semibold text-muted">{ins.l}</span>
-                  <span className="block truncate font-bold text-gov-ink">{ins.val}</span>
-                </span>
-                <span
-                  className="shrink-0 text-lg font-extrabold tabular-nums"
-                  style={{ color: ins.good ? "#1e6b3a" : "#b3261e" }}
-                >
-                  {ins.n}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
-          {/* subjects vs district */}
-          <section className="gov-card p-5">
-            <h2 className="text-lg font-bold text-gov-ink">{v.subjectVsDistrictT}</h2>
-            {Object.entries(b.rel_subject).map(([g, rows]) => (
-              <div key={g} className="mt-3">
-                <h3 className="text-sm font-bold text-gov-ink">{grade(g)}</h3>
-                <table className="mt-1 w-full text-sm">
-                  <tbody>
-                    {rows.map((r) => (
-                      <tr key={r.subject} className="border-t border-gov-line">
-                        <td className="py-1.5">{subj(r.subject)}</td>
-                        <td className="py-1.5 text-right font-semibold tabular-nums text-gov-ink">
-                          {pct(r.block)}
-                        </td>
-                        <td className="py-1.5 pl-3 text-right text-xs tabular-nums">
-                          <span style={{ color: r.gap < 0 ? "#b3261e" : "#1e6b3a" }}>
-                            {r.gap > 0 ? "+" : ""}
-                            {num(r.gap)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="flex items-start gap-2.5">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ins.good ? "#1e6b3a" : "#b3261e"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                    {ins.good ? (
+                      <>
+                        <path d="M23 6l-9.5 9.5-5-5L1 18" />
+                        <path d="M17 6h6v6" />
+                      </>
+                    ) : (
+                      <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" />
+                    )}
+                  </svg>
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-muted">{ins.l}</div>
+                    <div className="truncate text-sm font-bold text-gov-ink">{ins.val}</div>
+                    <div className="mt-0.5 text-lg font-extrabold tabular-nums" style={{ color: ins.good ? "#1e6b3a" : "#b3261e" }}>
+                      {ins.n}
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* ===== grade-wise scores | schools by band ===== */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.gradeWiseScores}</h2>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              {(
+                [
+                  ["Grade 5", b.headline.g5],
+                  ["Grade 8", b.headline.g8],
+                ] as [string, number][]
+              ).map(([g, val]) => (
+                <Gauge
+                  key={g}
+                  value={val}
+                  display={pct(val)}
+                  label={grade(g)}
+                  caption={fill(v.distAvgCaption, { n: pct(gradeMean(g)) })}
+                  color={mapBandColor(val)}
+                />
+              ))}
+            </div>
           </section>
 
-          {/* schools by band */}
           <section className="gov-card p-5">
-            <h2 className="text-lg font-bold text-gov-ink">{v.bandSegregation}</h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {BAND_ORDER.map((k) =>
-                b.bands.overall?.counts[k] ? (
-                  <span
-                    key={k}
-                    className="rounded-full px-3 py-1 text-sm font-bold"
-                    style={{ backgroundColor: BAND_COLOR[k], color: k === "needs" ? "#12233d" : "#fff" }}
-                  >
-                    {t.band[k]} · {num(b.bands.overall.counts[k])}
-                  </span>
-                ) : null,
-              )}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-lg font-bold text-gov-ink">{v.bandSegregation}</h2>
+              <details>
+                <summary className="cursor-pointer list-none text-sm font-semibold text-gov underline underline-offset-2 [&::-webkit-details-marker]:hidden">
+                  {v.whatBandsMean}
+                </summary>
+                <ul className="mt-2 space-y-1.5 rounded-xl bg-gov-tint p-3 text-sm">
+                  {BAND_ORDER.map((k) => (
+                    <li key={k} className="flex items-center gap-2">
+                      <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: BAND_COLOR[k] }} />
+                      <span className="font-semibold text-gov-ink">{t.band[k]}</span>
+                      <span className="text-muted">— {bandDesc[k]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
             </div>
-            <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-semibold text-gov underline underline-offset-2">
-                {v.whatBandsMean}
-              </summary>
-              <ul className="mt-2 space-y-1.5 text-sm">
-                {BAND_ORDER.map((k) => (
-                  <li key={k} className="flex items-center gap-2">
-                    <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: BAND_COLOR[k] }} />
-                    <span className="font-semibold text-gov-ink">{t.band[k]}</span>
-                    <span className="text-muted">— {bandDesc[k]}</span>
-                  </li>
-                ))}
-              </ul>
-            </details>
+            {/* stacked bar of all schools across the four bands */}
+            {totalSchools > 0 && (
+              <div className="mt-4 flex h-6 overflow-hidden rounded-lg" aria-hidden>
+                {BAND_ORDER.map((k) =>
+                  counts[k] ? (
+                    <span
+                      key={k}
+                      style={{
+                        width: `${((counts[k] ?? 0) / totalSchools) * 100}%`,
+                        backgroundColor: BAND_COLOR[k],
+                      }}
+                    />
+                  ) : null,
+                )}
+              </div>
+            )}
+            {/* band cards */}
+            <div className="mt-3 grid grid-cols-2 gap-2.5">
+              {BAND_ORDER.map((k) => (
+                <div
+                  key={k}
+                  className="rounded-xl p-3"
+                  style={{ backgroundColor: `${BAND_COLOR[k]}1F` }}
+                >
+                  <div className="text-xl font-extrabold tabular-nums" style={{ color: BAND_TEXT[k] }}>
+                    {num(counts[k] ?? 0)}
+                  </div>
+                  <div className="mt-0.5 text-xs font-semibold text-gov-ink">
+                    {t.band[k]} · {v.schoolsWord}
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
         </div>
 
-        {/* cluster performance */}
+        {/* ===== subjects vs district | cluster performance ===== */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.subjectVsDistrictT}</h2>
+            <div className="mt-3">
+              <SubjectsVsDistrict
+                grades={gradesTable}
+                cols={{
+                  subject: v.colSubject,
+                  block: v.colBlock,
+                  district: v.colDistrict,
+                  diff: v.colDiff,
+                }}
+              />
+            </div>
+          </section>
+
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.clusterPerformance}</h2>
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded" style={{ backgroundColor: "#0E5A40" }} />
+                {v.legendNormal}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded" style={{ backgroundColor: "#b3261e" }} />
+                {v.legendUnder}
+              </span>
+            </div>
+            <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
+              {clusters.map((c) => {
+                const under = c.score < 50;
+                return (
+                  <div key={c.cluster} className="flex items-center gap-3 text-sm">
+                    <span className="w-32 shrink-0 truncate text-gov-ink sm:w-40">{c.cluster}</span>
+                    <span className="h-4 flex-1 overflow-hidden rounded bg-gov-tint">
+                      <span
+                        className="block h-full rounded"
+                        style={{
+                          width: `${(c.score / maxCluster) * 100}%`,
+                          backgroundColor: under ? "#b3261e" : "#0E5A40",
+                        }}
+                      />
+                    </span>
+                    <span className="w-10 shrink-0 text-right font-semibold tabular-nums text-gov-ink">
+                      {pct(c.score)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+
+        {/* ===== learning outcome report card (download; replaces on-page view) ===== */}
         <section className="mt-6 gov-card p-5">
-          <h2 className="text-lg font-bold text-gov-ink">{v.clusterPerformance}</h2>
-          <div className="mt-3 space-y-1.5">
-            {clusters.map((c) => {
-              const cb = bandFromScore(c.score);
-              return (
-                <div key={c.cluster} className="flex items-center gap-3 text-sm">
-                  <span className="w-32 shrink-0 truncate text-gov-ink sm:w-44">{c.cluster}</span>
-                  <span className="h-4 flex-1 overflow-hidden rounded bg-gov-tint">
-                    <span
-                      className="block h-full rounded"
-                      style={{ width: `${(c.score / maxCluster) * 100}%`, backgroundColor: BAND_COLOR[cb] }}
-                    />
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">{v.loCardT}</h2>
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
+            <div className="min-w-0">
+              <h3 className="text-lg font-extrabold text-gov-ink">
+                {fill(v.loCardTitle, { block: b.name })}
+              </h3>
+              <p className="mt-1 max-w-xl text-sm text-muted">{v.loCardDesc}</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {[v.loTag1, v.loTag2, v.loTag3].map((tag) => (
+                  <span key={tag} className="rounded-full bg-gov-tint px-3 py-1 text-xs font-semibold text-gov-dark">
+                    {tag}
                   </span>
-                  <span
-                    className="w-10 shrink-0 text-right font-semibold tabular-nums"
-                    style={{ color: BAND_TEXT[cb] }}
-                  >
-                    {pct(c.score)}
-                  </span>
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2.5">
+              <a
+                href="/data/downloads/learning_outcomes_report.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-[44px] items-center rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
+              >
+                {v.dlPdfShort} ↓
+              </a>
+              <a
+                href="/data/downloads/learning_outcomes_by_block.csv"
+                download
+                className="flex min-h-[44px] items-center rounded-xl border-2 border-gov px-4 text-sm font-bold text-gov transition hover:bg-gov-tint"
+              >
+                {v.dlCsvShort} ↓
+              </a>
+            </div>
           </div>
         </section>
 
-        {/* best & weakest learning outcomes */}
-        {(bestLos.length > 0 || weakLos.length > 0) && (
-          <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
-            {bestLos.length > 0 && (
-              <section className="gov-card p-5">
-                <h2 className="text-lg font-bold text-gov-ink">{v.bestLosT}</h2>
-                <ul className="mt-2 divide-y divide-gov-line text-sm">
-                  {bestLos.slice(0, 8).map((h, i) => (
-                    <li key={i} className="flex items-start justify-between gap-3 py-2">
-                      <span className="min-w-0 text-gov-ink">
-                        {h.skill}
-                        <span className="block text-xs text-muted">
-                          {subj(h.subject)} · {grade(h.grade)}
-                        </span>
-                      </span>
-                      <span className="shrink-0 font-semibold tabular-nums text-[#1e6b3a]">
-                        {pct(h.pct)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-            {weakLos.length > 0 && (
-              <section className="gov-card p-5">
-                <h2 className="text-lg font-bold text-gov-ink">{v.weakestLosT}</h2>
-                <ul className="mt-2 divide-y divide-gov-line text-sm">
-                  {weakLos.slice(0, 8).map((h, i) => (
-                    <li key={i} className="flex items-start justify-between gap-3 py-2">
-                      <span className="min-w-0 text-gov-ink">
-                        {h.skill}
-                        <span className="block text-xs text-muted">
-                          {subj(h.subject)} · {grade(h.grade)}
-                        </span>
-                      </span>
-                      <span className="shrink-0 font-semibold tabular-nums text-[#b3261e]">
-                        {pct(h.pct)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </div>
-        )}
+        {/* ===== block overview | downloads & share ===== */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.blockOverview}</h2>
+            <div className="mt-3">
+              <GovBlockPicker
+                locale={locale}
+                slugs={slugs}
+                labels={{ allBlocks: v.districtAllBlocks, hint: v.clickBlockHint }}
+              />
+            </div>
+          </section>
 
-        {/* downloads + actions */}
-        <section className="mt-6 gov-card p-5">
-          <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
-          <div className="mt-3 flex flex-col gap-2">
-            <a
-              href={`/data/downloads/blocks/${b.slug}.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-gov underline underline-offset-2"
-            >
-              {v.downloadBlockPdf} ↓
-            </a>
-            <a
-              href="/data/downloads/learning_outcomes_report.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-gov underline underline-offset-2"
-            >
-              {v.downloadLorPdf} ↓
-            </a>
-            <a
-              href="/data/downloads/learning_outcomes.csv"
-              download
-              className="font-semibold text-gov underline underline-offset-2"
-            >
-              {v.downloadLorCsv} ↓
-            </a>
-            <Link href={`/${locale}/gov/`} className="font-semibold text-gov underline underline-offset-2">
-              {v.otherBlockReports} →
-            </Link>
-            <a
-              href="/data/downloads/block_aggregates.csv"
-              download
-              className="font-semibold text-gov underline underline-offset-2"
-            >
-              {v.downloadDataSheet} ↓
-            </a>
-            <Link
-              href={`/${locale}/find/?block=${encodeURIComponent(b.name)}`}
-              className="font-semibold text-gov underline underline-offset-2"
-            >
-              {v.schoolLevelReports} →
-            </Link>
-          </div>
-          <div className="mt-4">
-            <WhatsAppShare label={v.shareWhatsApp} text={`${b.name} ${v.blockReport}`} />
-          </div>
-        </section>
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.downloadsShareT}</h2>
+            <div className="mt-3 space-y-2.5">
+              <a
+                href={`/data/downloads/blocks/${b.slug}.pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-sm transition hover:bg-gov-tint"
+              >
+                <span>
+                  <span className="block text-sm font-bold text-gov-ink">{v.dlPdfRowT}</span>
+                  <span className="mt-0.5 block text-xs text-muted">{v.dlPdfRowD}</span>
+                </span>
+                <span aria-hidden className="text-gov">↓</span>
+              </a>
+              <a
+                href="/data/downloads/block_aggregates.csv"
+                download
+                className="flex items-center justify-between gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-sm transition hover:bg-gov-tint"
+              >
+                <span>
+                  <span className="block text-sm font-bold text-gov-ink">{v.dlCsvRowT}</span>
+                  <span className="mt-0.5 block text-xs text-muted">{v.dlCsvRowD}</span>
+                </span>
+                <span aria-hidden className="text-gov">↓</span>
+              </a>
+              <div className="rounded-xl border-2 border-gov bg-white p-4">
+                <span className="block pb-2 text-xs text-muted">{v.shareRowD}</span>
+                <WhatsAppShare label={v.shareWhatsApp} text={`${b.name} ${v.blockReportCardT}`} />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-muted">{v.govDisclaimer}</p>
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>

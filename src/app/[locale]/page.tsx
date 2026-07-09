@@ -41,7 +41,7 @@ export default function Home({ params }: { params: { locale: string } }) {
               {v.findSchool}
             </Link>
             <Link
-              href={`/${locale}/reports/`}
+              href={`/${locale}/gov/`}
               className="mt-3 flex min-h-[56px] w-full items-center justify-center rounded-xl border-2 border-gov bg-white px-6 text-[17px] font-bold text-gov transition hover:bg-gov-tint"
             >
               {v.exploreReports}

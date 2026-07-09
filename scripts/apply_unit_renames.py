@@ -134,6 +134,75 @@ def _rewrite_csv(path):
     return changed
 
 
+# --- URL slugs (2026-07-09 decision): slugs DO follow the new spellings. ---
+# Old URLs keep working via redirects in vercel.json. Targeted field renames
+# only (never a blanket walk): a lowercase exact-match walk could collide with
+# cluster slugs, which are school-name-based and must not change.
+SLUG_RENAME = {
+    "angul": "anugola",
+    "athamallik": "athamalik",
+    "pallahara": "palalahada",
+    "talcher": "talachera",
+}
+
+
+def _slug(v):
+    return SLUG_RENAME.get(v, v)
+
+
+def _rewrite_slugs():
+    changed = 0
+    off = os.path.join(ROOT, "src", "data", "officials")
+
+    # district.json: blocks[].slug
+    p = os.path.join(off, "district.json")
+    if os.path.isfile(p):
+        d = json.load(open(p, encoding="utf-8"))
+        for b in d.get("blocks", []):
+            if b.get("slug") in SLUG_RENAME:
+                b["slug"] = _slug(b["slug"])
+                changed += 1
+        json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+
+    # blocks/<slug>.json: rename file + inner "slug" field
+    bdir = os.path.join(off, "blocks")
+    if os.path.isdir(bdir):
+        for f in list(os.listdir(bdir)):
+            stem = f[:-5]
+            if f.endswith(".json") and stem in SLUG_RENAME:
+                d = json.load(open(os.path.join(bdir, f), encoding="utf-8"))
+                if d.get("slug") in SLUG_RENAME:
+                    d["slug"] = _slug(d["slug"])
+                new = os.path.join(bdir, f"{_slug(stem)}.json")
+                json.dump(d, open(new, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+                os.remove(os.path.join(bdir, f))
+                changed += 1
+
+    # clusters/*.json: blockSlug field
+    cdir = os.path.join(off, "clusters")
+    if os.path.isdir(cdir):
+        for f in os.listdir(cdir):
+            if not f.endswith(".json"):
+                continue
+            p = os.path.join(cdir, f)
+            d = json.load(open(p, encoding="utf-8"))
+            if d.get("blockSlug") in SLUG_RENAME:
+                d["blockSlug"] = _slug(d["blockSlug"])
+                json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+                changed += 1
+
+    # block PDF filenames (contents untouched by decision)
+    pdir = os.path.join(ROOT, "public", "data", "downloads", "blocks")
+    if os.path.isdir(pdir):
+        for f in list(os.listdir(pdir)):
+            stem = f[:-4]
+            if f.endswith(".pdf") and stem in SLUG_RENAME:
+                os.replace(os.path.join(pdir, f), os.path.join(pdir, f"{_slug(stem)}.pdf"))
+                changed += 1
+
+    return changed
+
+
 def apply():
     total = 0
     for p in _json_files():
@@ -143,8 +212,9 @@ def apply():
         for f in os.listdir(dl):
             if f.endswith(".csv"):
                 total += _rewrite_csv(os.path.join(dl, f))
-    print(f"  applied unit renames: {total} value(s)/key(s) across data + CSV")
-    return total
+    slugs = _rewrite_slugs()
+    print(f"  applied unit renames: {total} value(s)/key(s) + {slugs} slug change(s)")
+    return total + slugs
 
 
 if __name__ == "__main__":

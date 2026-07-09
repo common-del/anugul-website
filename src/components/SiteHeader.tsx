@@ -112,7 +112,7 @@ export default function SiteHeader({
             {v.navHome}
           </Link>
           <Link
-            href={`/${locale}/reports/`}
+            href={`/${locale}/gov/`}
             className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
               active === "reports"
                 ? "border-accent text-white"

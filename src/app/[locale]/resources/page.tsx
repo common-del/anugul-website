@@ -93,7 +93,7 @@ export default function ResourcesPage({
                 { href: "/data/downloads/learning_outcomes_report.pdf", label: v.dlLor, ext: true },
                 { href: "/data/downloads/learning_outcomes.csv", label: v.dlLorCsv, ext: true },
                 { href: "/data/downloads/block_aggregates.csv", label: v.dlBlocks, ext: true },
-                { href: `/${locale}/reports/`, label: v.dlBlockCards, ext: false },
+                { href: `/${locale}/gov/`, label: v.dlBlockCards, ext: false },
               ].map((d) =>
                 d.ext ? (
                   <li key={d.href}>
