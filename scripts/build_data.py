@@ -715,6 +715,28 @@ with open(os.path.join(DL, "students_anonymised.csv"), "w", encoding="utf-8-sig"
     w.writerows(_stu_rows)
 print(f"  wrote students_anonymised.csv ({len(_stu_rows)} rows)")
 
+# Data note shipped alongside the CSV (owner decision 2026-07-09): in some
+# multi-section schools two or more children share a school+grade+roll key in
+# the source, so they appear under ONE student_pseudo_id with repeated subject
+# rows. Disclosed rather than repaired — the source has no section column, so
+# any split would be a guess.
+with open(os.path.join(DL, "students_anonymised_README.txt"), "w", encoding="utf-8") as f:
+    f.write(
+        "students_anonymised.csv — data notes\n"
+        "\n"
+        "* One row per student x subject. student_pseudo_id is randomly assigned\n"
+        "  within each (school, grade) and carries no trace of real roll numbers.\n"
+        "* Known limitation: in some multi-section schools, two or more children\n"
+        "  shared a school+grade+roll number in the source data (about 1,050 such\n"
+        "  keys across ~220 schools). These children appear under a SINGLE\n"
+        "  student_pseudo_id, so a pseudo-student can carry more than one score\n"
+        "  for the same subject. The source has no section column, so these\n"
+        "  records cannot be reliably separated.\n"
+        "* The official assessed-student count (28,079) counts such merged\n"
+        "  records once.\n"
+    )
+print("  wrote students_anonymised_README.txt")
+
 # 2) school x grade x subject (finest safe aggregate)
 with open(os.path.join(DL, "school_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f)
