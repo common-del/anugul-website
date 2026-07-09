@@ -32,7 +32,10 @@ export default function SiteHeader({
   // TODO: replace seal with the School & Mass Education Dept logo when the
   // file is supplied (Drive link in the mock doc is not accessible here).
   return (
-    <header className="no-print">
+    // Pinned chrome (mock-up correction): masthead + menu bar stay fixed at
+    // the top of the viewport on every screen; only the content scrolls.
+    // z-40 keeps it under the report-card lightbox overlay (z-50).
+    <header className="no-print sticky top-0 z-40">
       <div className="border-b border-gov-line bg-gov-masthead shadow-header">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5">
           <Link
