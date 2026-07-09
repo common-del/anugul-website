@@ -37,11 +37,14 @@ export default function SiteHeader({
     // z-40 keeps it under the report-card lightbox overlay (z-50).
     <header className="no-print sticky top-0 z-40">
       <div className="border-b border-gov-line bg-gov-masthead shadow-header">
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5">
+        {/* Mobile: row 1 = logo + language toggle, row 2 = role selector
+            (full width). Desktop (sm+): one row, roles + toggle clustered
+            right. order-* swaps the visual order per breakpoint. */}
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-y-2 px-4 py-2.5">
           <Link
             href={`/${locale}/`}
             aria-label={t.site.name}
-            className="flex min-w-0 items-center gap-2.5"
+            className="order-1 mr-auto flex min-w-0 items-center gap-2.5"
           >
             <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-gov-line">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -61,7 +64,11 @@ export default function SiteHeader({
             </span>
           </Link>
 
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <div className="order-2 ml-3 shrink-0 sm:order-4">
+            <LanguageToggle current={locale} />
+          </div>
+
+          <div className="order-3 flex w-full items-center gap-x-3 sm:order-3 sm:ml-3 sm:w-auto">
             <span className="hidden text-[11px] font-semibold uppercase tracking-wider text-gov sm:inline">
               {v.iAmA}
             </span>
@@ -69,7 +76,7 @@ export default function SiteHeader({
                 options; selected = solid green fill + white, unselected =
                 transparent + dark-green. */}
             <nav
-              className="inline-flex items-stretch overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-gov-line"
+              className="inline-flex max-w-full items-stretch overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-gov-line"
               aria-label={v.iAmA}
             >
               {roles.map((r, i) => (
@@ -77,7 +84,7 @@ export default function SiteHeader({
                   key={r.href}
                   href={r.href}
                   aria-current={r.current ? "page" : undefined}
-                  className={`flex min-h-[38px] items-center px-4 text-[13.5px] font-bold transition-colors ${
+                  className={`flex min-h-[38px] items-center whitespace-nowrap px-3 text-[13px] font-bold transition-colors sm:px-4 sm:text-[13.5px] ${
                     i > 0 ? "border-l border-gov-line" : ""
                   } ${
                     r.current
@@ -89,7 +96,6 @@ export default function SiteHeader({
                 </Link>
               ))}
             </nav>
-            <LanguageToggle current={locale} />
           </div>
         </div>
       </div>
