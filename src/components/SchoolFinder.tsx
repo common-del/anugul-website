@@ -52,10 +52,14 @@ export default function SchoolFinder({
   locale,
   labels,
   dest = "school",
+  tip,
 }: {
   locale: Locale;
   labels: Labels;
   dest?: "school" | "principal";
+  // Optional tinted tip panel inside the search card (School Head variant
+  // only) — evens the left column's height against the block picker.
+  tip?: { title: string; body: string };
 }) {
   const [index, setIndex] = useState<Item[]>([]);
   const [geo, setGeo] = useState<Geo[] | null>(null);
@@ -244,6 +248,39 @@ export default function SchoolFinder({
           </button>
         </div>
         <p className="mt-1.5 text-xs text-muted">{labels.searchNote}</p>
+
+        {tip && (
+          <div className="mt-3 flex items-center gap-3 rounded-xl bg-gov-tint p-3.5">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gov">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0012 3z" />
+              </svg>
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-bold leading-snug text-gov-ink">
+                {tip.title}
+              </span>
+              <span className="mt-0.5 block text-[13px] leading-snug text-muted">
+                {tip.body}
+              </span>
+            </span>
+            {/* report-card + potted-plant motif, brand greens only */}
+            <svg width="64" height="56" viewBox="0 0 64 56" fill="none" aria-hidden className="hidden shrink-0 sm:block">
+              <rect x="10" y="4" width="34" height="46" rx="4" fill="#fff" stroke="#0E5A40" strokeWidth="1.6" />
+              <circle cx="19" cy="13" r="4.5" fill="#EDF5F0" stroke="#187A57" strokeWidth="1.2" />
+              <text x="19" y="16" textAnchor="middle" fontSize="6.5" fontWeight="700" fill="#0E5A40">A+</text>
+              <line x1="27" y1="11" x2="39" y2="11" stroke="#187A57" strokeWidth="2" strokeLinecap="round" />
+              <line x1="27" y1="16" x2="36" y2="16" stroke="#9CC6B2" strokeWidth="2" strokeLinecap="round" />
+              <line x1="15" y1="24" x2="39" y2="24" stroke="#9CC6B2" strokeWidth="2" strokeLinecap="round" />
+              <line x1="15" y1="29" x2="35" y2="29" stroke="#187A57" strokeWidth="2" strokeLinecap="round" />
+              <line x1="15" y1="34" x2="39" y2="34" stroke="#9CC6B2" strokeWidth="2" strokeLinecap="round" />
+              <line x1="15" y1="39" x2="31" y2="39" stroke="#9CC6B2" strokeWidth="2" strokeLinecap="round" />
+              <path d="M53 38c0-4 2.5-7 2.5-7s2.5 3 2.5 7" stroke="#187A57" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+              <path d="M55.5 40c-3-1-6-4-6-7 3 0 6 2 6 7zM55.5 40c3-1 6-4 6-7-3 0-6 2-6 7z" fill="#187A57" />
+              <path d="M50 42h11l-1.5 10h-8z" fill="#0E5A40" />
+            </svg>
+          </div>
+        )}
 
         {searching ? (
           <section className="mt-3">
