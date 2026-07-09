@@ -20,6 +20,8 @@ import time
 
 import fitz
 
+t0 = time.time()
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, ".."))
 FONT_R = os.path.join(HERE, "fonts", "NotoSansOriya-Regular.ttf")
@@ -137,28 +139,44 @@ Cluster needing most support: <b>{esc(clusters[-1]['cluster'])} {clusters[-1]['s
 print("block PDFs: 8 written")
 
 # ---------------- learning-outcome report (district) ----------------
+# Consolidated PER LEARNING OUTCOME (owner decision 2026-07-09): question
+# number, grade_level and cognitive columns dropped; where several questions
+# assess the same LO, pct_correct is the simple mean across those questions
+# (questions_assessed says how many the figure is based on).
 items = json.load(open(os.path.join(OFF, "items.json"), encoding="utf-8"))
-items.sort(key=lambda i: (i["grade"], i["subject"], i["q_no"]))
+by_lo = {}
+for i in items:
+    key = (i["grade"], i["subject"], i["lo"])
+    e = by_lo.setdefault(key, {"grade": i["grade"], "subject": i["subject"], "lo": i["lo"],
+                               "desc": "", "pcts": []})
+    e["pcts"].append(i["correct_pct"])
+    if len(i.get("desc") or "") > len(e["desc"]):
+        e["desc"] = i["desc"]  # fullest description among the LO's questions
+los = sorted(by_lo.values(), key=lambda e: (e["grade"], e["subject"], e["lo"]))
+for e in los:
+    e["n"] = len(e["pcts"])
+    e["pct"] = round(sum(e["pcts"]) / e["n"], 1)
+
 with open(os.path.join(DL, "learning_outcomes.csv"), "w", encoding="utf-8-sig", newline="") as fcsv:
     w = csv.writer(fcsv)
-    w.writerow(["grade", "subject", "q_no", "lo_code", "lo_description", "grade_level", "cognitive", "pct_correct"])
-    for i in items:
-        w.writerow([i["grade"], i["subject"], i["q_no"], i["lo"], i["desc"], i["gl"], i.get("cog") or "", i["correct_pct"]])
+    w.writerow(["grade", "subject", "lo_code", "lo_description", "questions_assessed", "pct_correct"])
+    for e in los:
+        w.writerow([e["grade"], e["subject"], e["lo"], e["desc"], e["n"], e["pct"]])
 
 pages, cur, count = [], "", 0
-header = """<div class="hdr"><h1>Learning-Outcome Report · Angul district</h1>
+header = """<div class="hdr"><h1>Learning-Outcome Report · Anugola district</h1>
 <p>SAKSHAM · ଶିକ୍ଷାବର୍ଷ 2025-26 · every assessed learning outcome with the share of children answering correctly</p></div>"""
 cur = header
 last_group = None
-for i in items:
-    grp = f"{i['grade']} · {i['subject']}"
+for e in los:
+    grp = f"{e['grade']} · {e['subject']}"
     if grp != last_group:
-        cur += f"<h2>{esc(grp)}</h2><table><tr><th>Q</th><th>LO</th><th>Description</th><th>Level</th><th>%</th></tr>"
+        cur += f"<h2>{esc(grp)}</h2><table><tr><th>LO</th><th>Description</th><th>Qs</th><th>%</th></tr>"
         last_group = grp
         count += 2
-    cls = "bad" if i["correct_pct"] < 40 else ("good" if i["correct_pct"] >= 75 else "")
-    cur += (f"<tr><td>{i['q_no']}</td><td>{esc(i['lo'])}</td><td>{esc(i['desc'][:120])}</td>"
-            f"<td>{esc(i['gl'])}</td><td class='{cls}'>{i['correct_pct']:.0f}</td></tr>")
+    cls = "bad" if e["pct"] < 40 else ("good" if e["pct"] >= 75 else "")
+    cur += (f"<tr><td>{esc(e['lo'])}</td><td>{esc(e['desc'][:140])}</td>"
+            f"<td>{e['n']}</td><td class='{cls}'>{e['pct']:.0f}</td></tr>")
     count += 1
     if count >= 38:
         cur += "</table>"
@@ -167,5 +185,5 @@ for i in items:
 if cur:
     pages.append(cur + "</table>")
 page_pdf(pages, os.path.join(DL, "learning_outcomes_report.pdf"))
-print(f"LOR: {len(pages)} pages + CSV ({len(items)} items)")
+print(f"LOR: {len(pages)} pages + CSV ({len(los)} LOs from {len(items)} items)")
 print("DONE in %.0fs" % (time.time() - t0))
