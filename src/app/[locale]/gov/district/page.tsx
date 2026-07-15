@@ -159,9 +159,9 @@ export default function DistrictReportPage({
           ))}
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-3 lg:items-start">
+        <div className="mt-6 grid gap-6 lg:grid-cols-3 lg:items-stretch">
           {/* district at a glance — map coloured by band */}
-          <section className="gov-card p-5">
+          <section className="gov-card flex flex-col p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.glanceT}</h2>
             <div className="mt-3">
               <DistrictMapBands
@@ -179,13 +179,13 @@ export default function DistrictReportPage({
               <tbody>
                 {[v.legend75, v.legend60, v.legend45, v.legend0].map((label, i) => (
                   <tr key={label} className="border-t border-gov-line">
-                    <td className="py-1.5 pr-2">
+                    <td className="py-1 pr-2">
                       <span
                         className="inline-block h-4 w-4 rounded"
                         style={{ backgroundColor: MAP_BANDS[i].color }}
                       />
                     </td>
-                    <td className="py-1.5 font-semibold text-gov-ink">{label}</td>
+                    <td className="py-1 font-semibold text-gov-ink">{label}</td>
                   </tr>
                 ))}
               </tbody>
@@ -193,9 +193,9 @@ export default function DistrictReportPage({
           </section>
 
           {/* performance by blocks */}
-          <section className="gov-card p-5">
+          <section className="gov-card flex flex-col p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.perfBlocksT}</h2>
-            <div className="mt-3 space-y-2">
+            <div className="mt-3 flex flex-1 flex-col justify-between gap-3">
               {sorted.map((b, i) => (
                 <Link
                   key={b.name}
@@ -229,7 +229,7 @@ export default function DistrictReportPage({
           </section>
 
           {/* grade-wise performance */}
-          <section className="gov-card p-5">
+          <section className="gov-card flex flex-col p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.gradewiseT}</h2>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <Gauge
@@ -250,7 +250,7 @@ export default function DistrictReportPage({
 
             {/* key insights — exactly three, first two computed */}
             <h3 className="mt-6 text-base font-bold text-gov-ink">{v.keyInsightsPlain}</h3>
-            <ul className="mt-2 space-y-2 text-sm">
+            <ul className="mt-2 flex flex-1 flex-col justify-between gap-2 text-sm">
               {best && (
                 <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
@@ -278,12 +278,17 @@ export default function DistrictReportPage({
                   </span>
                 </li>
               )}
+              {/* placeholder insight row — dummy copy for the mockup, to be
+                  replaced with a real (i18n'd) computed insight later */}
               <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#566579" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                   <circle cx="12" cy="12" r="9" />
-                  <path d="M12 8v4l2.5 2.5" />
+                  <path d="M12 8v8M8 12h8" />
                 </svg>
-                <span className="text-muted">{v.insightPlaceholderL}</span>
+                <span>
+                  <span className="block font-bold italic text-gov-ink">Third insight</span>
+                  <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
+                </span>
               </li>
             </ul>
           </section>
