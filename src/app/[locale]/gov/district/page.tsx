@@ -228,70 +228,86 @@ export default function DistrictReportPage({
             </Link>
           </section>
 
-          {/* grade-wise performance */}
-          <section className="gov-card flex flex-col p-5">
-            <h2 className="text-lg font-bold text-gov-ink">{v.gradewiseT}</h2>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <Gauge
-                value={g5}
-                display={pct(g5)}
-                label={grade("Grade 5")}
-                caption={fill(v.distAvgCaption, { n: pct(district.districtAverage) })}
-                color={mapBandColor(g5)}
-              />
-              <Gauge
-                value={g8}
-                display={pct(g8)}
-                label={grade("Grade 8")}
-                caption={fill(v.distAvgCaption, { n: pct(district.districtAverage) })}
-                color={mapBandColor(g8)}
-              />
-            </div>
+          {/* grade-wise performance + key insights: two separate cards stacked
+              in the third column, together filling the row height */}
+          <div className="flex flex-col gap-6">
+            <section className="gov-card p-5">
+              <h2 className="text-lg font-bold text-gov-ink">{v.gradewiseT}</h2>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <Gauge
+                  value={g5}
+                  display={pct(g5)}
+                  label={grade("Grade 5")}
+                  caption={fill(v.distAvgCaption, { n: pct(district.districtAverage) })}
+                  color={mapBandColor(g5)}
+                />
+                <Gauge
+                  value={g8}
+                  display={pct(g8)}
+                  label={grade("Grade 8")}
+                  caption={fill(v.distAvgCaption, { n: pct(district.districtAverage) })}
+                  color={mapBandColor(g8)}
+                />
+              </div>
+            </section>
 
-            {/* key insights — exactly three, first two computed */}
-            <h3 className="mt-6 text-base font-bold text-gov-ink">{v.keyInsightsPlain}</h3>
-            <ul className="mt-2 flex flex-1 flex-col justify-between gap-2 text-sm">
-              {best && (
+            {/* key insights — first two computed; the rest placeholders that
+                fill the card so the column aligns with the rest of the row */}
+            <section className="gov-card flex flex-1 flex-col p-5">
+              <h2 className="text-lg font-bold text-gov-ink">{v.keyInsightsPlain}</h2>
+              <ul className="mt-3 flex flex-1 flex-col justify-between gap-2.5 text-sm">
+                {best && (
+                  <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                      <path d="M23 6l-9.5 9.5-5-5L1 18" />
+                      <path d="M17 6h6v6" />
+                    </svg>
+                    <span>
+                      <span className="block text-xs font-semibold text-muted">{v.insightBestSubjectL}</span>
+                      <span className="font-bold text-gov-ink">
+                        {subj(best.subject)} · {grade(best.grade)} · {pct(best.val)}
+                      </span>
+                    </span>
+                  </li>
+                )}
+                {worst && (
+                  <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b3261e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                      <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" />
+                    </svg>
+                    <span>
+                      <span className="block text-xs font-semibold text-muted">{v.insightNeedsAttentionL}</span>
+                      <span className="font-bold text-gov-ink">
+                        {subj(worst.subject)} · {grade(worst.grade)} · {pct(worst.val)}
+                      </span>
+                    </span>
+                  </li>
+                )}
+                {/* placeholder insight rows — dummy copy for the mockup, to be
+                    replaced with real (i18n'd) computed insights later */}
                 <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                    <path d="M23 6l-9.5 9.5-5-5L1 18" />
-                    <path d="M17 6h6v6" />
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#566579" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 8v8M8 12h8" />
                   </svg>
                   <span>
-                    <span className="block text-xs font-semibold text-muted">{v.insightBestSubjectL}</span>
-                    <span className="font-bold text-gov-ink">
-                      {subj(best.subject)} · {grade(best.grade)} · {pct(best.val)}
-                    </span>
+                    <span className="block font-bold italic text-gov-ink">Third insight</span>
+                    <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
                   </span>
                 </li>
-              )}
-              {worst && (
                 <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b3261e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                    <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" />
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#566579" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 8v8M8 12h8" />
                   </svg>
                   <span>
-                    <span className="block text-xs font-semibold text-muted">{v.insightNeedsAttentionL}</span>
-                    <span className="font-bold text-gov-ink">
-                      {subj(worst.subject)} · {grade(worst.grade)} · {pct(worst.val)}
-                    </span>
+                    <span className="block font-bold italic text-gov-ink">Fourth insight</span>
+                    <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
                   </span>
                 </li>
-              )}
-              {/* placeholder insight row — dummy copy for the mockup, to be
-                  replaced with a real (i18n'd) computed insight later */}
-              <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#566579" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 8v8M8 12h8" />
-                </svg>
-                <span>
-                  <span className="block font-bold italic text-gov-ink">Third insight</span>
-                  <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
-                </span>
-              </li>
-            </ul>
-          </section>
+              </ul>
+            </section>
+          </div>
         </div>
 
         {/* downloads */}
