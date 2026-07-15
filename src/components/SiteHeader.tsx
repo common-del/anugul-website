@@ -4,6 +4,7 @@ import type { Messages } from "@/lib/i18n/dict";
 import LanguageToggle from "./LanguageToggle";
 import BackButton from "./BackButton";
 import HelpMenu from "./HelpMenu";
+import MobileMenu from "./MobileMenu";
 
 // v2 header (docx mock): white masthead — logo, "Angul Schools" +
 // "Government of Odisha", role selector (Parent, Government and Orgs),
@@ -37,14 +38,15 @@ export default function SiteHeader({
     // z-40 keeps it under the report-card lightbox overlay (z-50).
     <header className="no-print sticky top-0 z-40">
       <div className="border-b border-gov-line bg-gov-masthead shadow-header">
-        {/* Mobile: row 1 = logo + language toggle, row 2 = role selector
-            (full width). Desktop (sm+): one row, roles + toggle clustered
-            right. order-* swaps the visual order per breakpoint. */}
+        {/* Mobile: row 1 = logo + language toggle + hamburger, row 2 = role
+            selector (full width). Desktop (sm+): one row, roles + toggle
+            clustered right and the hamburger hidden. order-* swaps the visual
+            order per breakpoint. */}
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-y-2 px-4 py-2.5">
           <Link
             href={`/${locale}/`}
             aria-label={t.site.name}
-            className="order-1 mr-auto flex min-w-0 items-center gap-2.5"
+            className="order-1 flex min-w-0 flex-1 items-center gap-2.5 sm:mr-auto sm:flex-initial"
           >
             <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-gov-line">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -68,15 +70,35 @@ export default function SiteHeader({
             <LanguageToggle current={locale} />
           </div>
 
-          <div className="order-3 flex w-full items-center gap-x-3 sm:order-3 sm:ml-3 sm:w-auto">
+          {/* Hamburger — mobile only; opens the right-side nav drawer. */}
+          <div className="order-3 ml-1 shrink-0 sm:hidden">
+            <MobileMenu
+              active={active}
+              items={[
+                { key: "home", href: `/${locale}/`, label: v.navHome },
+                { key: "reports", href: `/${locale}/gov/`, label: v.navReports },
+              ]}
+              helpLabel={v.navHelp}
+              helpItems={[
+                { href: `/${locale}/faq/`, label: v.helpFaqs },
+                { href: `/${locale}/contact/`, label: v.helpContact },
+                { href: `/${locale}/resources/`, label: v.helpResources },
+              ]}
+              menuLabel={v.menu}
+              closeLabel={v.filmClose}
+            />
+          </div>
+
+          <div className="order-4 flex w-full items-center gap-x-3 sm:order-3 sm:ml-3 sm:w-auto">
             <span className="hidden text-[11px] font-semibold uppercase tracking-wider text-gov sm:inline">
               {v.iAmA}
             </span>
             {/* Segmented control: one connected pill, thin dividers between
                 options; selected = solid green fill + white, unselected =
-                transparent + dark-green. */}
+                transparent + dark-green. Full width on mobile (equal thirds),
+                content width on desktop. */}
             <nav
-              className="inline-flex max-w-full items-stretch overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-gov-line"
+              className="flex w-full max-w-full items-stretch overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-gov-line sm:inline-flex sm:w-auto"
               aria-label={v.iAmA}
             >
               {roles.map((r, i) => (
@@ -84,7 +106,7 @@ export default function SiteHeader({
                   key={r.href}
                   href={r.href}
                   aria-current={r.current ? "page" : undefined}
-                  className={`flex min-h-[38px] items-center whitespace-nowrap px-3 text-[13px] font-bold transition-colors sm:px-4 sm:text-[13.5px] ${
+                  className={`flex min-h-[38px] flex-1 items-center justify-center whitespace-nowrap px-3 text-[13px] font-bold transition-colors sm:flex-none sm:justify-start sm:px-4 sm:text-[13.5px] ${
                     i > 0 ? "border-l border-gov-line" : ""
                   } ${
                     r.current
@@ -100,7 +122,10 @@ export default function SiteHeader({
         </div>
       </div>
 
-      <div className="bg-gov-nav">
+      {/* Dark-green title bar. On mobile the primary nav moves into the drawer,
+          so this bar shows only when there's a Back button; on sm+ it always
+          shows the Home | Reports | Help ▾ nav. */}
+      <div className={`${showBack ? "" : "hidden sm:block"} bg-gov-nav`}>
         <nav
           className="mx-auto flex w-full max-w-5xl items-stretch px-2 font-semibold"
           aria-label={v.navHome}
@@ -110,34 +135,37 @@ export default function SiteHeader({
               <BackButton label={t.back} />
             </span>
           )}
-          <Link
-            href={`/${locale}/`}
-            className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
-              active === "home"
-                ? "border-accent text-white"
-                : "border-transparent text-white/85 hover:text-white"
-            }`}
-          >
-            {v.navHome}
-          </Link>
-          <Link
-            href={`/${locale}/gov/`}
-            className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
-              active === "reports"
-                ? "border-accent text-white"
-                : "border-transparent text-white/85 hover:text-white"
-            }`}
-          >
-            {v.navReports}
-          </Link>
-          <HelpMenu
-            label={v.navHelp}
-            items={[
-              { href: `/${locale}/faq/`, label: v.helpFaqs },
-              { href: `/${locale}/contact/`, label: v.helpContact },
-              { href: `/${locale}/resources/`, label: v.helpResources },
-            ]}
-          />
+          {/* Primary nav: desktop only — mobile uses the MobileMenu drawer. */}
+          <div className="hidden items-stretch sm:flex">
+            <Link
+              href={`/${locale}/`}
+              className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
+                active === "home"
+                  ? "border-accent text-white"
+                  : "border-transparent text-white/85 hover:text-white"
+              }`}
+            >
+              {v.navHome}
+            </Link>
+            <Link
+              href={`/${locale}/gov/`}
+              className={`flex min-h-[48px] items-center border-b-[3px] px-4 text-[15px] ${
+                active === "reports"
+                  ? "border-accent text-white"
+                  : "border-transparent text-white/85 hover:text-white"
+              }`}
+            >
+              {v.navReports}
+            </Link>
+            <HelpMenu
+              label={v.navHelp}
+              items={[
+                { href: `/${locale}/faq/`, label: v.helpFaqs },
+                { href: `/${locale}/contact/`, label: v.helpContact },
+                { href: `/${locale}/resources/`, label: v.helpResources },
+              ]}
+            />
+          </div>
         </nav>
       </div>
     </header>
