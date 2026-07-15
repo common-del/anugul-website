@@ -297,7 +297,7 @@ export default function DistrictReportPage({
         {/* downloads */}
         <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 min-[1200px]:grid-cols-5 min-[1200px]:gap-2.5">
             {[
               { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/data/downloads/district_report.pdf", primary: false },
               { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", primary: true },
@@ -305,9 +305,9 @@ export default function DistrictReportPage({
               { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", primary: false },
               { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", primary: false },
             ].map((c) => (
-              <div key={c.t} className="flex flex-col rounded-xl border border-gov-line bg-white p-4 shadow-sm">
-                <div className="text-sm font-extrabold text-gov-ink">{c.t}</div>
-                <p className="mt-1 flex-1 text-xs text-muted">{c.d}</p>
+              <div key={c.t} className="flex flex-col rounded-xl border border-gov-line bg-white p-4 shadow-sm min-[1200px]:p-3">
+                <div className="text-sm font-extrabold leading-snug text-gov-ink min-[1200px]:text-[13px]">{c.t}</div>
+                <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{c.d}</p>
                 <a
                   href={c.href}
                   download
