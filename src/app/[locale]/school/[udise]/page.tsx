@@ -140,7 +140,7 @@ export default function SchoolPage({
       <SiteHeader locale={locale} t={t} showBack active="reports" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* header row */}
-        <section className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
+        <section className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <div className="min-w-0">
             <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
               {s.name}
@@ -152,22 +152,18 @@ export default function SchoolPage({
                 : ""}
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <div className="text-sm font-bold uppercase tracking-wide text-gov-ink">
-                {v.overallScore}
-              </div>
-            </div>
-            <div className="grid h-[74px] w-[74px] shrink-0 place-items-center rounded-full bg-gov">
-              <div className="text-center leading-none">
-                <span className="block text-[26px] font-extrabold text-white">
+          <div className="flex shrink-0 items-center gap-3 rounded-full bg-gov-tint py-1.5 pl-4 pr-1.5">
+            <span className="text-sm font-bold uppercase tracking-wide text-gov-ink">
+              {v.overallScore}
+            </span>
+            <span className="grid h-[64px] w-[64px] place-items-center rounded-full bg-gov">
+              <span className="text-center leading-none">
+                <span className="block text-[22px] font-extrabold text-white">
                   {num(overall10)}
                 </span>
-                <span className="mt-1 block text-[11px] text-white/75">
-                  /{num(10)}
-                </span>
-              </div>
-            </div>
+                <span className="mt-0.5 block text-[10px] text-white/75">/{num(10)}</span>
+              </span>
+            </span>
           </div>
         </section>
 
