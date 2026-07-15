@@ -13,6 +13,20 @@
   .gov-card-link {
     @apply gov-card transition-shadow duration-150 hover:shadow-lift focus-visible:shadow-lift;
   }
+  /* Translucent "glass" button surface (Home hero secondary CTA): frosted
+     white over the card. Border and text colour are set on the element. */
+  .btn-glass {
+    background-color: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+}
+
+/* Solid-white fallback where backdrop-filter is unsupported. */
+@supports not ((backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))) {
+  .btn-glass {
+    background-color: #fff;
+  }
 }
 
 /* Latin default (Public Sans, the USWDS typeface); Odia pages lead with the

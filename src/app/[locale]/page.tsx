@@ -110,14 +110,21 @@ export default function Home({ params }: { params: { locale: string } }) {
             {/* Two full-width stacked buttons: Find (primary), Explore (secondary). */}
             <Link
               href={`/${locale}/find/`}
-              className="mt-5 flex min-h-[56px] w-full items-center justify-center rounded-xl bg-gov px-6 text-[17px] font-extrabold text-white shadow-sm transition hover:shadow-lift active:brightness-110"
+              className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-gov px-6 text-[17px] font-extrabold text-white shadow-sm transition hover:shadow-lift active:brightness-110"
             >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.3-4.3" />
+              </svg>
               {v.findSchool}
             </Link>
             <Link
               href={`/${locale}/gov/`}
-              className="mt-3 flex min-h-[56px] w-full items-center justify-center rounded-xl border-2 border-gov bg-white px-6 text-[17px] font-bold text-gov transition hover:bg-gov-tint"
+              className="btn-glass mt-3 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl border border-gov px-6 text-[17px] font-bold text-gov transition hover:shadow-sm"
             >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
+                <path d="M4 20V10M10 20V4M16 20v-9M20 20H4" />
+              </svg>
               {v.exploreReports}
             </Link>
           </section>
