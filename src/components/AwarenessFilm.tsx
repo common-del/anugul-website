@@ -20,7 +20,7 @@ export default function AwarenessFilm({
   const [play, setPlay] = useState(false);
 
   return (
-    <section className="flex flex-col overflow-hidden rounded-2xl border-2 border-gov bg-white shadow-card">
+    <section className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-card">
       <div className="border-b border-gov-line bg-gov-tint px-4 py-2.5">
         <h2 className="text-base font-bold text-gov-ink">{title}</h2>
         <p className="mt-0.5 text-xs text-muted">{desc}</p>
