@@ -195,7 +195,7 @@ export default function SchoolPage({
                     href={cardUrl(s.udise)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
+                    className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-accent px-4 text-sm font-bold text-gov-ink shadow-sm transition hover:shadow-lift"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />

@@ -57,7 +57,7 @@ export default function FindPage({ params }: { params: { locale: string } }) {
         <div className="mt-5 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 md:grid-cols-4">
           {tiles.map((tile) => (
             <div key={tile.t} className="flex flex-col items-center text-center">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E56A4F" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 {tile.icon}
               </svg>
               <span className="mt-2 max-w-[12rem] text-sm font-bold leading-snug text-gov-ink">

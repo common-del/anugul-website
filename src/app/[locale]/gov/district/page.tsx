@@ -315,11 +315,11 @@ export default function DistrictReportPage({
           <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 min-[1200px]:grid-cols-5 min-[1200px]:gap-2.5">
             {[
-              { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/data/downloads/district_report.pdf", primary: false },
-              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", primary: true },
-              { t: v.dlDistCsvT, d: v.dlDistCsvD, href: "/data/downloads/schools_overall.csv", primary: false },
-              { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", primary: false },
-              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", primary: false },
+              { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/data/downloads/district_report.pdf", excel: false },
+              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", excel: true },
+              { t: v.dlDistCsvT, d: v.dlDistCsvD, href: "/data/downloads/schools_overall.csv", excel: false },
+              { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false },
+              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false },
             ].map((c) => (
               <div key={c.t} className="flex flex-col rounded-xl border border-gov-line bg-white p-4 shadow-sm min-[1200px]:p-3">
                 <div className="text-sm font-extrabold leading-snug text-gov-ink min-[1200px]:text-[13px]">{c.t}</div>
@@ -328,8 +328,8 @@ export default function DistrictReportPage({
                   href={c.href}
                   download
                   className={`mt-3 flex min-h-[42px] items-center justify-center rounded-lg px-3 text-sm font-bold transition ${
-                    c.primary
-                      ? "bg-gov text-white shadow-sm hover:shadow-lift"
+                    c.excel
+                      ? "bg-[#217346] text-white shadow-sm hover:shadow-lift"
                       : "border-2 border-gov text-gov hover:bg-gov-tint"
                   }`}
                 >

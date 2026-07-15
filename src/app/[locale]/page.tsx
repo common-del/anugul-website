@@ -211,7 +211,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                   height="44"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#2D3A47"
+                  stroke="#E56A4F"
                   strokeWidth="1.6"
                   strokeLinecap="round"
                   strokeLinejoin="round"
