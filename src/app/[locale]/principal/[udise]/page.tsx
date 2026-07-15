@@ -5,15 +5,14 @@ import SiteFooter from "@/components/SiteFooter";
 import Link from "next/link";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import Stars from "@/components/Stars";
-import PrintButton from "@/components/PrintButton";
 import MisconFull from "@/components/MisconFull";
 import CardLightbox from "@/components/CardLightbox";
 import { hasCard, cardUrl, cardImg, hasHcard, hcardUrl } from "@/lib/cards";
-import { getBlockSlugs, getCluster, getClusterIndex, getMislib } from "@/lib/officialsData";
+import { getBlockSlugs, getMislib } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
+import { type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
 
 type Profile = {
@@ -71,8 +70,9 @@ const tintFor = (s10: number) =>
 
 // School Head report card (spec 2026-07-10): parent-pattern preview + download
 // & share, "What should you do" actions, six-tile About, tinted nearby list,
-// Explore More Reports. Earlier-approved extras (subject stars vs block top,
-// cluster context, misconception annexure, print) are retained below.
+// Explore More Reports. The earlier-approved misconception annexure is retained
+// below. (Subject-scores panel, cluster panel and print were removed per the
+// 2026-07-15 School Head spec.)
 export default function PrincipalPage({
   params,
 }: {
@@ -85,19 +85,7 @@ export default function PrincipalPage({
   const t = getDict(locale);
   const v = t.v2;
   const num = (n: number) => fmtNum(n, locale);
-  const grades = Object.keys(s.byGrade).sort();
   const overall10 = score10(s.overall.score);
-
-  // block top per grade/subject = highest school score in the same block
-  const blockPeers = Object.values(schools).filter((x) => x.block === s.block);
-  const blockTop = (g: string, subj: string) => {
-    let m = 0;
-    for (const p of blockPeers) {
-      const val = p.byGrade[g]?.[subj];
-      if (val != null && val > m) m = val;
-    }
-    return score10(m);
-  };
 
   const actions = [
     { n: 1, title: v.pa1Title, text: v.pa1Text,
@@ -147,11 +135,7 @@ export default function PrincipalPage({
     .filter(Boolean) as { udise: string; name: string; km: number | null; s10: number }[];
   neighbours.sort((a, z) => z.s10 - a.s10);
 
-  // cluster context + misconception annexure (earlier-approved, retained)
-  const clusterEntry = getClusterIndex().find(
-    (c) => c.cluster === s.cluster && c.block === s.block,
-  );
-  const cluster = clusterEntry ? getCluster(clusterEntry.slug) : null;
+  // block slug (for Explore links) + misconception annexure (earlier-approved)
   const blockSlug = getBlockSlugs().find((b) => b.name === s.block)?.slug;
   const mislib = getMislib();
   const misconRows = mislib.units[`B::${s.block}`] ?? [];
@@ -412,105 +396,6 @@ export default function PrincipalPage({
           </div>
         </section>
 
-        {/* ===== earlier-approved extras, retained below the spec layout ===== */}
-
-        {/* our school vs block top, per subject */}
-        <section className="mt-6 gov-card p-5">
-          <h2 className="text-lg font-bold text-gov-ink">{v.subjectsTitle}</h2>
-          <div className="mt-2 flex flex-wrap gap-4 text-xs font-semibold">
-            <span className="flex items-center gap-1.5">
-              <Stars score={1} max={1} size={13} /> {v.ourSchool}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Stars score={1} max={1} size={13} tone="accent" /> {v.blockTop}
-            </span>
-          </div>
-          {grades.map((g) => (
-            <div key={g} className="mt-4">
-              {grades.length > 1 && (
-                <h3 className="text-sm font-bold text-gov-ink">
-                  {t.grades[g as keyof typeof t.grades] ?? g}
-                </h3>
-              )}
-              <div className="mt-2 space-y-3">
-                {Object.entries(s.byGrade[g]).map(([subj, pct]) => {
-                  const mine = score10(pct);
-                  const top = blockTop(g, subj);
-                  return (
-                    <div key={subj}>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gov-ink">
-                          {t.subjects[subj as keyof typeof t.subjects] ?? subj}
-                        </span>
-                        <span className="tabular-nums">
-                          <span className="font-bold text-gov-ink">{num(mine)}</span>
-                          <span className="text-muted"> / {num(top)} {v.blockTop.toLowerCase()}</span>
-                        </span>
-                      </div>
-                      <div className="mt-1 space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="w-20 shrink-0 text-xs text-muted">{v.ourSchool}</span>
-                          <Stars score={mine} size={15} label={`${v.ourSchool} ${num(mine)}/${num(10)}`} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="w-20 shrink-0 text-xs text-muted">{v.blockTop}</span>
-                          <Stars score={top} size={15} tone="accent" label={`${v.blockTop} ${num(top)}/${num(10)}`} />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </section>
-
-        {/* your cluster */}
-        {cluster && (
-          <section className="mt-6 gov-card p-5">
-            <h2 className="text-lg font-bold text-gov-ink">{v.myClusterT}</h2>
-            <p className="mt-1 text-sm text-muted">
-              {s.cluster} · {t.officials.clusterRankLine
-                .replace("{rank}", num(cluster.rank))
-                .replace("{of}", num(cluster.of))
-                .replace("{block}", s.block)}
-            </p>
-            <ul className="mt-2 divide-y divide-gov-line text-sm">
-              {cluster.schools.map((cs) => (
-                <li
-                  key={cs.udise}
-                  className={`flex items-center justify-between gap-2 px-1 py-1.5 ${
-                    cs.udise === s.udise ? "rounded-lg bg-gov-tint font-bold" : ""
-                  }`}
-                >
-                  <span className="min-w-0 truncate text-gov-ink">
-                    {cs.name}
-                    {cs.udise === s.udise && (
-                      <span className="ml-2 rounded-full bg-gov px-2 py-0.5 text-[10px] font-bold text-white">
-                        {v.youHere}
-                      </span>
-                    )}
-                  </span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[11px] font-bold"
-                      style={{
-                        backgroundColor: BAND_COLOR[cs.band],
-                        color: cs.band === "needs" ? "#12233d" : "#fff",
-                      }}
-                    >
-                      {t.band[cs.band]}
-                    </span>
-                    <span className="w-12 text-right font-semibold tabular-nums" style={{ color: BAND_TEXT[cs.band] }}>
-                      {num(score10(cs.score))}/{num(10)}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
         {/* block misconceptions annexure — full fidelity, never truncated */}
         {misconRows.length > 0 && (
           <section className="mt-6">
@@ -528,11 +413,6 @@ export default function PrincipalPage({
             </div>
           </section>
         )}
-
-        {/* printable one-pager */}
-        <div className="no-print mt-6">
-          <PrintButton label={t.officials.printPage} />
-        </div>
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>
