@@ -24,7 +24,7 @@ export default function GovPage({ params }: { params: { locale: string } }) {
   const blocks = getBlockSlugs();
 
   return (
-    <PageShell>
+    <PageShell zone="full">
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* About SAKSHAM */}

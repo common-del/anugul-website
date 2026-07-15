@@ -63,9 +63,9 @@ function AbbrText({ text, diet, crcc }: { text: string; diet: string; crcc: stri
 }
 
 // Nearby-card tint by /10 bucket. Amber is the District screen's band hex
-// (#B45309) at low alpha, per spec — green/red are the site band greens/reds.
+// (#E5A24F) at low alpha, per spec — green/red are the site band greens/reds.
 const tintFor = (s10: number) =>
-  s10 >= 8 ? "rgba(24,122,87,0.13)" : s10 >= 5 ? "rgba(180,83,9,0.14)" : "rgba(179,38,30,0.12)";
+  s10 >= 8 ? "rgba(45,58,71,0.13)" : s10 >= 5 ? "rgba(229,162,79,0.14)" : "rgba(194,78,54,0.12)";
 
 // School Head report card (spec 2026-07-10, trimmed per the 2026-07-15 School
 // Head specs): parent-pattern preview + download & share, "What should you do"
@@ -223,7 +223,7 @@ export default function PrincipalPage({
               {actions.map((a) => (
                 <div key={a.n} className="flex items-start gap-3.5">
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gov-tint">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E5A40" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={a.icon} />
                     </svg>
                   </span>
@@ -250,7 +250,7 @@ export default function PrincipalPage({
               {tiles.map((tile) => (
                 <div key={tile.l} className="flex items-center gap-3 rounded-xl bg-gov-tint px-3.5 py-3">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E5A40" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={tile.icon} />
                     </svg>
                   </span>
@@ -282,7 +282,7 @@ export default function PrincipalPage({
                   {infraOut.length > 0 && (
                     <div>
                       <p className="font-semibold text-gov-ink">{v.infraNotAvailable}</p>
-                      <p className="mt-0.5 text-[#b3261e]">{infraOut.join(", ")}</p>
+                      <p className="mt-0.5 text-[#C24E36]">{infraOut.join(", ")}</p>
                     </div>
                   )}
                   {smcFormed !== null && (
@@ -357,7 +357,7 @@ export default function PrincipalPage({
                   className="flex items-center gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-sm transition hover:bg-gov-tint hover:shadow-lift"
                 >
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gov-tint">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E5A40" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={e.icon} />
                     </svg>
                   </span>
@@ -376,7 +376,7 @@ export default function PrincipalPage({
                   className="flex items-center gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-sm transition hover:bg-gov-tint hover:shadow-lift"
                 >
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gov-tint">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E5A40" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={e.icon} />
                     </svg>
                   </span>

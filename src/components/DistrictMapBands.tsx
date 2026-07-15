@@ -13,10 +13,10 @@ type Marker = { name: string; x: number; y: number };
 type DistrictMap = { viewBox: string; path: string; blocks: Marker[] };
 
 export const MAP_BANDS = [
-  { min: 75, color: "#0A452F" },
-  { min: 60, color: "#187A57" },
-  { min: 45, color: "#B45309" },
-  { min: 0, color: "#b3261e" },
+  { min: 75, color: "#1A1F26" }, // top → slate-700
+  { min: 60, color: "#2D3A47" }, // mid-high → slate
+  { min: 45, color: "#E5A24F" }, // mid-low → amber
+  { min: 0, color: "#C24E36" }, // critical → coral-700
 ];
 
 export function mapBandColor(score: number): string {

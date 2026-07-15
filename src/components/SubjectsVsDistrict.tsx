@@ -74,7 +74,7 @@ export default function SubjectsVsDistrict({
               <td className="py-2 text-right tabular-nums text-muted">{r.districtD}</td>
               <td
                 className="py-2 pl-3 text-right font-bold tabular-nums"
-                style={{ color: r.diff < 0 ? "#b3261e" : "#1e6b3a" }}
+                style={{ color: r.diff < 0 ? "#C24E36" : "#2D3A47" }}
               >
                 {r.diffD}
               </td>

@@ -7,7 +7,7 @@ export default function Gauge({
   display,
   label,
   caption,
-  color = "#0E5A40",
+  color = "#2D3A47",
 }: {
   value: number; // 0..100
   display: string; // localised "65%"
@@ -30,7 +30,7 @@ export default function Gauge({
         <path
           d="M 10 50 A 40 40 0 0 1 90 50"
           fill="none"
-          stroke="#D5E4DB"
+          stroke="#E4E1DA"
           strokeWidth="10"
           strokeLinecap="round"
         />
@@ -49,7 +49,7 @@ export default function Gauge({
           textAnchor="middle"
           fontSize="17"
           fontWeight="800"
-          fill="#143726"
+          fill="#1A1F26"
         >
           {display}
         </text>

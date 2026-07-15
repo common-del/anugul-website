@@ -133,7 +133,7 @@ export default function SchoolPage({
   // Nearby-card tint by /10 bucket (8-10 green, 5-7 amber, 0-4 red) — muted so
   // AA holds; score + stars remain the primary signal.
   const tintFor = (s10: number) =>
-    s10 >= 8 ? "#E6F3EA" : s10 >= 5 ? "#FCF1DD" : "#FBE7E5";
+    s10 >= 8 ? "#E9ECEE" : s10 >= 5 ? "#FCEBE5" : "#FCEBE5";
 
   return (
     <PageShell>
@@ -279,7 +279,7 @@ export default function SchoolPage({
                       {infraOut.length > 0 && (
                         <div>
                           <p className="font-semibold text-gov-ink">{v.infraNotAvailable}</p>
-                          <p className="mt-0.5 text-[#b3261e]">{infraOut.join(", ")}</p>
+                          <p className="mt-0.5 text-[#C24E36]">{infraOut.join(", ")}</p>
                         </div>
                       )}
                       {smcFormed !== null && (

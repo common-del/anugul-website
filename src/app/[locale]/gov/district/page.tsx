@@ -35,11 +35,11 @@ function fill(s: string, vars: Record<string, string | number>) {
   );
 }
 
-// Bar colours: dark → light green by rank (highest block darkest).
+// Bar colours: dark → light slate by rank (highest block darkest).
 function barColor(rank: number, of: number) {
   const t = of > 1 ? rank / (of - 1) : 0; // 0 = darkest
-  const from = [11, 59, 42]; // #0B3B2A
-  const to = [156, 198, 178]; // #9CC6B2
+  const from = [26, 31, 38]; // slate-700 #1A1F26
+  const to = [148, 158, 170]; // light slate
   const c = from.map((f, i) => Math.round(f + (to[i] - f) * t));
   return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
@@ -147,7 +147,7 @@ export default function DistrictReportPage({
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {stats.map((s) => (
             <div key={s.l} className="gov-card p-4">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E5A40" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d={s.icon} />
               </svg>
               <div className="mt-2 text-xs font-semibold text-muted">{s.l}</div>
@@ -258,7 +258,7 @@ export default function DistrictReportPage({
               <ul className="mt-3 flex flex-1 flex-col justify-between gap-2.5 text-sm">
                 {best && (
                   <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e6b3a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                       <path d="M23 6l-9.5 9.5-5-5L1 18" />
                       <path d="M17 6h6v6" />
                     </svg>
@@ -272,7 +272,7 @@ export default function DistrictReportPage({
                 )}
                 {worst && (
                   <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b3261e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C24E36" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                       <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" />
                     </svg>
                     <span>
@@ -286,7 +286,7 @@ export default function DistrictReportPage({
                 {/* placeholder insight rows — dummy copy for the mockup, to be
                     replaced with real (i18n'd) computed insights later */}
                 <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#566579" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                     <circle cx="12" cy="12" r="9" />
                     <path d="M12 8v8M8 12h8" />
                   </svg>
@@ -296,7 +296,7 @@ export default function DistrictReportPage({
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#566579" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                     <circle cx="12" cy="12" r="9" />
                     <path d="M12 8v8M8 12h8" />
                   </svg>

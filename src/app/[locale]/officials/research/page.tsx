@@ -103,7 +103,7 @@ export default function ResearchPage({
                       {fmtNum(h.items, locale)} item{h.items > 1 ? "s" : ""}
                     </span>
                   </span>
-                  <span className="shrink-0 font-semibold tabular-nums text-[#b3261e]">
+                  <span className="shrink-0 font-semibold tabular-nums text-[#C24E36]">
                     {pct(h.pct)}
                   </span>
                 </li>

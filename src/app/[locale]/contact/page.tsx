@@ -31,7 +31,7 @@ export default function ContactPage({
   ];
 
   return (
-    <PageShell>
+    <PageShell zone="full">
       <SiteHeader locale={locale} t={t} showBack />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
         <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">

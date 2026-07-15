@@ -2,19 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Reusable surfaces. A card is a white panel that floats on the pale gray-green
-   canvas with a soft shadow — restrained depth, not decoration. Padding stays
-   on the element so it can vary per use. */
+/* ===== Slate + Coral visual system (2026-07-15) ===== */
+:root {
+  /* Slate (primary) */
+  --slate: #2d3a47;
+  --slate-700: #1a1f26;
+  --slate-050: #e9ecee;
+  /* Coral (accent) */
+  --coral: #e56a4f;
+  --coral-700: #c24e36;
+  --coral-050: #fcebe5;
+  /* Warm amber (functional band only) */
+  --amber: #e5a24f;
+  /* Neutrals */
+  --cream: #f3efea;
+  --ink: #1a1f26;
+  --muted: #6b7280;
+  --line: #e4e1da;
+  --surface: #ffffff;
+  /* Gradient page zones — two intensity levels */
+  --gradient-zone-full: linear-gradient(135deg, #f3efea 0%, #f7efea 55%, #fcebe5 100%);
+  --gradient-zone-quiet: linear-gradient(135deg, #faf7f3 0%, #f7f2ed 55%, #f3efea 100%);
+  /* Radial glow blobs — landing pages only */
+  --glow-coral: radial-gradient(circle, rgba(229, 106, 79, 0.18), transparent 70%);
+  --glow-slate: radial-gradient(circle, rgba(45, 58, 71, 0.08), transparent 70%);
+  /* Glass card backgrounds — three tiers */
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
+  --glass-bg-quiet: rgba(255, 255, 255, 0.94);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 4px 16px rgba(45, 58, 71, 0.06);
+  /* Glass blur amounts */
+  --glass-blur-full: blur(14px);
+  --glass-blur-mid: blur(10px);
+  --glass-blur-quiet: blur(6px);
+}
+
+/* Cards are translucent "glass" panels floating over the page-zone gradient.
+   Fallback (no backdrop-filter) = near-solid white — still on-brand + readable.
+   gov-card = quiet tier by default; on landing/reading pages (.zone-full
+   ancestor) it dials up to the mid tier. Header / nav / footer are NOT glass. */
 @layer components {
-  .gov-card {
-    @apply rounded-2xl border border-gov-line bg-white shadow-card;
+  .gov-card,
+  .gov-card-link,
+  .glass,
+  .glass-strong,
+  .glass-quiet {
+    @apply rounded-2xl;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--line);
+    box-shadow: var(--glass-shadow);
   }
   /* A clickable card: same panel, but lifts slightly on hover/focus. */
   .gov-card-link {
-    @apply gov-card transition-shadow duration-150 hover:shadow-lift focus-visible:shadow-lift;
+    @apply transition-shadow duration-150 hover:shadow-lift focus-visible:shadow-lift;
   }
-  /* Translucent "glass" button surface (Home hero secondary CTA): frosted
-     white over the card. Border and text colour are set on the element. */
+  /* Translucent "glass" button surface (Home hero secondary CTA). */
   .btn-glass {
     background-color: rgba(255, 255, 255, 0.7);
     -webkit-backdrop-filter: blur(6px);
@@ -22,10 +65,65 @@
   }
 }
 
-/* Solid-white fallback where backdrop-filter is unsupported. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .gov-card,
+  .gov-card-link,
+  .glass-quiet {
+    background: var(--glass-bg-quiet);
+    border-color: var(--glass-border);
+    -webkit-backdrop-filter: var(--glass-blur-quiet);
+    backdrop-filter: var(--glass-blur-quiet);
+  }
+  /* landing / reading pages dial the default cards up to the mid tier */
+  .zone-full .gov-card,
+  .zone-full .gov-card-link,
+  .glass {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    -webkit-backdrop-filter: var(--glass-blur-mid);
+    backdrop-filter: var(--glass-blur-mid);
+  }
+  /* hero / primary reading cards — strongest */
+  .glass-strong,
+  .zone-full .glass-strong {
+    background: var(--glass-bg-strong);
+    border-color: var(--glass-border);
+    -webkit-backdrop-filter: var(--glass-blur-full);
+    backdrop-filter: var(--glass-blur-full);
+  }
+}
+
+/* Solid-white fallback for the glass button where backdrop-filter is absent. */
 @supports not ((backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))) {
   .btn-glass {
     background-color: #fff;
+  }
+}
+
+/* Ambient glow blobs behind landing-page content — decorative, non-interactive,
+   clipped so they never trigger horizontal scroll. */
+.glow-blob {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+}
+.glow-coral {
+  top: -50px;
+  right: -50px;
+  width: 180px;
+  height: 180px;
+  background: var(--glow-coral);
+}
+.glow-slate {
+  bottom: -60px;
+  left: -60px;
+  width: 200px;
+  height: 200px;
+  background: var(--glow-slate);
+}
+@media (prefers-reduced-motion: reduce) {
+  .glow-blob {
+    display: none;
   }
 }
 

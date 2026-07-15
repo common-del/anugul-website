@@ -61,7 +61,7 @@ export default function MisconFull({
                 </span>
                 <span className="font-semibold text-muted">{gradeLabel}</span>
                 {m.conf === "low" && (
-                  <span aria-hidden className="font-bold text-[#b3261e]">*</span>
+                  <span aria-hidden className="font-bold text-[#C24E36]">*</span>
                 )}
               </p>
 
@@ -93,20 +93,20 @@ export default function MisconFull({
                       key={o}
                       className={`rounded-lg px-3 py-2 leading-relaxed ${
                         isKey
-                          ? "bg-[#e7f2e9] text-[#1e6b3a]"
+                          ? "bg-[#E9ECEE] text-[#2D3A47]"
                           : isTrap
-                            ? "bg-[#fbeaea] text-[#8f1d17]"
+                            ? "bg-[#FCEBE5] text-[#C24E36]"
                             : "bg-gov-tint text-gov-ink"
                       }`}
                     >
                       <b>{o}.</b> {L.oopts?.[o] ?? L.opts[o]}
                       {isKey && (
-                        <span className="ml-2 inline-block rounded-full bg-[#1e6b3a] px-2 py-0.5 text-[11px] font-bold text-white">
+                        <span className="ml-2 inline-block rounded-full bg-[#2D3A47] px-2 py-0.5 text-[11px] font-bold text-white">
                           {copy.misAnswerTag.replace("{pct}", num(m.key_pct))}
                         </span>
                       )}
                       {isTrap && (
-                        <span className="ml-2 inline-block rounded-full bg-[#b3261e] px-2 py-0.5 text-[11px] font-bold text-white">
+                        <span className="ml-2 inline-block rounded-full bg-[#C24E36] px-2 py-0.5 text-[11px] font-bold text-white">
                           {copy.misTrapTag.replace("{pct}", num(m.trap_pct))}
                         </span>
                       )}

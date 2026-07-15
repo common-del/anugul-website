@@ -1,11 +1,15 @@
 import type { Config } from "tailwindcss";
 
-// Palette derived from the client's indicative design (civic blue + amber).
+// Palette: Slate (primary) + Coral (accent), with civic blue retained for
+// brand accents. (Was government green + amber; swapped in the 2026-07-15
+// visual-system update.) The `gov` / `accent` token NAMES are kept so the swap
+// needs no site-wide class rename: gov = slate, accent = coral.
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
+        // civic blue — retained
         brand: {
           DEFAULT: "#123c7b",
           dark: "#0b2a55",
@@ -14,45 +18,42 @@ const config: Config = {
           tint: "#eef2f8",
           line: "#d8e1ef",
         },
-        accent: { DEFAULT: "#f5911e", dark: "#9a5510", light: "#f6a93b" },
-        // v2 redesign: government green (docx mock, "Saksham Portal" family)
+        // accent = coral
+        accent: { DEFAULT: "#E56A4F", dark: "#C24E36", light: "#E56A4F" },
+        // gov = slate (token name kept to avoid a site-wide class rename)
         gov: {
-          DEFAULT: "#0E5A40",
-          dark: "#0A452F",
-          deep: "#0B3B2A",
-          mid: "#187A57",
-          ink: "#143726",
-          // page canvas (pale gray-green) — white cards sit on top of this to
-          // create restrained depth; tint is a step deeper for inner chips.
-          canvas: "#F0F5F2",
-          tint: "#EDF5F0",
-          line: "#D5E4DB",
+          DEFAULT: "#2D3A47",
+          dark: "#1A1F26",
+          deep: "#1A1F26",
+          mid: "#2D3A47",
+          ink: "#1A1F26",
+          canvas: "#F3EFEA",
+          tint: "#E9ECEE",
+          line: "#E4E1DA",
         },
-        muted: "#566579",
-        // Result bands: low = warm/attention, high = brand blue. Always shown
-        // with the band word + number, so colour is never the only signal.
+        muted: "#6B7280",
+        // Result bands: top / mid-high / mid-low(needs attention) / critical
         band: {
-          urgent: "#b3261e",
-          needs: "#e07b1a",
-          developing: "#2f74c0",
-          excelling: "#123c7b",
+          urgent: "#C24E36",
+          needs: "#E5A24F",
+          developing: "#2D3A47",
+          excelling: "#1A1F26",
         },
       },
       fontFamily: {
         sans: ["var(--font-primary)", "system-ui", "sans-serif"],
       },
-      // Restrained depth for a government design-system feel (GOV.UK / USWDS):
-      // soft, low-alpha, green-tinted shadows — never heavy or coloured.
+      // Restrained depth — soft, low-alpha, slate-tinted shadows.
       boxShadow: {
-        card: "0 1px 2px 0 rgb(20 55 38 / 0.05), 0 4px 12px -3px rgb(20 55 38 / 0.08)",
-        lift: "0 2px 6px -1px rgb(20 55 38 / 0.10), 0 12px 26px -6px rgb(20 55 38 / 0.16)",
-        header: "0 1px 0 0 rgb(20 55 38 / 0.06), 0 4px 12px -6px rgb(20 55 38 / 0.14)",
+        card: "0 1px 2px 0 rgb(45 58 71 / 0.05), 0 4px 12px -3px rgb(45 58 71 / 0.08)",
+        lift: "0 2px 6px -1px rgb(45 58 71 / 0.10), 0 12px 26px -6px rgb(45 58 71 / 0.16)",
+        header: "0 1px 0 0 rgb(45 58 71 / 0.06), 0 4px 12px -6px rgb(45 58 71 / 0.14)",
       },
-      // Light gradients for the header / nav / footer bands only.
+      // Header stays light; nav + footer become slate.
       backgroundImage: {
-        "gov-masthead": "linear-gradient(180deg, #FFFFFF 0%, #F4F9F6 100%)",
-        "gov-nav": "linear-gradient(180deg, #10634A 0%, #0A452F 100%)",
-        "gov-footer": "linear-gradient(180deg, #0B3B2A 0%, #072A1E 100%)",
+        "gov-masthead": "linear-gradient(180deg, #FFFFFF 0%, #F3EFEA 100%)",
+        "gov-nav": "linear-gradient(180deg, #2D3A47 0%, #1A1F26 100%)",
+        "gov-footer": "linear-gradient(180deg, #24303B 0%, #1A1F26 100%)",
       },
     },
   },

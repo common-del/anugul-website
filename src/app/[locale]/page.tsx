@@ -95,12 +95,12 @@ export default function Home({ params }: { params: { locale: string } }) {
   ];
 
   return (
-    <PageShell>
+    <PageShell zone="full">
       <SiteHeader locale={locale} t={t} active="home" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">
         <div className="space-y-5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:space-y-0">
           {/* hero */}
-          <section className="flex flex-col justify-center gov-card p-6">
+          <section className="flex flex-col justify-center glass-strong p-6">
             <h1 className="text-[27px] font-extrabold leading-tight text-gov-ink">
               {v.heroTitle}
             </h1>
@@ -152,7 +152,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                   aria-hidden
                   className="grid h-28 w-full shrink-0 place-items-center rounded-xl bg-gov-tint sm:h-32 sm:w-40"
                 >
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0E5A40" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M2 4h6a4 4 0 014 4v12a3 3 0 00-3-3H2zM22 4h-6a4 4 0 00-4 4v12a3 3 0 013-3h7z" />
                   </svg>
                 </div>
@@ -173,8 +173,8 @@ export default function Home({ params }: { params: { locale: string } }) {
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
-                      fill={r.fill ? "#0E5A40" : "none"}
-                      stroke={r.fill ? "none" : "#0E5A40"}
+                      fill={r.fill ? "#2D3A47" : "none"}
+                      stroke={r.fill ? "none" : "#2D3A47"}
                       strokeWidth="1.8"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -211,7 +211,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                   height="44"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#0E5A40"
+                  stroke="#2D3A47"
                   strokeWidth="1.6"
                   strokeLinecap="round"
                   strokeLinejoin="round"

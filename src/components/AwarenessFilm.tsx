@@ -51,7 +51,7 @@ export default function AwarenessFilm({
           />
           <span className="absolute inset-0 grid place-items-center">
             <span className="grid h-16 w-16 place-items-center rounded-full bg-white/95 shadow-lg transition group-hover:scale-105">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="#0E5A40" aria-hidden>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#2D3A47" aria-hidden>
                 <path d="M8 5v14l11-7z" />
               </svg>
             </span>

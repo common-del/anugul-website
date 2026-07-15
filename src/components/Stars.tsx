@@ -5,8 +5,8 @@ const STAR =
   "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z";
 
 const TONES: Record<string, { on: string; off: string }> = {
-  gov: { on: "#0E5A40", off: "#CFE0D6" },
-  accent: { on: "#B7791F", off: "#ECDCC0" },
+  gov: { on: "#2D3A47", off: "#E9ECEE" },
+  accent: { on: "#E5A24F", off: "#FCEBE5" },
 };
 
 export default function Stars({

@@ -171,7 +171,7 @@ export default function GovBlockPage({
         <div className="mt-4 grid gap-3 lg:grid-cols-2">
           {/* card 1 — dominant */}
           <div className="gov-card flex items-center gap-5 p-6">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="#0E5A40" aria-hidden className="shrink-0">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="#2D3A47" aria-hidden className="shrink-0">
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
             </svg>
             <div className="min-w-0">
@@ -234,10 +234,10 @@ export default function GovBlockPage({
               <div
                 key={ins.l}
                 className="rounded-xl p-3.5"
-                style={{ backgroundColor: ins.good ? "#E6F3EA" : "#FBE7E5" }}
+                style={{ backgroundColor: ins.good ? "#E9ECEE" : "#FCEBE5" }}
               >
                 <div className="flex items-start gap-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ins.good ? "#1e6b3a" : "#b3261e"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ins.good ? "#2D3A47" : "#C24E36"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                     {ins.good ? (
                       <>
                         <path d="M23 6l-9.5 9.5-5-5L1 18" />
@@ -250,7 +250,7 @@ export default function GovBlockPage({
                   <div className="min-w-0">
                     <div className="text-xs font-semibold text-muted">{ins.l}</div>
                     <div className="truncate text-sm font-bold text-gov-ink">{ins.val}</div>
-                    <div className="mt-0.5 text-lg font-extrabold tabular-nums" style={{ color: ins.good ? "#1e6b3a" : "#b3261e" }}>
+                    <div className="mt-0.5 text-lg font-extrabold tabular-nums" style={{ color: ins.good ? "#2D3A47" : "#C24E36" }}>
                       {ins.n}
                     </div>
                   </div>
@@ -358,11 +358,11 @@ export default function GovBlockPage({
             <h2 className="text-lg font-bold text-gov-ink">{v.clusterPerformance}</h2>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded" style={{ backgroundColor: "#0E5A40" }} />
+                <span className="h-3 w-3 rounded" style={{ backgroundColor: "#2D3A47" }} />
                 {v.legendNormal}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded" style={{ backgroundColor: "#b3261e" }} />
+                <span className="h-3 w-3 rounded" style={{ backgroundColor: "#C24E36" }} />
                 {v.legendUnder}
               </span>
             </div>
@@ -377,7 +377,7 @@ export default function GovBlockPage({
                         className="block h-full rounded"
                         style={{
                           width: `${(c.score / maxCluster) * 100}%`,
-                          backgroundColor: under ? "#b3261e" : "#0E5A40",
+                          backgroundColor: under ? "#C24E36" : "#2D3A47",
                         }}
                       />
                     </span>
