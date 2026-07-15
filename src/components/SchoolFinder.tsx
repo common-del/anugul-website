@@ -206,9 +206,23 @@ export default function SchoolFinder({
       key={label}
       type="button"
       onClick={onClick}
-      className="min-h-[48px] rounded-xl bg-white px-4 text-[15px] font-semibold text-gov ring-1 ring-gov-line shadow-sm transition hover:bg-gov-tint hover:ring-gov active:bg-gov-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
+      className="flex min-h-[48px] items-center justify-between gap-2 rounded-xl bg-white px-4 text-left text-[15px] font-semibold text-gov ring-1 ring-gov-line shadow-sm transition hover:bg-gov-tint hover:ring-gov active:bg-gov-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
     >
-      {label}
+      <span className="min-w-0 truncate">{label}</span>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+        className="shrink-0 text-gov"
+      >
+        <path d="M9 6l6 6-6 6" />
+      </svg>
     </button>
   );
 
