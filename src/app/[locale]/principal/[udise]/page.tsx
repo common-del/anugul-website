@@ -5,10 +5,9 @@ import SiteFooter from "@/components/SiteFooter";
 import Link from "next/link";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import Stars from "@/components/Stars";
-import MisconFull from "@/components/MisconFull";
 import CardLightbox from "@/components/CardLightbox";
 import { hasCard, cardUrl, cardImg, hasHcard, hcardUrl } from "@/lib/cards";
-import { getBlockSlugs, getMislib } from "@/lib/officialsData";
+import { getBlockSlugs } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
@@ -68,11 +67,11 @@ function AbbrText({ text, diet, crcc }: { text: string; diet: string; crcc: stri
 const tintFor = (s10: number) =>
   s10 >= 8 ? "rgba(24,122,87,0.13)" : s10 >= 5 ? "rgba(180,83,9,0.14)" : "rgba(179,38,30,0.12)";
 
-// School Head report card (spec 2026-07-10): parent-pattern preview + download
-// & share, "What should you do" actions, six-tile About, tinted nearby list,
-// Explore More Reports. The earlier-approved misconception annexure is retained
-// below. (Subject-scores panel, cluster panel and print were removed per the
-// 2026-07-15 School Head spec.)
+// School Head report card (spec 2026-07-10, trimmed per the 2026-07-15 School
+// Head specs): parent-pattern preview + download & share, "What should you do"
+// actions, six-tile About, tinted nearby list, Explore More Reports. The
+// subject-scores panel, cluster panel, print option, and block-misconceptions
+// annexure were removed per the School Head specs.
 export default function PrincipalPage({
   params,
 }: {
@@ -135,10 +134,8 @@ export default function PrincipalPage({
     .filter(Boolean) as { udise: string; name: string; km: number | null; s10: number }[];
   neighbours.sort((a, z) => z.s10 - a.s10);
 
-  // block slug (for Explore links) + misconception annexure (earlier-approved)
+  // block slug for the Explore links
   const blockSlug = getBlockSlugs().find((b) => b.name === s.block)?.slug;
-  const mislib = getMislib();
-  const misconRows = mislib.units[`B::${s.block}`] ?? [];
 
   const explore = [
     { t: v.exp1T, d: v.exp1D, href: "/data/downloads/learning_outcomes_report.pdf", ext: true,
@@ -395,24 +392,6 @@ export default function PrincipalPage({
             )}
           </div>
         </section>
-
-        {/* block misconceptions annexure — full fidelity, never truncated */}
-        {misconRows.length > 0 && (
-          <section className="mt-6">
-            <h2 className="text-lg font-bold text-gov-ink">{v.blockMisconT}</h2>
-            <p className="mt-1 text-sm text-muted">{v.blockMisconD}</p>
-            <div className="mt-3">
-              <MisconFull
-                cards={mislib.cards}
-                rows={misconRows}
-                copy={t.v2}
-                subjectLabels={t.subjects}
-                gradeLabels={t.grades}
-                locale={locale}
-              />
-            </div>
-          </section>
-        )}
       </main>
       <SiteFooter locale={locale} t={t} />
     </PageShell>
