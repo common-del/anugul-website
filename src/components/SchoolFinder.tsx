@@ -280,7 +280,7 @@ export default function SchoolFinder({
                 {tip.body}
               </span>
             </span>
-            {/* report-card + potted-plant motif, brand greens only */}
+            {/* report-card + potted-plant motif; coral bloom, slate line-art */}
             <svg width="64" height="56" viewBox="0 0 64 56" fill="none" aria-hidden className="hidden shrink-0 sm:block">
               <rect x="10" y="4" width="34" height="46" rx="4" fill="#fff" stroke="#2D3A47" strokeWidth="1.6" />
               <circle cx="19" cy="13" r="4.5" fill="#E9ECEE" stroke="#2D3A47" strokeWidth="1.2" />
@@ -292,7 +292,7 @@ export default function SchoolFinder({
               <line x1="15" y1="34" x2="39" y2="34" stroke="#E9ECEE" strokeWidth="2" strokeLinecap="round" />
               <line x1="15" y1="39" x2="31" y2="39" stroke="#E9ECEE" strokeWidth="2" strokeLinecap="round" />
               <path d="M53 38c0-4 2.5-7 2.5-7s2.5 3 2.5 7" stroke="#2D3A47" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-              <path d="M55.5 40c-3-1-6-4-6-7 3 0 6 2 6 7zM55.5 40c3-1 6-4 6-7-3 0-6 2-6 7z" fill="#2D3A47" />
+              <path d="M55.5 40c-3-1-6-4-6-7 3 0 6 2 6 7zM55.5 40c3-1 6-4 6-7-3 0-6 2-6 7z" fill="#E56A4F" />
               <path d="M50 42h11l-1.5 10h-8z" fill="#2D3A47" />
             </svg>
           </div>

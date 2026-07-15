@@ -94,9 +94,9 @@ export default function SiteHeader({
               {v.iAmA}
             </span>
             {/* Segmented control: one connected pill, thin dividers between
-                options; selected = solid green fill + white, unselected =
-                transparent + dark-green. Full width on mobile (equal thirds),
-                content width on desktop. */}
+                options; selected = coral fill + dark ink (matches the language
+                toggle), unselected = transparent + dark slate. Full width on
+                mobile (equal thirds), content width on desktop. */}
             <nav
               className="flex w-full max-w-full items-stretch overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-gov-line sm:inline-flex sm:w-auto"
               aria-label={v.iAmA}
@@ -110,7 +110,7 @@ export default function SiteHeader({
                     i > 0 ? "border-l border-gov-line" : ""
                   } ${
                     r.current
-                      ? "bg-gov text-white"
+                      ? "bg-accent text-gov-ink"
                       : "bg-transparent text-gov-dark hover:bg-gov-tint"
                   }`}
                 >

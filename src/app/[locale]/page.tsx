@@ -110,7 +110,7 @@ export default function Home({ params }: { params: { locale: string } }) {
             {/* Two full-width stacked buttons: Find (primary), Explore (secondary). */}
             <Link
               href={`/${locale}/find/`}
-              className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-gov px-6 text-[17px] font-extrabold text-white shadow-sm transition hover:shadow-lift active:brightness-110"
+              className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 text-[17px] font-extrabold text-gov-ink shadow-sm transition hover:shadow-lift active:brightness-105"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0">
                 <circle cx="11" cy="11" r="7" />
@@ -152,7 +152,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                   aria-hidden
                   className="grid h-28 w-full shrink-0 place-items-center rounded-xl bg-gov-tint sm:h-32 sm:w-40"
                 >
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#E56A4F" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M2 4h6a4 4 0 014 4v12a3 3 0 00-3-3H2zM22 4h-6a4 4 0 00-4 4v12a3 3 0 013-3h7z" />
                   </svg>
                 </div>
