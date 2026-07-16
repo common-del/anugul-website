@@ -728,7 +728,7 @@
     "govBlockCardT": "Block Reports",
     "govBlockCardD": "View performance of all blocks in Anugola District",
     "govDistrictCardT": "District Report",
-    "govDistrictCardD": "View overall performance and insights of Anugola District",
+    "govDistrictCardD": "View overall performance of Anugola District",
     "govChooseBlock": "Choose a block",
     "govDisclaimer": "All reports are based on the SAKSHAM assessment of Grade 5 and Grade 8 students.",
     "distTitle": "District Report — {name}",
