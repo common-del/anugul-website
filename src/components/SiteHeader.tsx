@@ -49,16 +49,16 @@ export default function SiteHeader({
             className="order-1 flex min-w-0 flex-1 items-center gap-2.5 sm:mr-auto sm:flex-initial"
           >
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white ring-1 ring-gov-line">
-              {/* school-building emblem — slate line-art with a coral door + flag */}
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M12 3.2V6" />
-                <path d="M12 3.2H15l-1 .9 1 .9h-3z" fill="#E56A4F" stroke="none" />
-                <path d="M4 11.2L12 6l8 5.2" />
-                <path d="M6 11v9h12v-9" />
-                <path d="M3.5 20h17" />
-                <path d="M10.2 20v-3a1.8 1.8 0 0 1 3.6 0v3z" fill="#E56A4F" stroke="none" />
-                <rect x="7.2" y="13" width="2.4" height="2.4" rx=".4" />
-                <rect x="14.4" y="13" width="2.4" height="2.4" rx=".4" />
+              {/* school-building emblem — solid slate, white door + windows */}
+              <svg width="27" height="27" viewBox="0 0 24 24" fill="#2D3A47" aria-hidden>
+                <path d="M11.3 2.6h1.3V6h-1.3z" />
+                <path d="M12.6 2.6h3.1l-1.05 1.1 1.05 1.1h-3.1z" />
+                <path d="M12 6.2L2.9 12.2h18.2z" />
+                <path d="M4.8 12h14.4v8H4.8z" />
+                <path d="M3.2 20h17.6v1.5H3.2z" />
+                <path d="M10.4 20v-3.2a1.6 1.6 0 0 1 3.2 0V20z" fill="#fff" />
+                <rect x="6.7" y="13.7" width="2.6" height="2.6" rx=".35" fill="#fff" />
+                <rect x="14.7" y="13.7" width="2.6" height="2.6" rx=".35" fill="#fff" />
               </svg>
             </span>
             <span className="min-w-0">

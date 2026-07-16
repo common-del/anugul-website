@@ -23,7 +23,7 @@ export default function LanguageToggle({ current }: { current: string }) {
           window.location.href = to(loc) + window.location.search;
         }}
         className={`flex h-9 items-center justify-center rounded-full px-2.5 text-[13px] font-bold ${
-          active ? "bg-accent text-gov-ink shadow-sm" : "text-gov-dark"
+          active ? "bg-gov text-white shadow-sm" : "text-gov-dark"
         }`}
       >
         {letter}

@@ -55,15 +55,8 @@ export default function GovPage({ params }: { params: { locale: string } }) {
         </div>
 
         <div className="mx-auto mt-5 grid max-w-3xl gap-4 sm:grid-cols-2">
-          {/* Block Reports — button-driven 8-block chooser (client component;
-              a native <details> here was reported broken on some browsers) */}
-          <BlockReportsCard
-            locale={locale}
-            blocks={blocks}
-            labels={{ title: v.govBlockCardT, desc: v.govBlockCardD, choose: v.govChooseBlock }}
-          />
-
-          {/* District Report */}
+          {/* District Report — placed first so it leads (left on desktop, top
+              on mobile), per owner 2026-07-16 */}
           <Link
             href={`/${locale}/gov/district/`}
             className="gov-card-link flex flex-col items-center gap-3 p-6 text-center"
@@ -80,6 +73,14 @@ export default function GovPage({ params }: { params: { locale: string } }) {
               →
             </span>
           </Link>
+
+          {/* Block Reports — button-driven 8-block chooser (client component;
+              a native <details> here was reported broken on some browsers) */}
+          <BlockReportsCard
+            locale={locale}
+            blocks={blocks}
+            labels={{ title: v.govBlockCardT, desc: v.govBlockCardD, choose: v.govChooseBlock }}
+          />
         </div>
 
         <p className="mt-8 text-center text-xs text-muted">{v.govDisclaimer}</p>
