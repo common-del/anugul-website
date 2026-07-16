@@ -3,14 +3,15 @@ import path from "path";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
 
-// District map with block markers coloured by score band (server component —
-// reads the prebuilt map geometry from public/data at render time). Legend
-// bands per the mock: dark green 75%+, green 60–74, amber 45–59, red <45.
-// Every marker keeps its name label and the score is shown in the legend
-// table, so colour is reinforcement, not the sole signal.
+// District map as a block choropleth (server component — reads prebuilt block
+// geometry from public/data at render time). Each block is a filled polygon
+// coloured by its score band, with white boundaries demarcating one block from
+// the next and a name label. Geometry is traced from the official NIC "Block
+// Map — District: Anugul" so the boundaries match the real administrative ones.
+// Legend bands per the mock: dark green 75%+, orange 60–74, amber 45–59, red <45.
 
-type Marker = { name: string; x: number; y: number };
-type DistrictMap = { viewBox: string; path: string; blocks: Marker[] };
+type Block = { name: string; d: string; lx: number; ly: number };
+type DistrictMap = { viewBox: string; blocks: Block[] };
 
 export const MAP_BANDS = [
   { min: 75, color: "#15803D" }, // best → green
@@ -48,30 +49,38 @@ export default function DistrictMapBands({
     <div>
       <svg
         viewBox={map.viewBox}
-        className="mx-auto block w-full max-w-[340px]"
+        className="mx-auto block w-full max-w-[360px]"
         role="group"
         aria-label={hint}
       >
-        <path
-          d={map.path}
-          className="fill-gov-tint stroke-gov"
-          strokeWidth="0.5"
-          strokeLinejoin="round"
-        />
         {map.blocks.map((b) => {
           const slug = slugs[b.name];
           const score = scores[b.name];
           if (!slug || score == null) return null;
           return (
-            <Link key={b.name} href={`/${locale}/gov/${slug}/`} aria-label={b.name}>
-              <g className="cursor-pointer">
-                <circle cx={b.x} cy={b.y} r="6" fill="transparent" />
-                <circle cx={b.x} cy={b.y} r="2" fill={mapBandColor(score)} stroke="#fff" strokeWidth="0.4" />
+            <Link
+              key={b.name}
+              href={`/${locale}/gov/${slug}/`}
+              aria-label={b.name}
+            >
+              <g className="cursor-pointer transition duration-150 hover:brightness-90">
+                <path
+                  d={b.d}
+                  fill={mapBandColor(score)}
+                  stroke="#fff"
+                  strokeWidth="0.7"
+                  strokeLinejoin="round"
+                />
                 <text
-                  x={b.x}
-                  y={b.y - 2.8}
+                  x={b.lx}
+                  y={b.ly}
                   textAnchor="middle"
-                  fontSize="3"
+                  dominantBaseline="central"
+                  fontSize="2.9"
+                  stroke="#fff"
+                  strokeWidth="0.85"
+                  paintOrder="stroke"
+                  strokeLinejoin="round"
                   className="pointer-events-none fill-gov-ink"
                   style={{ fontWeight: 700 }}
                 >
