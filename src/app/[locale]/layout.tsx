@@ -4,6 +4,7 @@ import { locales, htmlLang, isLocale, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import SetLang from "@/components/SetLang";
 import DemoSync from "@/components/DemoSync";
+import TruncationTitles from "@/components/TruncationTitles";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -39,6 +40,7 @@ export default function LocaleLayout({
     <>
       <SetLang lang={htmlLang[params.locale as Locale]} />
       <DemoSync />
+      <TruncationTitles />
       {children}
     </>
   );
