@@ -3,6 +3,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import FaqAccordion from "@/components/FaqAccordion";
+import { BAND_COLOR } from "@/lib/bands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 
@@ -27,6 +28,12 @@ export default function FaqPage({ params }: { params: { locale: string } }) {
           <FaqAccordion
             items={v.faqItems}
             locale={locale}
+            bandLegend={[
+              { color: BAND_COLOR.excelling, label: v.faqBandExcelling },
+              { color: BAND_COLOR.developing, label: v.faqBandDeveloping },
+              { color: BAND_COLOR.needs, label: v.faqBandNeeds },
+              { color: BAND_COLOR.urgent, label: v.faqBandUrgent },
+            ]}
             labels={{
               search: v.faqSearch,
               groupsLabel: v.faqGroupsLabel,

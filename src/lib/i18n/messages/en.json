@@ -478,6 +478,10 @@
     "faqHeads": "School Heads",
     "faqResearchers": "Government / Organizations",
     "faqGovernment": "Government",
+    "faqBandExcelling": "Excelling — above 75% (8–10 out of 10)",
+    "faqBandDeveloping": "Developing — 51–75% (6–7 out of 10)",
+    "faqBandNeeds": "Needs support — 26–50% (3–5 out of 10)",
+    "faqBandUrgent": "Critical — 25% and below (0–2 out of 10)",
     "faqNoResults": "No questions match your search.",
     "faqStillTitle": "Still have questions?",
     "faqStillText": "Write to the District Education Office, Anugola.",
@@ -493,9 +497,12 @@
     "resToolkitD": "Simple steps to act on the report card.",
     "resAwarenessFilm": "Awareness film",
     "resExplainer": "How to read your report card",
-    "methodP1": "SAKSHAM assesses children in Grade 5 and Grade 8 across the main subjects — Odia, English, Maths and EVS in Grade 5, and Odia, English, Maths, Science and Social Studies in Grade 8. The assessment is external, so the results are independent of the school’s own marking.",
-    "methodP2": "For each subject, the share of questions children answer correctly becomes the subject score. The overall score is the school’s average performance, shown out of 10 for parents (for example, 62% is 6 out of 10) and as a percentage in the Researcher view.",
-    "methodP3": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Critical (25% and below). Only school-level averages are ever shown — never an individual child’s result.",
+    "methodP1": "The SAKSHAM assessment measures students' competencies across key subjects.",
+    "methodG5": "For Grade 5, the subjects assessed are Odia, English, Mathematics, and Environmental Studies.",
+    "methodG8": "For Grade 8, the subjects assessed are Odia, English, Mathematics, Science, and Social Studies.",
+    "methodP2": "The assessment is conducted by the Government of Odisha and is independent of the school's internal examinations and marking practices. This helps provide an objective view of student learning.",
+    "methodP3": "School performance is calculated using the percentage of questions answered correctly by students. For ease of understanding, this percentage is converted to a score on a scale of 0 to 10. For example, a score of 62% is shown as 6.2 out of 10. A higher score indicates that a greater proportion of students answered more questions correctly.",
+    "methodP4": "Each school's overall score also falls into one of four performance bands: Excelling (above 75%, or 8–10 out of 10), Developing (51–75%, or 6–7 out of 10), Needs support (26–50%, or 3–5 out of 10), and Critical (25% and below, or 0–2 out of 10). The bands give a quick, at-a-glance sense of where a school stands.",
     "dlLor": "Complete Learning-Outcome report (PDF)",
     "dlLorCsv": "Learning-Outcome data (CSV)",
     "dlBlocks": "Block aggregates (CSV)",
@@ -534,7 +541,7 @@
       {
         "id": "overall",
         "q": "How is the overall score out of 10 calculated?",
-        "a": "Children answer the SAKSHAM test in each subject. The share of questions they get right becomes a percentage, and the overall score is that percentage brought to a 0–10 scale — for example, 62% shows as 6 out of 10. A higher score means more children are answering more questions correctly.",
+        "a": "Based on the SAKSHAM assessment results, the proportion of correctly answered questions becomes a percentage. Then the overall obtained percentage is brought to a 0-10 scale for simplicity of understanding. For example - if a school scored 62% it would appear as 6 out of 10. A higher score means more children are answering more questions correctly.",
         "tags": [
           "parents",
           "heads"
@@ -552,7 +559,7 @@
       {
         "id": "bands",
         "q": "What do the colour bands mean?",
-        "a": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Critical (25% and below). The band is a quick way to see where a school stands without reading the numbers.",
+        "a": "Every school's score falls into one of four colour bands. Each band covers a range of scores, shown here as both a percentage and out of 10:\n\nThese colour bands provide a quick and clear view of a school's performance without requiring readers to examine the detailed scores.",
         "tags": [
           "parents",
           "heads",
@@ -563,7 +570,7 @@
       {
         "id": "useparent",
         "q": "How can I use the report card as a parent?",
-        "a": "Look at your school’s score and its weakest subjects, watch the short explainer video, and take the card to the next parent or School Management Committee (SMC) meeting. Ask the school head what the plan is to improve the weak areas, and compare with nearby schools that are doing better.",
+        "a": "The School Report Card helps parents understand the strengths and weaknesses in children's learning.\n\nParents can watch the explainer video to learn how to read and understand the report card. After reviewing it, they can discuss the findings with other parents and share their concerns and suggestions during the next parent teacher meeting or School Management Committee meeting. They can also speak with the Principal about the challenges, suggest possible solutions, and work with the school to improve children's learning.",
         "tags": [
           "parents"
         ]

@@ -74,8 +74,13 @@ export default function ResourcesPage({
             </summary>
             <div className="space-y-3 px-5 pb-5 text-[15px] leading-relaxed text-muted">
               <p>{v.methodP1}</p>
+              <ul className="list-disc space-y-1 pl-5">
+                <li>{v.methodG5}</li>
+                <li>{v.methodG8}</li>
+              </ul>
               <p>{v.methodP2}</p>
               <p>{v.methodP3}</p>
+              <p>{v.methodP4}</p>
             </div>
           </details>
 

@@ -21,10 +21,12 @@ export default function FaqAccordion({
   items,
   labels,
   locale,
+  bandLegend,
 }: {
   items: Item[];
   labels: Labels;
   locale: Locale;
+  bandLegend?: { color: string; label: string }[];
 }) {
   const [q, setQ] = useState("");
   const [group, setGroup] = useState<Group>("all");
@@ -85,9 +87,35 @@ export default function FaqAccordion({
                 +
               </span>
             </summary>
-            <p className="whitespace-pre-line border-t border-gov-line px-4 py-3 text-[15px] leading-relaxed text-muted">
-              {it.a}
-            </p>
+            {it.id === "bands" && bandLegend ? (
+              (() => {
+                const parts = it.a.split("\n\n");
+                return (
+                  <div className="border-t border-gov-line px-4 py-3 text-[15px] leading-relaxed text-muted">
+                    {parts[0] && <p>{parts[0]}</p>}
+                    <ul className="my-2.5 space-y-1.5">
+                      {bandLegend.map((b, i) => (
+                        <li key={i} className="flex items-center gap-2.5">
+                          <span
+                            aria-hidden
+                            className="h-3.5 w-3.5 shrink-0 rounded-full"
+                            style={{ backgroundColor: b.color }}
+                          />
+                          <span>{b.label}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {parts.slice(1).map((p, i) => (
+                      <p key={i} className="mt-1">{p}</p>
+                    ))}
+                  </div>
+                );
+              })()
+            ) : (
+              <p className="whitespace-pre-line border-t border-gov-line px-4 py-3 text-[15px] leading-relaxed text-muted">
+                {it.a}
+              </p>
+            )}
           </details>
         ))}
         {filtered.length === 0 && (
