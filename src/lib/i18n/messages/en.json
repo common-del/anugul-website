@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Anugola Schools",
+    "name": "SAKSHAM",
     "strapline": "Anugola, Odisha | Know Your School's Performance",
     "subtitle": "SAKSHAM - Student Assessment for Knowledge, Skills & Competency-based Achievement Mapping",
     "description": "See how schools in Anugola, Odisha are performing on the SAKSHAM assessment.",
@@ -327,7 +327,7 @@
     "below50Title": "Children below 50% by block"
   },
   "v2": {
-    "govOdisha": "Government of Odisha",
+    "govOdisha": "An Anugola District Initiative",
     "iAmA": "I am a:",
     "roleParent": "Parent",
     "roleOrgs": "Govt/Orgs",

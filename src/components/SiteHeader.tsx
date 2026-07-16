@@ -48,13 +48,18 @@ export default function SiteHeader({
             aria-label={t.site.name}
             className="order-1 flex min-w-0 flex-1 items-center gap-2.5 sm:mr-auto sm:flex-initial"
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-gov-line">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/odisha-logo.png"
-                alt={v.govOdisha}
-                className="h-9 w-9 object-contain"
-              />
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white ring-1 ring-gov-line">
+              {/* school-building emblem — slate line-art with a coral door + flag */}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M12 3.2V6" />
+                <path d="M12 3.2H15l-1 .9 1 .9h-3z" fill="#E56A4F" stroke="none" />
+                <path d="M4 11.2L12 6l8 5.2" />
+                <path d="M6 11v9h12v-9" />
+                <path d="M3.5 20h17" />
+                <path d="M10.2 20v-3a1.8 1.8 0 0 1 3.6 0v3z" fill="#E56A4F" stroke="none" />
+                <rect x="7.2" y="13" width="2.4" height="2.4" rx=".4" />
+                <rect x="14.4" y="13" width="2.4" height="2.4" rx=".4" />
+              </svg>
             </span>
             <span className="min-w-0">
               <span className="block truncate text-lg font-extrabold leading-tight text-gov-dark">
