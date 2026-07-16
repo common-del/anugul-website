@@ -6,7 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
 import Gauge from "@/components/Gauge";
-import DistrictMapBands, { MAP_BANDS, mapBandColor } from "@/components/DistrictMapBands";
+import DistrictMapBands, { mapBandColor } from "@/components/DistrictMapBands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
@@ -171,31 +171,12 @@ export default function DistrictReportPage({
                 hint={v.clickBlockHint}
               />
             </div>
-            {/* enlarged legend, contained in a neat table */}
-            <table className="mt-3 w-full text-sm">
-              <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-muted">
-                {v.legendT}
-              </caption>
-              <tbody>
-                {[v.legend75, v.legend60, v.legend45, v.legend0].map((label, i) => (
-                  <tr key={label} className="border-t border-gov-line">
-                    <td className="py-1 pr-2">
-                      <span
-                        className="inline-block h-4 w-4 rounded"
-                        style={{ backgroundColor: MAP_BANDS[i].color }}
-                      />
-                    </td>
-                    <td className="py-1 font-semibold text-gov-ink">{label}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </section>
 
           {/* performance by blocks */}
           <section className="gov-card flex flex-col p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.perfBlocksT}</h2>
-            <div className="mt-3 flex flex-1 flex-col justify-between gap-3">
+            <div className="mt-3 flex flex-1 flex-col justify-between gap-2">
               {sorted.map((b, i) => (
                 <Link
                   key={b.name}
@@ -292,16 +273,6 @@ export default function DistrictReportPage({
                   </svg>
                   <span>
                     <span className="block font-bold italic text-gov-ink">Third insight</span>
-                    <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
-                  </span>
-                </li>
-                <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 8v8M8 12h8" />
-                  </svg>
-                  <span>
-                    <span className="block font-bold italic text-gov-ink">Fourth insight</span>
                     <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
                   </span>
                 </li>
