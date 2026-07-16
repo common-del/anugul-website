@@ -24,3 +24,19 @@ export function bandFromScore(s: number): BandKey {
   if (s <= 75) return "developing";
   return "excelling";
 }
+
+// Muted / translucent band fills for row backgrounds (e.g. nearby-schools
+// lists). Same hues as BAND_COLOR but at low alpha, so the tint stays subtle —
+// a hint, not the primary signal (the score + stars carry that).
+export const BAND_TINT: Record<BandKey, string> = {
+  urgent: "rgba(194,78,54,0.12)", // red
+  needs: "rgba(242,176,30,0.16)", // gold (lighter hue → a touch more alpha)
+  developing: "rgba(221,107,32,0.13)", // orange
+  excelling: "rgba(21,128,61,0.12)", // green
+};
+
+// Band tint for a /10 school score, matching the Schools-by-band legend
+// (8-10 excelling, 6-7 developing, 3-5 needs, 0-2 critical).
+export function bandTint10(s10: number): string {
+  return BAND_TINT[bandFromScore(Math.round(s10) * 10)];
+}

@@ -11,7 +11,7 @@ import { getBlockSlugs } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import { type BandKey } from "@/lib/bands";
+import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
 
 type Profile = {
@@ -62,10 +62,9 @@ function AbbrText({ text, diet, crcc }: { text: string; diet: string; crcc: stri
   );
 }
 
-// Nearby-card tint by /10 bucket. Amber is the District screen's band hex
-// (#E5A24F) at low alpha, per spec — green/red are the site band greens/reds.
-const tintFor = (s10: number) =>
-  s10 >= 8 ? "rgba(45,58,71,0.13)" : s10 >= 5 ? "rgba(229,162,79,0.14)" : "rgba(194,78,54,0.12)";
+// Nearby-card tint = the school's /10 band colour, muted/translucent (8-10
+// green, 6-7 orange, 3-5 gold, 0-2 red — see BAND_TINT).
+const tintFor = (s10: number) => bandTint10(s10);
 
 // School Head report card (spec 2026-07-10, trimmed per the 2026-07-15 School
 // Head specs): parent-pattern preview + download & share, "What should you do"

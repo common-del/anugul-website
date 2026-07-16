@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import type { BandKey } from "@/lib/bands";
+import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
 
 type Profile = {
@@ -130,10 +130,10 @@ export default function SchoolPage({
     : s.inputs?.basicsOut?.includes(SMC_KEY)
       ? false
       : null;
-  // Nearby-card tint by /10 bucket (8-10 green, 5-7 amber, 0-4 red) — muted so
-  // AA holds; score + stars remain the primary signal.
-  const tintFor = (s10: number) =>
-    s10 >= 8 ? "#E9ECEE" : s10 >= 5 ? "#FCEBE5" : "#FCEBE5";
+  // Nearby-card tint = the school's /10 band colour, muted/translucent (8-10
+  // green, 6-7 orange, 3-5 gold, 0-2 red). Kept faint so AA holds; the score +
+  // stars remain the primary signal.
+  const tintFor = (s10: number) => bandTint10(s10);
 
   return (
     <PageShell>
