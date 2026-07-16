@@ -156,9 +156,22 @@ export default function Home({ params }: { params: { locale: string } }) {
                     <path d="M2 4h6a4 4 0 014 4v12a3 3 0 00-3-3H2zM22 4h-6a4 4 0 00-4 4v12a3 3 0 013-3h7z" />
                   </svg>
                 </div>
-                <p className="text-[15px] leading-relaxed text-muted">
-                  <Emphasised text={v.homeAboutBody} />
-                </p>
+                <div className="min-w-0">
+                  <p className="text-[15px] leading-relaxed text-muted">
+                    <Emphasised text={v.homeAboutBody} />
+                  </p>
+                  <details className="group mt-2">
+                    <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-sm font-bold text-gov underline underline-offset-2 [&::-webkit-details-marker]:hidden">
+                      {v.homeAboutMore}
+                      <span aria-hidden className="transition-transform group-open:rotate-90">›</span>
+                    </summary>
+                    <div className="mt-2 space-y-2 text-[15px] leading-relaxed text-muted">
+                      {v.homeAboutMoreBody.map((para, i) => (
+                        <p key={i}>{para}</p>
+                      ))}
+                    </div>
+                  </details>
+                </div>
               </div>
             </div>
 
