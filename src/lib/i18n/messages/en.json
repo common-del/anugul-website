@@ -338,8 +338,8 @@
     "helpFaqs": "FAQs",
     "helpContact": "Contact Us",
     "helpResources": "Resources",
-    "heroTitle": "Better Schools. Better Learning for Every Child.",
-    "heroDesc": "By improving our Schools we improve our child's learning.",
+    "heroTitle": "By improving our Schools we improve our child's learning",
+    "heroDesc": "Find, understand and use school report cards to support your child's learning.",
     "findSchool": "Find Your School",
     "exploreReports": "Explore Reports",
     "awarenessFilm": "Awareness Film",
@@ -523,7 +523,7 @@
       {
         "id": "what",
         "q": "What is the Saksham School Report Card?",
-        "a": "It is a simple card that shows how well children in a school are learning, based on the SAKSHAM assessment of Grade 5 and Grade 8 students in Anugola district. It gives the school one overall score out of 10, plus a score for each subject, so parents and teachers can see where the school does well and where it needs support.",
+        "a": "The school level report card presents the overall performance of all Grade 5 and Grade 8 students in a given government school in Anugola who appeared for the SAKSHAM assessment. It does not display the score or performance of any individual student.\n\nEach school receives an overall score out of 10, along with separate scores for Grade 5 and Grade 8. The report also shows the score of the top performing school.\n\nThese results help teachers and parents understand the school's strengths and identify areas that need improvement. The top school score is included as a reference point, not for direct comparison. Its purpose is to help schools understand their current position and encourage continued improvement.",
         "tags": [
           "parents",
           "heads",
@@ -722,7 +722,11 @@
     "govAboutT": "About SAKSHAM",
     "govAboutBody": "SAKSHAM is a census assessment of learning in government schools of Anugola district, Odisha. It covered 1,361 schools and 28,079 children in Grades 5 and 8, tested across six subjects over two days — so every school, block, and cluster can see where children stand and where support is needed.",
     "govAboutMore": "Read more",
-    "govAboutMoreBody": "Each child answered curriculum-linked questions mapped to learning outcomes. Papers were scanned and machine-scored, and results were aggregated to school, cluster, block, and district level — individual children are never identified on this site. Scores show the percentage of questions answered correctly. Learning-outcome and misconception analyses point teachers to the specific skills that need re-teaching. Detailed methodology notes will be added here.",
+    "govAboutMoreBody": [
+      "All Grade 5 and Grade 8 students in government schools across Anugola took part in a competency based assessment aligned with the state curriculum and expected learning outcomes.",
+      "The answer scripts were evaluated, and the results were combined at the school, cluster, block, and district levels. The findings on this website provide a clear view of student learning across the government education landscape of the district and can support planning, monitoring, and decision making.",
+      "The assessment data was also reviewed to identify learning gaps, common misconceptions, and areas where students need more support. These insights were linked to grade level competencies and learning outcomes to help teachers plan focused classroom support and help education officials target resources and interventions more effectively."
+    ],
     "govExploreT": "What would you like to explore?",
     "govExploreSub": "Choose the type of report you want to view.",
     "govBlockCardT": "Block Reports",

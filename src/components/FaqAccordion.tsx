@@ -38,7 +38,7 @@ export default function FaqAccordion({
     );
   }, [items, q, group]);
 
-  const groups: Group[] = ["all", "parents", "heads", "researchers", "government"];
+  const groups: Group[] = ["all", "parents", "heads", "researchers"];
 
   return (
     <div>
@@ -85,7 +85,7 @@ export default function FaqAccordion({
                 +
               </span>
             </summary>
-            <p className="border-t border-gov-line px-4 py-3 text-[15px] leading-relaxed text-muted">
+            <p className="whitespace-pre-line border-t border-gov-line px-4 py-3 text-[15px] leading-relaxed text-muted">
               {it.a}
             </p>
           </details>

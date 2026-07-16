@@ -40,9 +40,11 @@ export default function GovPage({ params }: { params: { locale: string } }) {
               {v.govAboutMore}
               <span aria-hidden className="transition-transform group-open:rotate-90">›</span>
             </summary>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              {v.govAboutMoreBody}
-            </p>
+            <div className="mt-2 space-y-2 text-sm leading-relaxed text-muted">
+              {v.govAboutMoreBody.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
           </details>
         </section>
 
