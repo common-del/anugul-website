@@ -4,16 +4,14 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
-import BlockPicker from "@/components/BlockPicker";
-import Accordion from "@/components/Accordion";
-import ClusterName from "@/components/ClusterName";
+import BlockSwitcher from "@/components/BlockSwitcher";
 import Gauge from "@/components/Gauge";
 import { mapBandColor } from "@/components/DistrictMapBands";
 import SubjectsVsDistrict, { type SubjectRow } from "@/components/SubjectsVsDistrict";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
-import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
+import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { getBlock, getBlockSlugs, type BlockSlice } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
 
@@ -76,6 +74,7 @@ export default function GovBlockPage({
   const subj = (s: string) => t.subjects[s as keyof typeof t.subjects] ?? s;
   const grade = (g: string) => t.grades[g as keyof typeof t.grades] ?? g;
 
+  const overallBand = bandFromScore(b.headline.overall);
   const distAvg = b.vs_best.overall.district_avg;
 
   // district per-grade means (same definition as the block headline figures)
@@ -163,73 +162,87 @@ export default function GovBlockPage({
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-        {/* ===== heading: title, then block-picker (left) + Share (right) ===== */}
-        <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
-          {v.blockReportCardT}
-        </h1>
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <BlockPicker locale={locale} current={b.name} slugs={slugs} label={v.switchBlock} />
-          <WhatsAppShare
-            label={v.shareShort}
-            text={`${b.name} ${v.blockReportCardT}`}
-            variant="outline"
-          />
+        {/* ===== top row: title | block switcher (centre) | WhatsApp (right)
+               — same arrangement as the district report ===== */}
+        <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr,auto,1fr]">
+          <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
+            {v.blockReportCardT}
+          </h1>
+          <div className="sm:justify-self-center">
+            <BlockSwitcher
+              locale={locale}
+              current={b.name}
+              slugs={slugs}
+              labels={{ switchBlock: v.switchBlock, allBlocks: v.districtAllBlocks }}
+            />
+          </div>
+          <div className="sm:justify-self-end">
+            <WhatsAppShare label={v.shareWhatsApp} text={`${b.name} ${v.blockReportCardT}`} />
+          </div>
         </div>
 
-        {/* ===== overall block score (dominant) + three stat cards ===== */}
-        <div className="mt-4 space-y-3">
-          <div className="rounded-2xl border-2 border-gov-line bg-gov-tint/60 p-6 shadow-card">
-            <div className="flex items-start justify-between gap-3">
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {/* card 1 — dominant */}
+          <div className="gov-card flex items-center gap-5 p-6">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="#2D3A47" aria-hidden className="shrink-0">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                {v.overallBlockScore}
+                {v.overallBlockScore} · {b.name}
               </div>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#2D3A47" aria-hidden className="shrink-0 opacity-30">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-              </svg>
-            </div>
-            <div className="mt-1 text-4xl font-extrabold tabular-nums text-brand">
-              {pct(b.headline.overall)}
-            </div>
-            <div className="mt-1 text-sm text-muted">
-              {fill(v.vsDistrictAvg, { n: pct(distAvg) })}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-4xl font-extrabold tabular-nums" style={{ color: BAND_TEXT[overallBand] }}>
+                  {pct(b.headline.overall)}
+                </span>
+                <span
+                  className="rounded-full px-3 py-1 text-xs font-bold"
+                  style={{
+                    backgroundColor: BAND_COLOR[overallBand],
+                    color: overallBand === "needs" ? "#12233d" : "#fff",
+                  }}
+                >
+                  {t.band[overallBand]}
+                </span>
+              </div>
+              <div className="mt-1 text-sm text-muted">
+                {fill(v.vsDistrictAvg, { n: pct(distAvg) })}
+              </div>
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {/* cards 2-4 — uniform */}
+          <div className="grid grid-cols-3 gap-3">
             <div className="gov-card p-4">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-                {t.analytics.schoolsAssessed}
-              </div>
-              <div className="mt-0.5 text-lg font-extrabold leading-tight text-gov-ink">
+              <div className="text-lg font-extrabold leading-tight text-gov-ink">
                 {num(b.headline.schools)}
               </div>
-              <div className="mt-0.5 text-[11px] text-muted">{v.ofDistrictSchools}</div>
+              <div className="mt-0.5 text-xs text-muted">{t.analytics.schoolsAssessed}</div>
+              <div className="mt-1 text-[11px] text-muted">
+                {fill(v.ofDistrictSchools, { n: num(district.schoolsAssessed) })}
+              </div>
             </div>
             <div className="gov-card p-4">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-                {t.analytics.studentsAssessed}
-              </div>
-              <div className="mt-0.5 text-lg font-extrabold leading-tight text-gov-ink">
+              <div className="text-lg font-extrabold leading-tight text-gov-ink">
                 {num(b.headline.students)}
               </div>
-              <div className="mt-0.5 text-[11px] text-muted">{v.loTag3}</div>
+              <div className="mt-0.5 text-xs text-muted">{t.analytics.studentsAssessed}</div>
+              <div className="mt-1 text-[11px] text-muted">{v.loTag3}</div>
             </div>
-            <div className="gov-card col-span-2 p-4 sm:col-span-1">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-                {v.subjectsWord}
-              </div>
-              <div className="mt-0.5 text-[13px] font-extrabold leading-snug text-gov-ink">
+            <div className="gov-card p-4">
+              <div className="text-[13px] font-extrabold leading-snug text-gov-ink">
                 {subjectsCovered.map(subj).join(" · ")}
               </div>
+              <div className="mt-0.5 text-xs text-muted">{v.subjectsWord}</div>
             </div>
           </div>
         </div>
 
-        {/* ===== five analytical accordions — expanded by default (owner
-               2026-07-16); tap a header to collapse ===== */}
-        <div className="mt-6 space-y-3">
-          <Accordion label={v.keyInsights}>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {/* ===== key insights (6 cards, sentiment-tinted) ===== */}
+        <section className="mt-6 gov-card p-5">
+          <h2 className="text-lg font-bold text-gov-ink">
+            {fill(v.keyInsights, { block: b.name })}
+          </h2>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {insights.map((ins) => (
               <div
                 key={ins.l}
@@ -258,10 +271,13 @@ export default function GovBlockPage({
               </div>
             ))}
           </div>
-          </Accordion>
+        </section>
 
-          <Accordion label={v.gradeWiseScores}>
-            <div className="grid grid-cols-2 gap-3">
+        {/* ===== grade-wise scores | schools by band ===== */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.gradeWiseScores}</h2>
+            <div className="mt-4 grid grid-cols-2 gap-3">
               {(
                 [
                   ["Grade 5", b.headline.g5],
@@ -278,23 +294,27 @@ export default function GovBlockPage({
                 />
               ))}
             </div>
-          </Accordion>
+          </section>
 
-          <Accordion label={v.bandSegregation}>
-            <details>
-              <summary className="cursor-pointer list-none text-sm font-semibold text-gov underline underline-offset-2 [&::-webkit-details-marker]:hidden">
-                {v.whatBandsMean}
-              </summary>
-              <ul className="mt-2 space-y-1.5 rounded-xl bg-gov-tint p-3 text-sm">
-                {BAND_ORDER.map((k) => (
-                  <li key={k} className="flex items-center gap-2">
-                    <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: BAND_COLOR[k] }} />
-                    <span className="font-semibold text-gov-ink">{t.band[k]}</span>
-                    <span className="text-muted">— {bandDesc[k]}</span>
-                  </li>
-                ))}
-              </ul>
-            </details>
+          <section className="gov-card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-lg font-bold text-gov-ink">{v.bandSegregation}</h2>
+              <details>
+                <summary className="cursor-pointer list-none text-sm font-semibold text-gov underline underline-offset-2 [&::-webkit-details-marker]:hidden">
+                  {v.whatBandsMean}
+                </summary>
+                <ul className="mt-2 space-y-1.5 rounded-xl bg-gov-tint p-3 text-sm">
+                  {BAND_ORDER.map((k) => (
+                    <li key={k} className="flex items-center gap-2">
+                      <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: BAND_COLOR[k] }} />
+                      <span className="font-semibold text-gov-ink">{t.band[k]}</span>
+                      <span className="text-muted">— {bandDesc[k]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+            {/* stacked bar of all schools across the four bands */}
             {totalSchools > 0 && (
               <div className="mt-4 flex h-6 overflow-hidden rounded-lg" aria-hidden>
                 {BAND_ORDER.map((k) =>
@@ -310,6 +330,7 @@ export default function GovBlockPage({
                 )}
               </div>
             )}
+            {/* band cards */}
             <div className="mt-3 grid grid-cols-2 gap-2.5">
               {BAND_ORDER.map((k) => (
                 <div
@@ -326,22 +347,29 @@ export default function GovBlockPage({
                 </div>
               ))}
             </div>
-          </Accordion>
+          </section>
+        </div>
 
-          <Accordion label={v.subjectVsDistrictT}>
-            <SubjectsVsDistrict
-              grades={gradesTable}
-              cols={{
-                subject: v.colSubject,
-                block: v.colBlock,
-                district: v.colDistrict,
-                diff: v.colDiff,
-              }}
-            />
-          </Accordion>
+        {/* ===== subjects vs district | cluster performance ===== */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.subjectVsDistrictT}</h2>
+            <div className="mt-3">
+              <SubjectsVsDistrict
+                grades={gradesTable}
+                cols={{
+                  subject: v.colSubject,
+                  block: v.colBlock,
+                  district: v.colDistrict,
+                  diff: v.colDiff,
+                }}
+              />
+            </div>
+          </section>
 
-          <Accordion label={v.clusterPerformance}>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+          <section className="gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.clusterPerformance}</h2>
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
               <span className="flex items-center gap-1.5">
                 <span className="h-3 w-3 rounded" style={{ backgroundColor: "#2D3A47" }} />
                 {v.legendNormal}
@@ -356,7 +384,7 @@ export default function GovBlockPage({
                 const under = c.score < 50;
                 return (
                   <div key={c.cluster} className="flex items-center gap-3 text-sm">
-                    <ClusterName name={c.cluster} className="w-32 shrink-0 font-semibold text-gov-ink sm:w-40" />
+                    <span className="w-32 shrink-0 truncate text-gov-ink sm:w-40">{c.cluster}</span>
                     <span className="h-4 flex-1 overflow-hidden rounded bg-gov-tint">
                       <span
                         className="block h-full rounded"
@@ -373,34 +401,43 @@ export default function GovBlockPage({
                 );
               })}
             </div>
-          </Accordion>
+          </section>
         </div>
 
         {/* ===== learning outcome report card (download; replaces on-page view) ===== */}
         <section className="mt-6 gov-card p-5">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">{v.loCardT}</h2>
-          <h3 className="mt-1 text-lg font-extrabold text-gov-ink">
-            {fill(v.loCardTitle, { block: b.name })}
-          </h3>
-          <p className="mt-1 text-sm text-muted">{v.loCardDesc}</p>
-          <div className="mt-4 flex flex-col gap-2.5">
-            <a
-              href="/data/downloads/learning_outcomes_report.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" /></svg>
-              {v.dlPdfShort}
-            </a>
-            <a
-              href="/data/downloads/learning_outcomes_by_block.csv"
-              download
-              className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-gov px-4 text-sm font-bold text-gov transition hover:bg-gov-tint"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" /></svg>
-              {v.dlCsvShort}
-            </a>
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
+            <div className="min-w-0">
+              <h3 className="text-lg font-extrabold text-gov-ink">
+                {fill(v.loCardTitle, { block: b.name })}
+              </h3>
+              <p className="mt-1 max-w-xl text-sm text-muted">{v.loCardDesc}</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {[v.loTag1, v.loTag2, v.loTag3].map((tag) => (
+                  <span key={tag} className="rounded-full bg-gov-tint px-3 py-1 text-xs font-semibold text-gov-dark">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2.5">
+              <a
+                href="/data/downloads/learning_outcomes_report.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-[44px] items-center rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
+              >
+                {v.dlPdfShort} ↓
+              </a>
+              <a
+                href="/data/downloads/learning_outcomes_by_block.csv"
+                download
+                className="flex min-h-[44px] items-center rounded-xl border-2 border-gov px-4 text-sm font-bold text-gov transition hover:bg-gov-tint"
+              >
+                {v.dlCsvShort} ↓
+              </a>
+            </div>
           </div>
         </section>
 
