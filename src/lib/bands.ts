@@ -4,7 +4,7 @@ export type BandKey = "urgent" | "needs" | "developing" | "excelling";
 
 export const BAND_COLOR: Record<BandKey, string> = {
   urgent: "#C24E36", // critical → coral-700
-  needs: "#E5A24F", // mid-low / needs attention → amber
+  needs: "#F2B01E", // mid-low / needs attention → gold (distinct from developing orange)
   developing: "#DD6B20", // developing → orange
   excelling: "#15803D", // best performing → green
 };

@@ -277,7 +277,7 @@ export default function GovBlockPage({
                   display={pct(val)}
                   label={grade(g)}
                   caption={fill(v.distAvgCaption, { n: pct(gradeMean(g)) })}
-                  color={g === "Grade 8" ? "#E5A24F" : mapBandColor(val)}
+                  color={g === "Grade 8" ? "#F2B01E" : mapBandColor(val)}
                 />
               ))}
             </div>

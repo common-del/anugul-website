@@ -68,7 +68,7 @@
     "body": "Details about the SAKSHAM assessment will appear here soon."
   },
   "band": {
-    "urgent": "Needs urgent support",
+    "urgent": "Critical",
     "needs": "Needs support",
     "developing": "Developing",
     "excelling": "Excelling"
@@ -257,7 +257,7 @@
       "SAKSHAM is a census assessment of government schools in Anugola district: 1,361 schools and 28,079 children in Grades 5 and 8, tested over two days.",
       "Grade 5 answered 60 questions (Odia, English, Maths, EVS); Grade 8 answered 100 (Odia, English, Maths, Science, Social Studies). All questions were multiple-choice with one mark each.",
       "A child's subject score is the percentage of that subject's questions answered correctly. A child's overall score is the average of their subject scores. A school's score is the average of its children's overall scores. The pass line used throughout is 50%.",
-      "Bands: Needs urgent support (0–25), Needs support (26–50), Developing (51–75), Excelling (76–100). Bands are derived from the displayed rounded score.",
+      "Bands: Critical (0–25), Needs support (26–50), Developing (51–75), Excelling (76–100). Bands are derived from the displayed rounded score.",
       "The tests are internally reliable (Cronbach's alpha 0.90 for Grade 5, 0.91 for Grade 8). A small number of questions were excluded from item-level views for test-construction issues (for example, unclear rendering or ambiguous options).",
       "About 62% of questions tested the previous grade's content, allowing at-grade vs earlier-content comparisons. Cognitive-skill tags were assigned by hand and are reported for Grade 5 only.",
       "School facility data comes from UDISE records. Facilities and staffing explain very little of the difference in scores between schools (about 6%) — facility data here is for entitlements and targeting, not to explain results.",
@@ -418,10 +418,10 @@
     "schoolLevelReports": "School-level reports",
     "openBlock": "Open block report",
     "schoolsWord": "schools",
-    "bandDescExcelling": "Above 75%",
-    "bandDescDeveloping": "51 to 75%",
-    "bandDescNeeds": "26 to 50%",
-    "bandDescUrgent": "25% and below",
+    "bandDescExcelling": "8 to 10",
+    "bandDescDeveloping": "6 to 7",
+    "bandDescNeeds": "3 to 5",
+    "bandDescUrgent": "0 to 2",
     "principalRole": "School Head",
     "ourSchool": "Our school",
     "blockTop": "Block top",
@@ -495,7 +495,7 @@
     "resExplainer": "How to read your report card",
     "methodP1": "SAKSHAM assesses children in Grade 5 and Grade 8 across the main subjects — Odia, English, Maths and EVS in Grade 5, and Odia, English, Maths, Science and Social Studies in Grade 8. The assessment is external, so the results are independent of the school’s own marking.",
     "methodP2": "For each subject, the share of questions children answer correctly becomes the subject score. The overall score is the school’s average performance, shown out of 10 for parents (for example, 62% is 6 out of 10) and as a percentage in the Researcher view.",
-    "methodP3": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Urgent (25% and below). Only school-level averages are ever shown — never an individual child’s result.",
+    "methodP3": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Critical (25% and below). Only school-level averages are ever shown — never an individual child’s result.",
     "dlLor": "Complete Learning-Outcome report (PDF)",
     "dlLorCsv": "Learning-Outcome data (CSV)",
     "dlBlocks": "Block aggregates (CSV)",
@@ -552,7 +552,7 @@
       {
         "id": "bands",
         "q": "What do the colour bands mean?",
-        "a": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Urgent (25% and below). The band is a quick way to see where a school stands without reading the numbers.",
+        "a": "Every score sits in one of four bands: Excelling (above 75%), Developing (51–75%), Needs support (26–50%) and Critical (25% and below). The band is a quick way to see where a school stands without reading the numbers.",
         "tags": [
           "parents",
           "heads",

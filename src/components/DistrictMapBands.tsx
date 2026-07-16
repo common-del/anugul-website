@@ -16,7 +16,7 @@ type DistrictMap = { viewBox: string; blocks: Block[] };
 export const MAP_BANDS = [
   { min: 75, color: "#15803D" }, // best → green
   { min: 60, color: "#DD6B20" }, // developing → orange
-  { min: 45, color: "#E5A24F" }, // needs → yellow
+  { min: 45, color: "#F2B01E" }, // needs → gold
   { min: 0, color: "#C24E36" }, // critical → red
 ];
 
