@@ -24,6 +24,19 @@ export const dynamicParams = false;
 
 const BAND_ORDER: BandKey[] = ["excelling", "developing", "needs", "urgent"];
 
+// Site slug -> the block key used inside the standalone full report
+// (public/block-report.html keeps the original block names, e.g. Angul).
+const HTML_BLOCK: Record<string, string> = {
+  anugola: "Angul",
+  athamalik: "Athamallik",
+  banarpal: "Banarpal",
+  chhendipada: "Chhendipada",
+  kaniha: "Kaniha",
+  "kishore-nagar": "Kishore Nagar",
+  palalahada: "Pallahara",
+  talachera: "Talcher",
+};
+
 function fill(s: string, vars: Record<string, string | number>) {
   return Object.entries(vars).reduce(
     (a, [k, val]) => a.replaceAll(`{${k}}`, String(val)),
@@ -463,7 +476,7 @@ export default function GovBlockPage({
             <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
             <div className="mt-3 space-y-2.5">
               <a
-                href={`/data/downloads/blocks/${b.slug}.pdf`}
+                href={`/block-report.html?block=${encodeURIComponent(HTML_BLOCK[b.slug] ?? "Angul")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-sm transition hover:bg-gov-tint"
@@ -472,7 +485,7 @@ export default function GovBlockPage({
                   <span className="block text-sm font-bold text-gov-ink">{v.dlPdfRowT}</span>
                   <span className="mt-0.5 block text-xs text-muted">{v.dlPdfRowD}</span>
                 </span>
-                <span aria-hidden className="text-gov">↓</span>
+                <span aria-hidden className="text-gov">↗</span>
               </a>
               <a
                 href="/data/downloads/block_aggregates.csv"
