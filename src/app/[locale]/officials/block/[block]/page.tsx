@@ -325,7 +325,7 @@ export default function BlockPage({
                       className="rounded-full px-3 py-1 text-sm font-bold"
                       style={{
                         backgroundColor: BAND_COLOR[k],
-                        color: k === "needs" ? "#12233d" : "#fff",
+                        color: k === "developing" ? "#12233d" : "#fff",
                       }}
                     >
                       {t.band[k]} · {num(b.bands.overall.counts[k])}

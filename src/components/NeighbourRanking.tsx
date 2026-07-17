@@ -98,7 +98,7 @@ export default function NeighbourRanking({
             </span>
             <span
               className="shrink-0 rounded-full px-2 py-0.5 text-xs font-bold"
-              style={{ backgroundColor: BAND_COLOR[r.band], color: r.band === "needs" ? "#12233d" : "#fff" }}
+              style={{ backgroundColor: BAND_COLOR[r.band], color: r.band === "developing" ? "#12233d" : "#fff" }}
             >
               {pct(r.score)}
             </span>

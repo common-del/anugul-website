@@ -122,7 +122,7 @@ export default function CompareView({
         className="inline-block rounded px-1.5 py-0.5 text-xs font-bold"
         style={{
           backgroundColor: BAND_COLOR[d.band],
-          color: d.band === "needs" ? "#12233d" : "#fff",
+          color: d.band === "developing" ? "#12233d" : "#fff",
         }}
       >
         {fmtPercent(Math.round(d.score), locale)}

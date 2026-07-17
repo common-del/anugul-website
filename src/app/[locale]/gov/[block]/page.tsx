@@ -199,7 +199,7 @@ export default function GovBlockPage({
                   className="rounded-full px-3 py-1 text-xs font-bold"
                   style={{
                     backgroundColor: BAND_COLOR[overallBand],
-                    color: overallBand === "needs" ? "#12233d" : "#fff",
+                    color: overallBand === "developing" ? "#12233d" : "#fff",
                   }}
                 >
                   {t.band[overallBand]}
@@ -290,7 +290,7 @@ export default function GovBlockPage({
                   display={pct(val)}
                   label={grade(g)}
                   caption={fill(v.distAvgCaption, { n: pct(gradeMean(g)) })}
-                  color={g === "Grade 8" ? "#F2B01E" : mapBandColor(val)}
+                  color={mapBandColor(val)}
                 />
               ))}
             </div>

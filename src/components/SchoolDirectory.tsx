@@ -132,7 +132,7 @@ export default function SchoolDirectory({
                 <td className="py-1.5 pr-2">
                   <span
                     className="rounded-full px-2 py-0.5 text-xs font-bold"
-                    style={{ backgroundColor: BAND_COLOR[r.band], color: r.band === "needs" ? "#12233d" : "#fff" }}
+                    style={{ backgroundColor: BAND_COLOR[r.band], color: r.band === "developing" ? "#12233d" : "#fff" }}
                   >
                     {bandLabels[r.band]}
                   </span>

@@ -4,8 +4,8 @@ export type BandKey = "urgent" | "needs" | "developing" | "excelling";
 
 export const BAND_COLOR: Record<BandKey, string> = {
   urgent: "#C24E36", // critical → coral-700
-  needs: "#F2B01E", // mid-low / needs attention → gold (distinct from developing orange)
-  developing: "#DD6B20", // developing → orange
+  needs: "#DD6B20", // mid-low / needs attention → orange
+  developing: "#F2B01E", // developing → gold (distinct from needs' orange)
   excelling: "#15803D", // best performing → green
 };
 
@@ -13,8 +13,8 @@ export const BAND_COLOR: Record<BandKey, string> = {
 // fail WCAG AA as small text (esp. amber), so text uses these (>=4.5:1 on white).
 export const BAND_TEXT: Record<BandKey, string> = {
   urgent: "#C24E36", // coral-700
-  needs: "#A85A0F", // dark amber (amber fill is too light for text)
-  developing: "#B5530C", // dark orange (readable on white)
+  needs: "#B5530C", // dark orange (readable on white)
+  developing: "#A85A0F", // dark gold (gold fill is too light for text)
   excelling: "#15803D", // green
 };
 
@@ -30,8 +30,8 @@ export function bandFromScore(s: number): BandKey {
 // a hint, not the primary signal (the score + stars carry that).
 export const BAND_TINT: Record<BandKey, string> = {
   urgent: "rgba(194,78,54,0.12)", // red
-  needs: "rgba(242,176,30,0.16)", // gold (lighter hue → a touch more alpha)
-  developing: "rgba(221,107,32,0.13)", // orange
+  needs: "rgba(221,107,32,0.13)", // orange
+  developing: "rgba(242,176,30,0.16)", // gold (lighter hue → a touch more alpha)
   excelling: "rgba(21,128,61,0.12)", // green
 };
 

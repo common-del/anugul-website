@@ -63,7 +63,7 @@ function AbbrText({ text, diet, crcc }: { text: string; diet: string; crcc: stri
 }
 
 // Nearby-card tint = the school's /10 band colour, muted/translucent (8-10
-// green, 6-7 orange, 3-5 gold, 0-2 red — see BAND_TINT).
+// green, 6-7 gold, 3-5 orange, 0-2 red — see BAND_TINT).
 const tintFor = (s10: number) => bandTint10(s10);
 
 // School Head report card (spec 2026-07-10, trimmed per the 2026-07-15 School
