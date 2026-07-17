@@ -6,7 +6,7 @@ import Link from "next/link";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import Stars from "@/components/Stars";
 import CardLightbox from "@/components/CardLightbox";
-import { hasCard, cardUrl, cardImg, hasHcard, hcardUrl } from "@/lib/cards";
+import { hasCard, cardUrl, cardImg, hasHcard, hcardUrl, hcardImg } from "@/lib/cards";
 import { getBlockSlugs } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
@@ -185,10 +185,10 @@ export default function PrincipalPage({
         <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.yourReportCard}</h2>
-            {hasCard(s.udise) && (
+            {(hasHcard(s.udise) || hasCard(s.udise)) && (
               <div className="mt-3">
                 <CardLightbox
-                  src={cardImg(s.udise)}
+                  src={hasHcard(s.udise) ? hcardImg(s.udise) : cardImg(s.udise)}
                   alt={`${s.name} — ${v.yourReportCard}`}
                   enlargeLabel={v.enlargeCard}
                   closeLabel={v.closeCard}

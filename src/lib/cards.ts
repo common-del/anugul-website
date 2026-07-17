@@ -9,6 +9,7 @@ import cardList from "../../public/data/pdf-cards.json";
 const CARD_BASE = process.env.NEXT_PUBLIC_CARD_BASE || "/data/cards";
 const CARDIMG_BASE = process.env.NEXT_PUBLIC_CARDIMG_BASE || "/data/cardimg";
 const HCARD_BASE = process.env.NEXT_PUBLIC_HCARD_BASE || "/data/hcards";
+const HCARDIMG_BASE = process.env.NEXT_PUBLIC_HCARDIMG_BASE || "/data/hcardimg";
 
 const cardSet = new Set(cardList as string[]);
 
@@ -38,4 +39,10 @@ export function hasHcard(udise: string): boolean {
 
 export function hcardUrl(udise: string): string {
   return `${HCARD_BASE}/${udise}.pdf`;
+}
+
+// Stacked preview image of the 3-page School-Head card (public/data/hcardimg).
+// Same set as the hcards, so hasHcard() also gates the image.
+export function hcardImg(udise: string): string {
+  return `${HCARDIMG_BASE}/${udise}.webp`;
 }
