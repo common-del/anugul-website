@@ -286,25 +286,36 @@ export default function DistrictReportPage({
           <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/data/downloads/district_report.pdf", excel: false },
-              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", excel: true },
-              { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false },
-              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false },
+              { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/block-report/?block=District", excel: false, view: true },
+              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", excel: true, view: false },
+              { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false, view: false },
+              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false, view: false },
             ].map((c) => (
               <div key={c.t} className="flex flex-col rounded-xl border border-gov-line bg-white p-4 shadow-sm">
                 <div className="text-sm font-extrabold leading-snug text-gov-ink">{c.t}</div>
                 <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{c.d}</p>
-                <a
-                  href={c.href}
-                  download
-                  className={`mt-3 flex min-h-[42px] items-center justify-center rounded-lg px-3 text-sm font-bold transition ${
-                    c.excel
-                      ? "bg-[#217346] text-white shadow-sm hover:shadow-lift"
-                      : "border-2 border-gov text-gov hover:bg-gov-tint"
-                  }`}
-                >
-                  {v.dlBtn} ↓
-                </a>
+                {c.view ? (
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 flex min-h-[42px] items-center justify-center rounded-lg bg-gov px-3 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
+                  >
+                    {v.dlViewBtn} ↗
+                  </a>
+                ) : (
+                  <a
+                    href={c.href}
+                    download
+                    className={`mt-3 flex min-h-[42px] items-center justify-center rounded-lg px-3 text-sm font-bold transition ${
+                      c.excel
+                        ? "bg-[#217346] text-white shadow-sm hover:shadow-lift"
+                        : "border-2 border-gov text-gov hover:bg-gov-tint"
+                    }`}
+                  >
+                    {v.dlBtn} ↓
+                  </a>
+                )}
               </div>
             ))}
           </div>
