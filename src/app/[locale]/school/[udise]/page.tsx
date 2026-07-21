@@ -14,13 +14,17 @@ import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
+import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
 
 type Profile = {
   classRange: string | null;
   management: string | null;
+  area: string | null;
   enrolment: number | null;
   teachers: number | null;
   classrooms: number | null;
+  boundaryWall: string | null;
+  balvatika: string | null;
 };
 type Inputs = {
   basicsIn?: string[];
@@ -114,22 +118,40 @@ export default function SchoolPage({
   }[];
   neighbours.sort((a, z) => z.s10 - a.s10);
 
-  const about: { label: string; value: string }[] = [];
-  if (s.profile?.management) about.push({ label: t.profile.management, value: s.profile.management });
-  if (s.profile?.classRange) about.push({ label: t.profile.classRange, value: s.profile.classRange });
-  if (s.profile?.enrolment != null) about.push({ label: t.profile.students, value: num(s.profile.enrolment) });
-  if (s.profile?.teachers != null) about.push({ label: t.profile.teachers, value: num(s.profile.teachers) });
+  // About tiles, split into two rows: type + classes (top), then students +
+  // teachers + location (bottom), so Location sits with the counts and never
+  // spills to a lonely third row.
+  const p = s.profile;
+  const topInfo: { label: string; value: string }[] = [];
+  const mgmt = managementLabel(p?.management, v);
+  if (mgmt) topInfo.push({ label: t.profile.management, value: mgmt });
+  if (p?.classRange) topInfo.push({ label: t.profile.classRange, value: p.classRange });
+  const counts: { label: string; value: string }[] = [];
+  if (p?.enrolment != null) counts.push({ label: t.profile.students, value: num(p.enrolment) });
+  if (p?.teachers != null) counts.push({ label: t.profile.teachers, value: num(p.teachers) });
+  const area = areaLabel(p?.area, v);
+  if (area) counts.push({ label: t.profile.location, value: area });
+  const hasAbout = topInfo.length > 0 || counts.length > 0;
 
   // Infrastructure lists for the About accordion; SMC pulled out as its own row.
   const SMC_KEY = "SMC formed";
   const bLabel = (k: string) => (t.peerCard.basics as Record<string, string>)[k] ?? k;
   const infraIn = (s.inputs?.basicsIn ?? []).filter((k) => k !== SMC_KEY).map(bLabel);
   const infraOut = (s.inputs?.basicsOut ?? []).filter((k) => k !== SMC_KEY).map(bLabel);
+  // Extra UDISE facilities appended to the same available / not-available lists.
+  const bal = boolYesNo(p?.balvatika);
+  if (bal === true) infraIn.push(v.balvatika);
+  else if (bal === false) infraOut.push(v.balvatika);
+  const wall = hasBoundaryWall(p?.boundaryWall);
+  if (wall === true) infraIn.push(v.boundaryWall);
+  else if (wall === false) infraOut.push(v.boundaryWall);
   const smcFormed = s.inputs?.basicsIn?.includes(SMC_KEY)
     ? true
     : s.inputs?.basicsOut?.includes(SMC_KEY)
       ? false
       : null;
+  const hasDetails =
+    infraIn.length > 0 || infraOut.length > 0 || smcFormed !== null || p?.classrooms != null;
   // Nearby-card tint = the school's /10 band colour, muted/translucent (8-10
   // green, 6-7 orange, 3-5 gold, 0-2 red). Kept faint so AA holds; the score +
   // stars remain the primary signal.
@@ -152,17 +174,14 @@ export default function SchoolPage({
                 : ""}
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-3 rounded-full bg-gov-tint py-1.5 pl-4 pr-1.5">
-            <span className="text-sm font-bold uppercase tracking-wide text-gov-ink">
-              {v.overallScore}
+          <div className="flex shrink-0 items-center gap-3 rounded-2xl bg-gov-tint py-2 pl-4 pr-2">
+            <span className="max-w-[8rem] text-[12.5px] font-bold leading-tight tracking-wide text-gov-ink">
+              {v.overallPerformanceScore}
             </span>
-            <span className="grid h-[64px] w-[64px] place-items-center rounded-full bg-gov">
-              <span className="text-center leading-none">
-                <span className="block text-[22px] font-extrabold text-white">
-                  {num(overall10)}
-                </span>
-                <span className="mt-0.5 block text-[10px] text-white/75">/{num(10)}</span>
-              </span>
+            <span className="flex items-baseline gap-0.5 rounded-xl bg-gov px-4 py-2.5 tabular-nums text-white">
+              <span className="text-[26px] font-extrabold leading-none">{num(overall10)}</span>
+              <span className="text-xl font-bold leading-none text-white/70">/</span>
+              <span className="text-[26px] font-extrabold leading-none">{num(10)}</span>
             </span>
           </div>
         </section>
@@ -240,12 +259,12 @@ export default function SchoolPage({
         <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
 
             {/* about your school */}
-            {(about.length > 0 || s.inputs) && (
+            {(hasAbout || hasDetails) && (
               <section className="gov-card p-5">
                 <h2 className="text-lg font-bold text-gov-ink">{v.aboutSchool}</h2>
-                {about.length > 0 && (
+                {topInfo.length > 0 && (
                   <div className="mt-3 grid grid-cols-2 gap-3">
-                    {about.map((a) => (
+                    {topInfo.map((a) => (
                       <div
                         key={a.label}
                         className="rounded-lg border-l-4 border-gov-mid bg-gov-tint px-3.5 py-2.5"
@@ -258,7 +277,22 @@ export default function SchoolPage({
                     ))}
                   </div>
                 )}
-                {(infraIn.length > 0 || infraOut.length > 0 || smcFormed !== null) && (
+                {counts.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {counts.map((a) => (
+                      <div
+                        key={a.label}
+                        className="rounded-lg border-l-4 border-gov-mid bg-gov-tint px-3.5 py-2.5"
+                      >
+                        <div className="text-lg font-extrabold leading-tight text-gov-ink">
+                          {a.value}
+                        </div>
+                        <div className="mt-0.5 text-xs text-muted">{a.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {hasDetails && (
                   <details className="group mt-4 rounded-xl border border-gov-line">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-bold text-gov [&::-webkit-details-marker]:hidden">
                       <span className="group-open:hidden">{v.viewMoreDetails}</span>
@@ -278,6 +312,12 @@ export default function SchoolPage({
                           <p className="mt-0.5 text-[#C24E36]">{infraOut.join(", ")}</p>
                         </div>
                       )}
+                      {p?.classrooms != null && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.classroomsAvailable}</p>
+                          <p className="mt-0.5 text-muted">{num(p.classrooms)}</p>
+                        </div>
+                      )}
                       {smcFormed !== null && (
                         <div>
                           <p className="font-semibold text-gov-ink">{v.smcFormation}</p>
@@ -287,6 +327,7 @@ export default function SchoolPage({
                     </div>
                   </details>
                 )}
+                <p className="mt-3 text-xs text-muted">{v.aboutSource}</p>
               </section>
             )}
 
