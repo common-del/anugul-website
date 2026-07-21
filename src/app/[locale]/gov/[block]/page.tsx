@@ -312,6 +312,8 @@ export default function GovBlockPage({
                   counts[k] ? (
                     <span
                       key={k}
+                      title={`${t.band[k]} · ${num(counts[k] ?? 0)} ${v.schoolsWord}`}
+                      className="cursor-help transition-[filter] hover:brightness-110"
                       style={{
                         width: `${((counts[k] ?? 0) / totalSchools) * 100}%`,
                         backgroundColor: BAND_COLOR[k],
@@ -410,7 +412,7 @@ export default function GovBlockPage({
               </h3>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[v.loTag1, v.loTag2, v.loTag3].map((tag) => (
-                  <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gov-dark shadow-sm">
+                  <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gov-dark shadow ring-1 ring-black/5">
                     {tag}
                   </span>
                 ))}
@@ -421,14 +423,14 @@ export default function GovBlockPage({
                 href="/data/downloads/learning_outcomes_report.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-h-[44px] items-center rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
+                className="flex min-h-[44px] items-center rounded-xl bg-accent px-4 text-sm font-bold text-gov-ink shadow-sm transition hover:shadow-lift"
               >
                 {v.dlPdfShort} ↓
               </a>
               <a
                 href="/data/downloads/learning_outcomes_by_block.csv"
                 download
-                className="flex min-h-[44px] items-center rounded-xl border-2 border-gov px-4 text-sm font-bold text-gov transition hover:bg-gov-tint"
+                className="flex min-h-[44px] items-center rounded-xl border-2 border-accent px-4 text-sm font-bold text-gov-ink transition hover:bg-accent/20"
               >
                 {v.dlCsvShort} ↓
               </a>
