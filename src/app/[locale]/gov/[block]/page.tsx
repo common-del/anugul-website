@@ -307,18 +307,23 @@ export default function GovBlockPage({
             </div>
             {/* stacked bar of all schools across the four bands */}
             {totalSchools > 0 && (
-              <div className="mt-4 flex h-6 overflow-hidden rounded-lg" aria-hidden>
+              <div className="mt-4 flex h-6" aria-hidden>
                 {BAND_ORDER.map((k) =>
                   counts[k] ? (
                     <span
                       key={k}
-                      title={`${t.band[k]} · ${num(counts[k] ?? 0)} ${v.schoolsWord}`}
-                      className="cursor-help transition-[filter] hover:brightness-110"
+                      className="group relative transition-[filter] first:rounded-l-lg last:rounded-r-lg hover:brightness-110"
                       style={{
                         width: `${((counts[k] ?? 0) / totalSchools) * 100}%`,
                         backgroundColor: BAND_COLOR[k],
                       }}
-                    />
+                    >
+                      {/* dark comment-bubble tooltip on hover (with a pointed tail) */}
+                      <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gov px-2.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
+                        {t.band[k]} · {num(counts[k] ?? 0)} {v.schoolsWord}
+                        <span className="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2 border-x-4 border-t-4 border-x-transparent border-t-gov" />
+                      </span>
+                    </span>
                   ) : null,
                 )}
               </div>
