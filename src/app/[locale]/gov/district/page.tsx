@@ -254,7 +254,8 @@ export default function DistrictReportPage({
                 {worst && (
                   <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C24E36" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                      <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" />
+                      <path d="M23 18l-9.5-9.5-5 5L1 6" />
+                      <path d="M17 18h6v-6" />
                     </svg>
                     <span>
                       <span className="block text-xs font-semibold text-muted">{v.insightNeedsAttentionL}</span>
