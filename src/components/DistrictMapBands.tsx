@@ -1,15 +1,18 @@
 import fs from "fs";
 import path from "path";
-import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
+import { fmtPercent } from "@/lib/format";
+import DistrictMapCanvas, { type MapBlock } from "./DistrictMapCanvas";
 
 // District map as a block choropleth (server component — reads prebuilt block
 // geometry from public/data at render time). Each block is a filled polygon in
 // an ORANGE GRADATION by rank (darkest = highest-performing block, lightest =
 // lowest), with white boundaries demarcating blocks and a white name label.
-// Geometry is traced from the official NIC "Block Map — District: Anugul" so the
-// boundaries match the real administrative ones. (MAP_BANDS below is unchanged
-// and still colours the grade gauges elsewhere.)
+// Hovering a block pops a dark comment-bubble with its % score (the interactive
+// rendering lives in DistrictMapCanvas, a small client layer). Geometry is
+// traced from the official NIC "Block Map — District: Anugul" so the boundaries
+// match the real administrative ones. (MAP_BANDS below is unchanged and still
+// colours the grade gauges elsewhere.)
 
 type Block = { name: string; d: string; lx: number; ly: number };
 type DistrictMap = { viewBox: string; blocks: Block[] };
@@ -66,50 +69,28 @@ export default function DistrictMapBands({
   const nRanked = ranked.length;
   const rankOf = new Map(ranked.map((name, i) => [name, i] as const));
   const orangeFor = (name: string) => rankOrange(rankOf.get(name) ?? 0, nRanked);
+
+  // Prepare serialisable per-block props for the interactive client layer. The
+  // % label uses the same fmtPercent(Math.round(...)) as the "Performance by
+  // Blocks" bars, so the bubble and the bars always agree.
+  const blocks: MapBlock[] = map.blocks
+    .filter((b) => slugs[b.name] && scores[b.name] != null)
+    .map((b) => ({
+      name: b.name,
+      d: b.d,
+      lx: b.lx,
+      ly: b.ly,
+      slug: slugs[b.name],
+      fill: orangeFor(b.name),
+      label: fmtPercent(Math.round(scores[b.name]), locale),
+    }));
+
   return (
-    <div>
-      <svg
-        viewBox={map.viewBox}
-        className="mx-auto block w-full max-w-[360px]"
-        role="group"
-        aria-label={hint}
-      >
-        {map.blocks.map((b) => {
-          const slug = slugs[b.name];
-          const score = scores[b.name];
-          if (!slug || score == null) return null;
-          return (
-            <Link
-              key={b.name}
-              href={`/${locale}/gov/${slug}/`}
-              aria-label={b.name}
-            >
-              <g className="cursor-pointer transition duration-150 hover:brightness-90">
-                <path
-                  d={b.d}
-                  fill={orangeFor(b.name)}
-                  stroke="#fff"
-                  strokeWidth="0.7"
-                  strokeLinejoin="round"
-                />
-                <text
-                  x={b.lx}
-                  y={b.ly}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fontSize="2.9"
-                  fill="#fff"
-                  className="pointer-events-none"
-                  style={{ fontWeight: 700, textShadow: "0 1px 2px rgba(0,0,0,0.45)" }}
-                >
-                  {b.name}
-                </text>
-              </g>
-            </Link>
-          );
-        })}
-      </svg>
-      <p className="mt-2 text-center text-sm text-muted">{hint}</p>
-    </div>
+    <DistrictMapCanvas
+      locale={locale}
+      viewBox={map.viewBox}
+      blocks={blocks}
+      hint={hint}
+    />
   );
 }
