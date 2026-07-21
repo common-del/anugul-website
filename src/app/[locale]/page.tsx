@@ -6,7 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import AwarenessFilm from "@/components/AwarenessFilm";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
-import { fmtNum, fmtPercent } from "@/lib/format";
+import { fmtNum } from "@/lib/format";
 import districtData from "@/data/district.json";
 
 export function generateStaticParams() {
@@ -82,16 +82,13 @@ export default function Home({ params }: { params: { locale: string } }) {
       icon: "M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21v-1a6 6 0 0112 0v1M20 21v-1a6 6 0 00-3-5.2" },
     { val: num(district.blocks.length), l: v.statBlocksL, c: v.statBlocksC,
       icon: "M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" },
-    { val: fmtPercent(100, locale), l: v.statDataL, c: v.statDataC,
-      icon: "M9 2h6a1 1 0 011 1v2H8V3a1 1 0 011-1zM16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M9 12l2 2 4-4" },
   ];
 
-  // per-tile divider classes: 1 col (mobile) → 2×2 (sm) → 4-up (lg)
+  // per-tile divider classes: 1 col (mobile) → 3-up (sm+)
   const tileBorder = [
     "",
     "border-t border-gov-line sm:border-t-0 sm:border-l",
-    "border-t border-gov-line lg:border-t-0 lg:border-l",
-    "border-t border-gov-line sm:border-l lg:border-t-0",
+    "border-t border-gov-line sm:border-t-0 sm:border-l",
   ];
 
   return (
@@ -182,20 +179,21 @@ export default function Home({ params }: { params: { locale: string } }) {
               <ul className="mt-4 space-y-4">
                 {dyk.map((r) => (
                   <li key={r.t} className="flex items-start gap-3">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill={r.fill ? "#2D3A47" : "none"}
-                      stroke={r.fill ? "none" : "#2D3A47"}
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden
-                      className="mt-0.5 shrink-0"
-                    >
-                      <path d={r.icon} />
-                    </svg>
+                    <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-gov/20 bg-white/50">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill={r.fill ? "#2D3A47" : "none"}
+                        stroke={r.fill ? "none" : "#2D3A47"}
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden
+                      >
+                        <path d={r.icon} />
+                      </svg>
+                    </span>
                     <span>
                       <span className="block text-sm font-bold leading-snug text-gov-ink">
                         {r.t}
@@ -211,9 +209,9 @@ export default function Home({ params }: { params: { locale: string } }) {
           </div>
         </section>
 
-        {/* statistics band — four tiles, dividers only */}
+        {/* statistics band — three tiles, dividers only */}
         <section className="mt-5 gov-card">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3">
             {stats.map((s, i) => (
               <div
                 key={s.l}
