@@ -60,10 +60,8 @@ export default function FindPage({ params }: { params: { locale: string } }) {
     <PageShell zone="full">
       <SiteHeader locale={locale} t={t} showBack />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-        {/* Clean heading area (owner, 2026-07-10): brand-green H1 + one
-            subheading line, nothing decorative beside it. */}
+        {/* Clean heading area: just the H1 (subheading removed, owner 2026-07-21). */}
         <h1 className="text-2xl font-extrabold leading-tight text-gov">{v.findTitle}</h1>
-        <p className="mt-1 text-muted">{v.findIntro}</p>
 
         <div className="mt-5">
           <SchoolFinder
