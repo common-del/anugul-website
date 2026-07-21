@@ -387,8 +387,8 @@
     "watchDesc": "A short video to help you understand the report.",
     "watchCta": "Watch Video",
     "aboutSchool": "About Your School",
-    "nearbyTitle": "Also view the scores of nearby schools",
-    "nearbySub": "The nearest schools to yours. Tap a school to open its report card.",
+    "nearbyTitle": "Want to see how the nearby schools are performing?",
+    "nearbySub": "Tap a school to open its report card.",
     "kmAway": "{km} km",
     "subjectsTitle": "Subject scores (out of 10)",
     "followUs": "Follow us:",
@@ -739,7 +739,7 @@
     "govExploreT": "What would you like to explore?",
     "govExploreSub": "Choose the type of report you want to view.",
     "govBlockCardT": "Block Reports",
-    "govBlockCardD": "View performance of all blocks in Anugola District",
+    "govBlockCardD": "View block-wise performance in Anugola District",
     "govDistrictCardT": "District Report",
     "govDistrictCardD": "View overall performance of Anugola District",
     "govChooseBlock": "Choose a block",
@@ -853,8 +853,8 @@
     "exp1T": "Block Learning Outcome Report",
     "exp1D": "View how every Learning Outcome performed across your block.",
     "exp2T": "Block Performance Report",
-    "exp2D": "View overall performance of schools in your block across subjects, grades and clusters.",
+    "exp2D": "View block-wise performance in Anugola District.",
     "exp3T": "District Performance Report",
-    "exp3D": "View performance of all blocks in Anugola district and key indicators."
+    "exp3D": "View overall performance of Anugola District."
   }
 }

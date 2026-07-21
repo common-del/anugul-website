@@ -90,12 +90,15 @@ export default function PrincipalPage({
   const num = (n: number) => fmtNum(n, locale);
   const overall10 = score10(s.overall.score);
 
+  // Colourful action icons (owner 2026-07-21): larger, each a distinct hue in a
+  // soft tinted disc, spaced to fill the column — replaces the flat slate line
+  // icons. Colours are inline styles so they render regardless of Tailwind JIT.
   const actions = [
-    { n: 1, title: v.pa1Title, text: v.pa1Text,
-      icon: "M2 4h6a4 4 0 014 4v12a3 3 0 00-3-3H2zM22 4h-6a4 4 0 00-4 4v12a3 3 0 013-3h7z" },
-    { n: 2, title: v.pa2Title, text: v.pa2Text,
-      icon: "M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" },
-    { n: 3, title: v.pa3Title, text: v.pa3Text,
+    { n: 1, title: v.pa1Title, text: v.pa1Text, color: "#2F6FB0", tint: "rgba(47,111,176,0.12)",
+      icon: "M11 18a7 7 0 100-14 7 7 0 000 14zM21 21l-4.35-4.35M8.5 10.5h5M8.5 13.5h3" },
+    { n: 2, title: v.pa2Title, text: v.pa2Text, color: "#E56A4F", tint: "rgba(229,106,79,0.12)",
+      icon: "M13 8a2 2 0 01-2 2H7l-3 3V4a2 2 0 012-2h6a2 2 0 012 2zM17 9h1a2 2 0 012 2v9l-3-3h-4a2 2 0 01-2-2v-1" },
+    { n: 3, title: v.pa3Title, text: v.pa3Text, color: "#15803D", tint: "rgba(21,128,61,0.12)",
       icon: "M9 2h6a1 1 0 011 1v2H8V3a1 1 0 011-1zM16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M8 12l2 2 4-4" },
   ];
 
@@ -111,10 +114,6 @@ export default function PrincipalPage({
       icon: "M12 11a4 4 0 100-8 4 4 0 000 8zM6 21v-1a6 6 0 0112 0v1" },
     { l: v.tileLocation, val: areaLabel(s.profile?.area, v) || "—",
       icon: "M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4zM8 2v16M16 6v16" },
-    { l: v.tileUdise, val: s.udise,
-      icon: "M9 2h6a1 1 0 011 1v2H8V3a1 1 0 011-1zM16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M8 12h8M8 16h5" },
-    { l: v.tileCluster, val: s.cluster,
-      icon: "M12 21s-7-6.3-7-11a7 7 0 0114 0c0 4.7-7 11-7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" },
   ];
 
   // infrastructure accordion (same grouping as the parent page)
@@ -193,7 +192,7 @@ export default function PrincipalPage({
         </section>
 
         {/* ===== hero: report-card preview | what should you do ===== */}
-        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:space-y-0">
           <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.yourReportCard}</h2>
             {(hasHcard(s.udise) || hasCard(s.udise)) && (
@@ -226,14 +225,17 @@ export default function PrincipalPage({
             </div>
           </section>
 
-          <section className="gov-card p-5">
+          <section className="flex flex-col gov-card p-5">
             <h2 className="text-lg font-bold text-gov">{v.headWhatT}</h2>
             <p className="mt-1 text-sm text-muted">{v.headWhatD}</p>
-            <div className="mt-4 space-y-4">
+            <div className="mt-5 flex flex-1 flex-col justify-between gap-5">
               {actions.map((a) => (
-                <div key={a.n} className="flex items-start gap-3.5">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gov-tint">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <div key={a.n} className="flex items-center gap-4">
+                  <span
+                    className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl"
+                    style={{ backgroundColor: a.tint }}
+                  >
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={a.color} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={a.icon} />
                     </svg>
                   </span>
@@ -257,13 +259,27 @@ export default function PrincipalPage({
           <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov">{v.aboutSchool}</h2>
             <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {tiles.map((tile, i) => (
-                <div
-                  key={tile.l}
-                  className={`flex items-center gap-3 rounded-xl bg-gov-tint px-3.5 py-3${
-                    i === tiles.length - 1 && tiles.length % 2 === 1 ? " sm:col-span-2" : ""
-                  }`}
-                >
+              {tiles.slice(0, 2).map((tile) => (
+                <div key={tile.l} className="flex items-center gap-3 rounded-xl bg-gov-tint px-3.5 py-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d={tile.icon} />
+                    </svg>
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[10.5px] font-semibold uppercase tracking-wide text-muted">
+                      {tile.l}
+                    </span>
+                    <span className="block truncate text-[15px] font-extrabold leading-snug text-gov">
+                      {tile.val}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+              {tiles.slice(2).map((tile) => (
+                <div key={tile.l} className="flex items-center gap-3 rounded-xl bg-gov-tint px-3.5 py-3">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d={tile.icon} />
@@ -367,8 +383,7 @@ export default function PrincipalPage({
         {/* ===== explore more reports (full width) ===== */}
         <section className="mt-5 gov-card p-5">
           <h2 className="text-lg font-bold text-gov">{v.headExploreT}</h2>
-          <p className="mt-1 text-sm text-muted">{v.headExploreD}</p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
             {explore.map((e) =>
               e.ext ? (
                 <a
