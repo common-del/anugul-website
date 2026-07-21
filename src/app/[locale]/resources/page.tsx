@@ -122,23 +122,23 @@ export default function ResourcesPage({
             </div>
           </details>
 
-          {/* Methodology */}
-          <details className={card}>
-            <summary className={summary}>
-              <span className="font-extrabold text-gov-ink">{v.resMethodT}</span>
-              <span aria-hidden className={chev}>+</span>
-            </summary>
-            <div className="space-y-3 px-5 pb-5 text-[15px] leading-relaxed text-muted">
-              <p>{v.methodP1}</p>
-              <ul className="list-disc space-y-1 pl-5">
-                <li>{v.methodG5}</li>
-                <li>{v.methodG8}</li>
-              </ul>
-              <p>{v.methodP2}</p>
-              <p>{v.methodP3}</p>
-              <p>{v.methodP4}</p>
-            </div>
-          </details>
+          {/* Methodology — one control that downloads the full methodology PDF.
+              (Owner 2026-07-21: replaced the inline description; the detail —
+              assessment design, the analysis, and how the % becomes a /10 score
+              — now lives in the downloadable document.) */}
+          <a
+            href="/data/downloads/assessment_methodology.pdf"
+            download
+            className="group gov-card flex items-center gap-3 p-5 transition hover:bg-gov-tint hover:shadow-lift"
+          >
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-gov-tint">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d={IC_FILE} />
+              </svg>
+            </span>
+            <span className="min-w-0 flex-1 font-extrabold text-gov-ink">{v.resMethodT}</span>
+            <span aria-hidden className="shrink-0 text-lg leading-none text-gov-mid">↓</span>
+          </a>
 
           {/* Downloads — icon control-buttons, district first then block */}
           <details className={card}>
