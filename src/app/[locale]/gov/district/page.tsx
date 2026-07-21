@@ -6,7 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
 import Gauge from "@/components/Gauge";
-import DistrictMapBands, { mapBandColor } from "@/components/DistrictMapBands";
+import DistrictMapBands, { mapBandColor, rankOrange } from "@/components/DistrictMapBands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
@@ -36,14 +36,8 @@ function fill(s: string, vars: Record<string, string | number>) {
   );
 }
 
-// Bar colours: dark → light slate by rank (highest block darkest).
-function barColor(rank: number, of: number) {
-  const t = of > 1 ? rank / (of - 1) : 0; // 0 = darkest
-  const from = [26, 31, 38]; // slate-700 #1A1F26
-  const to = [148, 158, 170]; // light slate
-  const c = from.map((f, i) => Math.round(f + (to[i] - f) * t));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
-}
+// Bar colours reuse the map's rank-orange gradation (see rankOrange) so the
+// "Performance by Blocks" bars match "District at a Glance" exactly.
 
 // District Report (mock-up Screen 5.1) — replaces the old Data & Analysis
 // page (/gov/data redirects here). No year-over-year lines, no "data as on"
@@ -199,7 +193,7 @@ export default function DistrictReportPage({
                       className="block h-full rounded"
                       style={{
                         width: `${(b.average / maxAvg) * 100}%`,
-                        backgroundColor: barColor(i, sorted.length),
+                        backgroundColor: rankOrange(i, sorted.length),
                       }}
                     />
                   </span>

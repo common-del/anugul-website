@@ -25,6 +25,17 @@ export function mapBandColor(score: number): string {
   return (MAP_BANDS.find((b) => score >= b.min) ?? MAP_BANDS[3]).color;
 }
 
+// Orange gradation by rank (0 = best = darkest → last = lightest). Shared by
+// the district map fills AND the district "Performance by Blocks" bars, so the
+// two always use identical shades.
+export function rankOrange(i: number, n: number): string {
+  const DARK = [154, 52, 18]; // #9A3412 — highest-performing
+  const LIGHT = [246, 178, 107]; // #F6B26B — lowest
+  const tt = n > 1 ? i / (n - 1) : 0;
+  const c = DARK.map((d, k) => Math.round(d + (LIGHT[k] - d) * tt));
+  return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+}
+
 let mapCache: DistrictMap | null = null;
 function getMap(): DistrictMap {
   if (!mapCache) {
@@ -54,14 +65,7 @@ export default function DistrictMapBands({
     .sort((a, z) => scores[z] - scores[a]);
   const nRanked = ranked.length;
   const rankOf = new Map(ranked.map((name, i) => [name, i] as const));
-  const DARK = [154, 52, 18]; // #9A3412 — highest
-  const LIGHT = [246, 178, 107]; // #F6B26B — lowest
-  const orangeFor = (name: string) => {
-    const i = rankOf.get(name) ?? 0;
-    const tt = nRanked > 1 ? i / (nRanked - 1) : 0;
-    const c = DARK.map((d, k) => Math.round(d + (LIGHT[k] - d) * tt));
-    return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
-  };
+  const orangeFor = (name: string) => rankOrange(rankOf.get(name) ?? 0, nRanked);
   return (
     <div>
       <svg
