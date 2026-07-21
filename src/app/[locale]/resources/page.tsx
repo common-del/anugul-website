@@ -13,10 +13,19 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-// Resources: Videos · Methodology · Downloads · What you can do, as tap-to-open
-// cards. Section subheadings removed (owner 2026-07-21); the explainer video is
-// block-aware; downloads are grouped district-first; the old "Toolkit" content
-// now lives under "What you can do".
+type Kind = "download" | "view" | "link";
+type DL = [href: string, label: string, kind: Kind, icon: string];
+
+// download-button icons
+const IC_CHART = "M4 20V10M10 20V4M16 20v-9M20 20H4";
+const IC_GRID = "M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18";
+const IC_FILE = "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M8 13h8M8 17h5";
+const IC_SEARCH = "M11 18a7 7 0 100-14 7 7 0 000 14zM21 21l-4.35-4.35";
+const IC_BLOCKS = "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z";
+
+// Resources: Videos · Methodology · Downloads, as tap-to-open cards. Downloads
+// are icon control-buttons grouped district-first. (The old Toolkit /
+// "What you can do" content moved to the parent report card — owner 2026-07-21.)
 export default function ResourcesPage({
   params,
 }: {
@@ -32,33 +41,52 @@ export default function ResourcesPage({
   const summary = "flex cursor-pointer items-center justify-between gap-3 p-5";
   const chev = "shrink-0 text-gov transition-transform group-open:rotate-45";
 
-  type Kind = "download" | "view" | "link";
-  const dlLink = (href: string, label: string, kind: Kind) =>
-    kind === "download" ? (
-      <a href={href} download className="font-semibold text-gov underline underline-offset-2">
-        {label} ↓
-      </a>
-    ) : kind === "view" ? (
-      <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold text-gov underline underline-offset-2">
-        {label} ↗
-      </a>
-    ) : (
-      <Link href={href} className="font-semibold text-gov underline underline-offset-2">
-        {label} →
-      </Link>
-    );
+  const districtDownloads: DL[] = [
+    ["/block-report/?block=District", v.dlDistPdfT, "view", IC_CHART],
+    ["/data/downloads/district_report.xlsx", v.dlDistXlsxT, "download", IC_GRID],
+    ["/data/downloads/learning_outcomes_report.pdf", v.dlLor, "download", IC_FILE],
+    ["/data/downloads/learning_outcomes.csv", v.dlLorCsv, "download", IC_GRID],
+    ["/data/downloads/misconceptions_report.pdf", v.dlMisPdfT, "download", IC_SEARCH],
+  ];
+  const blockDownloads: DL[] = [
+    [`/${locale}/gov/`, v.govBlockCardT, "link", IC_BLOCKS],
+    ["/data/downloads/block_aggregates.csv", v.dlBlocks, "download", IC_GRID],
+  ];
 
-  const districtDownloads: [string, string, Kind][] = [
-    ["/block-report/?block=District", v.dlDistPdfT, "view"],
-    ["/data/downloads/district_report.xlsx", v.dlDistXlsxT, "download"],
-    ["/data/downloads/learning_outcomes_report.pdf", v.dlLor, "download"],
-    ["/data/downloads/learning_outcomes.csv", v.dlLorCsv, "download"],
-    ["/data/downloads/misconceptions_report.pdf", v.dlMisPdfT, "download"],
-  ];
-  const blockDownloads: [string, string, Kind][] = [
-    [`/${locale}/gov/`, v.govBlockCardT, "link"],
-    ["/data/downloads/block_aggregates.csv", v.dlBlocks, "download"],
-  ];
+  // Each download renders as an icon control-button, matching the report pages'
+  // download cards (slate icon disc + label + action arrow).
+  const dlButton = ([href, label, kind, icon]: DL) => {
+    const arrow = kind === "download" ? "↓" : kind === "view" ? "↗" : "→";
+    const cls =
+      "flex items-center gap-3 rounded-xl border border-gov-line bg-white p-3 shadow-sm transition hover:bg-gov-tint hover:shadow-lift";
+    const inner = (
+      <>
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-gov-tint">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d={icon} />
+          </svg>
+        </span>
+        <span className="min-w-0 flex-1 text-sm font-bold leading-snug text-gov-ink">{label}</span>
+        <span aria-hidden className="shrink-0 text-lg leading-none text-gov-mid">{arrow}</span>
+      </>
+    );
+    return kind === "link" ? (
+      <Link key={label} href={href} className={cls}>
+        {inner}
+      </Link>
+    ) : (
+      <a
+        key={label}
+        href={href}
+        {...(kind === "download"
+          ? { download: true }
+          : { target: "_blank", rel: "noopener noreferrer" })}
+        className={cls}
+      >
+        {inner}
+      </a>
+    );
+  };
 
   return (
     <PageShell zone="full">
@@ -108,63 +136,29 @@ export default function ResourcesPage({
             </div>
           </details>
 
-          {/* Downloads — district first, then block */}
+          {/* Downloads — icon control-buttons, district first then block */}
           <details className={card}>
             <summary className={summary}>
               <span className="font-extrabold text-gov-ink">{v.resDownloadsT}</span>
               <span aria-hidden className={chev}>+</span>
             </summary>
-            <div className="space-y-4 px-5 pb-5">
+            <div className="space-y-5 px-5 pb-5">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-muted">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted">
                   {v.dlGroupDistrict}
                 </p>
-                <ul className="mt-2 space-y-2">
-                  {districtDownloads.map(([href, label, kind]) => (
-                    <li key={label}>{dlLink(href, label, kind)}</li>
-                  ))}
-                </ul>
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  {districtDownloads.map(dlButton)}
+                </div>
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-muted">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted">
                   {v.dlGroupBlock}
                 </p>
-                <ul className="mt-2 space-y-2">
-                  {blockDownloads.map(([href, label, kind]) => (
-                    <li key={label}>{dlLink(href, label, kind)}</li>
-                  ))}
-                </ul>
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  {blockDownloads.map(dlButton)}
+                </div>
               </div>
-            </div>
-          </details>
-
-          {/* What you can do (was Toolkit) */}
-          <details className={card}>
-            <summary className={summary}>
-              <span className="font-extrabold text-gov-ink">{v.whatYouCanDo}</span>
-              <span aria-hidden className={chev}>+</span>
-            </summary>
-            <div className="px-5 pb-5">
-              <p className="text-sm font-bold text-gov-ink">{v.toolkitStepsT}</p>
-              <ul className="mt-2 space-y-2 text-[15px] text-gov-ink">
-                {[v.toolkitS1, v.toolkitS2, v.toolkitS3].map((s, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
-                    {s}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-sm font-bold text-gov-ink">{v.toolkitHowT}</p>
-              <ol className="mt-2 space-y-2 text-[15px] text-gov-ink">
-                {[v.toolkitH1, v.toolkitH2, v.toolkitH3, v.toolkitH4].map((s, i) => (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gov text-xs font-bold text-white">
-                      {i + 1}
-                    </span>
-                    {s}
-                  </li>
-                ))}
-              </ol>
             </div>
           </details>
         </div>

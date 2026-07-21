@@ -251,6 +251,36 @@ export default function SchoolPage({
                   {v.doCompare}
                 </li>
               </ul>
+              {/* Parent toolkit (moved from Resources) — SMC questions + how-to,
+                  as an in-section dropdown. */}
+              <details className="group mt-3 rounded-xl border border-gov-line">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3.5 py-2.5 text-sm font-bold text-gov [&::-webkit-details-marker]:hidden">
+                  <span>{v.toolkitDropT}</span>
+                  <span aria-hidden className="text-lg leading-none text-gov transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <div className="border-t border-gov-line px-3.5 py-3">
+                  <p className="text-sm font-bold text-gov-ink">{v.toolkitStepsT}</p>
+                  <ul className="mt-2 space-y-2 text-[15px] text-gov-ink">
+                    {[v.toolkitS1, v.toolkitS2, v.toolkitS3].map((s, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-4 text-sm font-bold text-gov-ink">{v.toolkitHowT}</p>
+                  <ol className="mt-2 space-y-2 text-[15px] text-gov-ink">
+                    {[v.toolkitH1, v.toolkitH2, v.toolkitH3, v.toolkitH4].map((s, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gov text-xs font-bold text-white">
+                          {i + 1}
+                        </span>
+                        {s}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </details>
             </section>
           </div>
         </div>
