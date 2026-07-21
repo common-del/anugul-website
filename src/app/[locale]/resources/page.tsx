@@ -5,7 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import VideoEmbed from "@/components/VideoEmbed";
 import ExplainerVideos from "@/components/ExplainerVideos";
-import { getBlockSlugs } from "@/lib/officialsData";
+import { getBlockSlugs, blockReportUrl } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 
@@ -49,9 +49,13 @@ export default function ResourcesPage({
     ["/data/downloads/misconceptions_report.pdf", v.dlMisPdfT, "download", IC_SEARCH],
   ];
   const blockDownloads: DL[] = [
-    [`/${locale}/gov/`, v.govBlockCardT, "link", IC_BLOCKS],
     ["/data/downloads/block_aggregates.csv", v.dlBlocks, "download", IC_GRID],
   ];
+  // Each block links to its own page inside the standalone full report.
+  const blockReportLinks = getBlockSlugs().map((b) => ({
+    name: b.name,
+    href: blockReportUrl(b.slug),
+  }));
 
   // Each download renders as an icon control-button, matching the report pages'
   // download cards (slate icon disc + label + action arrow).
@@ -156,7 +160,37 @@ export default function ResourcesPage({
                   {v.dlGroupBlock}
                 </p>
                 <div className="grid gap-2.5 sm:grid-cols-2">
-                  {blockDownloads.map(dlButton)}
+                  {/* View Full Block Report — expands to a list of blocks; each
+                      opens that block's standalone HTML report in a new tab. */}
+                  <details className="group rounded-xl border border-gov-line bg-white shadow-sm transition open:shadow-lift">
+                    <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-gov-tint">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                          <path d={IC_BLOCKS} />
+                        </svg>
+                      </span>
+                      <span className="min-w-0 flex-1 text-sm font-bold leading-snug text-gov-ink">
+                        {v.dlViewBlockReport}
+                      </span>
+                      <span aria-hidden className="shrink-0 text-lg leading-none text-gov-mid transition-transform group-open:rotate-90">›</span>
+                    </summary>
+                    <ul className="border-t border-gov-line p-2">
+                      {blockReportLinks.map((bl) => (
+                        <li key={bl.name}>
+                          <a
+                            href={bl.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm font-semibold text-gov transition hover:bg-gov-tint"
+                          >
+                            {bl.name}
+                            <span aria-hidden className="text-gov-mid">↗</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                  {dlButton(blockDownloads[0])}
                 </div>
               </div>
             </div>

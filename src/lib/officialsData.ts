@@ -73,6 +73,24 @@ export function getDistrictOfficials() {
 export function getBlockSlugs(): { name: string; slug: string }[] {
   return getDistrictOfficials().blocks;
 }
+
+// The standalone full report (public/block-report/index.html) keys blocks by
+// their ORIGINAL names (e.g. "Angul", not "Anugola"). Map the site slug -> key.
+const HTML_BLOCK: Record<string, string> = {
+  anugola: "Angul",
+  athamalik: "Athamallik",
+  banarpal: "Banarpal",
+  chhendipada: "Chhendipada",
+  kaniha: "Kaniha",
+  "kishore-nagar": "Kishore Nagar",
+  palalahada: "Pallahara",
+  talachera: "Talcher",
+};
+
+// Deep link to a block's page inside that standalone report (open in a new tab).
+export function blockReportUrl(slug: string): string {
+  return `/block-report/?block=${encodeURIComponent(HTML_BLOCK[slug] ?? "Angul")}`;
+}
 export function getBlock(slug: string): BlockSlice {
   return readJson(path.join("blocks", `${slug}.json`));
 }
