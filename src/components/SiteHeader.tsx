@@ -49,16 +49,17 @@ export default function SiteHeader({
             className="order-1 flex min-w-0 flex-1 items-center gap-2.5 sm:mr-auto sm:flex-initial"
           >
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white ring-1 ring-gov-line">
-              {/* school-building emblem — solid slate, white door + windows */}
+              {/* school-building emblem — solid slate columned academy (pediment
+                  + columns + stepped base), replacing the house/flag schoolhouse */}
               <svg width="27" height="27" viewBox="0 0 24 24" fill="#2D3A47" aria-hidden>
-                <path d="M11.3 2.6h1.3V6h-1.3z" />
-                <path d="M12.6 2.6h3.1l-1.05 1.1 1.05 1.1h-3.1z" />
-                <path d="M12 6.2L2.9 12.2h18.2z" />
-                <path d="M4.8 12h14.4v8H4.8z" />
-                <path d="M3.2 20h17.6v1.5H3.2z" />
-                <path d="M10.4 20v-3.2a1.6 1.6 0 0 1 3.2 0V20z" fill="#fff" />
-                <rect x="6.7" y="13.7" width="2.6" height="2.6" rx=".35" fill="#fff" />
-                <rect x="14.7" y="13.7" width="2.6" height="2.6" rx=".35" fill="#fff" />
+                <path d="M12 2.8 2.4 8h19.2z" />
+                <rect x="3.4" y="8.4" width="17.2" height="1.8" />
+                <rect x="4.5" y="10.8" width="2.4" height="7" />
+                <rect x="8.7" y="10.8" width="2.4" height="7" />
+                <rect x="12.9" y="10.8" width="2.4" height="7" />
+                <rect x="17.1" y="10.8" width="2.4" height="7" />
+                <rect x="2.8" y="18" width="18.4" height="1.9" />
+                <rect x="1.8" y="20.2" width="20.4" height="1.7" />
               </svg>
             </span>
             <span className="min-w-0">
