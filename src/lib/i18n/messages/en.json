@@ -458,7 +458,7 @@
     "bandStripTitle": "Where this school stands",
     "bandStripLine": "This school is in the “{band}” band ({desc}).",
     "whatYouCanDo": "What you can do",
-    "doAsk": "At the next parent or SMC meeting, ask: “Our school scored {n}/10. What is the plan to improve this year?”",
+    "doAsk": "At the next PTM or SMC meeting, ask: “Our school scored {n}/10. What is the plan to improve this year?”",
     "doCompare": "Compare with the nearby schools below. If one scores higher, ask what they do differently.",
     "switchBlock": "Change block",
     "downloadBlockPdf": "Download block report (PDF)",
@@ -575,7 +575,7 @@
       {
         "id": "useparent",
         "q": "How can I use the report card as a parent?",
-        "a": "The School Report Card helps parents understand the strengths and weaknesses in children's learning.\n\nParents can watch the explainer video to learn how to read and understand the report card. After reviewing it, they can discuss the findings with other parents and share their concerns and suggestions during the next parent teacher meeting or School Management Committee meeting. They can also speak with the Principal about the challenges, suggest possible solutions, and work with the school to improve children's learning.",
+        "a": "The School Report Card helps parents understand the strengths and weaknesses in children's learning.\n\nParents can watch the explainer video to learn how to read and understand the report card. After reviewing it, they can discuss the findings with other parents and share their concerns and suggestions during the next Parent-Teacher Meeting (PTM) or School Management Committee meeting. They can also speak with the Principal about the challenges, suggest possible solutions, and work with the school to improve children's learning.",
         "tags": [
           "parents"
         ]
