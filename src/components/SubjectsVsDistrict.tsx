@@ -4,8 +4,9 @@ import { useState } from "react";
 
 // "Subjects vs District" table with a Grade 5 / Grade 8 toggle. Each row shows
 // Subject | Block (with a small inline bar) | District | Diff. The Diff is
-// coloured (green above district, red below) but all three numbers stay
-// visible, so colour is reinforcement only. Strings arrive pre-localised.
+// coloured green when the block is above district (+n), red when below, and
+// neutral slate when equal — but all three numbers stay visible, so colour is
+// reinforcement only. Strings arrive pre-localised.
 export type SubjectRow = {
   subject: string; // localised label
   block: number;
@@ -74,7 +75,10 @@ export default function SubjectsVsDistrict({
               <td className="py-2 text-right tabular-nums text-muted">{r.districtD}</td>
               <td
                 className="py-2 pl-3 text-right font-bold tabular-nums"
-                style={{ color: r.diff < 0 ? "#C24E36" : "#2D3A47" }}
+                style={{
+                  color:
+                    r.diff > 0 ? "#15803D" : r.diff < 0 ? "#C24E36" : "#2D3A47",
+                }}
               >
                 {r.diffD}
               </td>
