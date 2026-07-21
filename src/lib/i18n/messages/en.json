@@ -786,7 +786,7 @@
     "vsDistrictShortL": "Block vs district",
     "vsDistrictShortV": "{block} vs {district}",
     "loCardT": "Learning Outcome Report Card",
-    "loCardTitle": "{block} Block — Learning Outcome Report Card",
+    "loCardTitle": "Learning Outcome Report",
     "loCardDesc": "Download the detailed learning outcome report showing subject-wise, grade-wise, and school-wise performance data.",
     "loTag1": "Subject-wise breakdown",
     "loTag2": "School-level data",

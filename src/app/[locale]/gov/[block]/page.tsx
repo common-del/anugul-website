@@ -413,7 +413,7 @@ export default function GovBlockPage({
           <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
             <div className="min-w-0">
               <h3 className="text-lg font-extrabold text-gov-ink">
-                {fill(v.loCardTitle, { block: b.name })}
+                {v.loCardTitle}
               </h3>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[v.loTag1, v.loTag2, v.loTag3].map((tag) => (
