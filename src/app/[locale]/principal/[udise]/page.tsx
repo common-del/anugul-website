@@ -150,8 +150,8 @@ export default function PrincipalPage({
   const blockSlug = getBlockSlugs().find((b) => b.name === s.block)?.slug;
 
   const explore = [
-    { t: v.exp1T, d: v.exp1D, href: "/data/downloads/learning_outcomes_report.pdf", ext: true,
-      icon: "M4 20V10M10 20V4M16 20v-9M20 20H4" },
+    { t: v.exp1T, d: v.exp1D, href: "/data/downloads/misconceptions_report.pdf", ext: true,
+      icon: "M11 18a7 7 0 100-14 7 7 0 000 14zM21 21l-4.35-4.35" },
     { t: v.exp2T, d: v.exp2D, href: blockSlug ? `/${locale}/gov/${blockSlug}/` : `/${locale}/gov/`, ext: false,
       icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" },
     { t: v.exp3T, d: v.exp3D, href: `/${locale}/gov/district/`, ext: false,
