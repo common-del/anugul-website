@@ -48,30 +48,40 @@ export default function Home({ params }: { params: { locale: string } }) {
   const v = t.v2;
   const num = (n: number) => fmtNum(n, locale);
 
+  // Colourful DYK icons (owner 2026-07-21): each in a soft tinted disc with a
+  // distinct hue, matching the Principal "what to do" icon style.
   const dyk = [
     {
       t: v.dyk1T,
       d: v.dyk1D,
       icon: "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z",
       fill: true,
+      color: "#E0A100",
+      tint: "rgba(242,176,30,0.16)",
     },
     {
       t: v.dyk2T,
       d: v.dyk2D,
       icon: "M2 4h6a4 4 0 014 4v12a3 3 0 00-3-3H2zM22 4h-6a4 4 0 00-4 4v12a3 3 0 013-3h7z",
       fill: false,
+      color: "#2F6FB0",
+      tint: "rgba(47,111,176,0.12)",
     },
     {
       t: v.dyk3T,
       d: v.dyk3D,
       icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4",
       fill: false,
+      color: "#15803D",
+      tint: "rgba(21,128,61,0.12)",
     },
     {
       t: v.dyk4T,
       d: v.dyk4D,
       icon: "M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21v-1a6 6 0 0112 0v1M20 21v-1a6 6 0 00-3-5.2",
       fill: false,
+      color: "#E56A4F",
+      tint: "rgba(229,106,79,0.12)",
     },
   ];
 
@@ -167,14 +177,17 @@ export default function Home({ params }: { params: { locale: string } }) {
               <ul className="mt-4 space-y-4">
                 {dyk.map((r) => (
                   <li key={r.t} className="flex items-start gap-3">
-                    <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-gov/20 bg-white/50">
+                    <span
+                      className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-xl"
+                      style={{ backgroundColor: r.tint }}
+                    >
                       <svg
-                        width="18"
-                        height="18"
+                        width="22"
+                        height="22"
                         viewBox="0 0 24 24"
-                        fill={r.fill ? "#2D3A47" : "none"}
-                        stroke={r.fill ? "none" : "#2D3A47"}
-                        strokeWidth="1.8"
+                        fill={r.fill ? r.color : "none"}
+                        stroke={r.fill ? "none" : r.color}
+                        strokeWidth="1.9"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         aria-hidden

@@ -192,7 +192,7 @@ export default function PrincipalPage({
         </section>
 
         {/* ===== hero: report-card preview | what should you do ===== */}
-        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:space-y-0">
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.yourReportCard}</h2>
             {(hasHcard(s.udise) || hasCard(s.udise)) && (
@@ -225,10 +225,10 @@ export default function PrincipalPage({
             </div>
           </section>
 
-          <section className="flex flex-col gov-card p-5">
+          <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov">{v.headWhatT}</h2>
             <p className="mt-1 text-sm text-muted">{v.headWhatD}</p>
-            <div className="mt-5 flex flex-1 flex-col justify-between gap-5">
+            <div className="mt-4 space-y-4">
               {actions.map((a) => (
                 <div key={a.n} className="flex items-center gap-4">
                   <span
