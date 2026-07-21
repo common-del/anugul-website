@@ -7,7 +7,7 @@ import HelpMenu from "./HelpMenu";
 import MobileMenu from "./MobileMenu";
 
 // v2 header (docx mock): white masthead — logo, "Angul Schools" +
-// "Government of Odisha", role selector (Parent, Government and Orgs),
+// "An Anugola District Initiative", role selector (Parent, Government and Orgs),
 // EN/ଓଡ଼ିଆ — then a dark-green title bar: Home | Reports | Help ▾.
 // School Head / officer views stay on discreet URLs, not in the selector.
 export default function SiteHeader({

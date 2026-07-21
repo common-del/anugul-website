@@ -142,33 +142,21 @@ export default function Home({ params }: { params: { locale: string } }) {
               <h2 className="text-xl font-extrabold leading-tight text-gov">
                 {v.homeAboutT}
               </h2>
-              <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start">
-                {/* Illustration placeholder — swap for the approved artwork
-                    (children reading a report card) when the file is supplied. */}
-                <div
-                  aria-hidden
-                  className="grid h-28 w-full shrink-0 place-items-center rounded-xl bg-gov-tint sm:h-32 sm:w-40"
-                >
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#E56A4F" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 4h6a4 4 0 014 4v12a3 3 0 00-3-3H2zM22 4h-6a4 4 0 00-4 4v12a3 3 0 013-3h7z" />
-                  </svg>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[15px] leading-relaxed text-muted">
-                    <Emphasised text={v.homeAboutBody} />
-                  </p>
-                  <details className="group mt-2">
-                    <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-sm font-bold text-gov underline underline-offset-2 [&::-webkit-details-marker]:hidden">
-                      {v.homeAboutMore}
-                      <span aria-hidden className="transition-transform group-open:rotate-90">›</span>
-                    </summary>
-                    <div className="mt-2 space-y-2 text-[15px] leading-relaxed text-muted">
-                      {v.homeAboutMoreBody.map((para, i) => (
-                        <p key={i}>{para}</p>
-                      ))}
-                    </div>
-                  </details>
-                </div>
+              <div className="mt-4">
+                <p className="text-[15px] leading-relaxed text-muted">
+                  <Emphasised text={v.homeAboutBody} />
+                </p>
+                <details className="group mt-2">
+                  <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-sm font-bold text-gov underline underline-offset-2 [&::-webkit-details-marker]:hidden">
+                    {v.homeAboutMore}
+                    <span aria-hidden className="transition-transform group-open:rotate-90">›</span>
+                  </summary>
+                  <div className="mt-2 space-y-2 text-[15px] leading-relaxed text-muted">
+                    {v.homeAboutMoreBody.map((para, i) => (
+                      <p key={i}>{para}</p>
+                    ))}
+                  </div>
+                </details>
               </div>
             </div>
 

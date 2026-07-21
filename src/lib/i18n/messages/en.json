@@ -5,7 +5,7 @@
     "subtitle": "SAKSHAM - Student Assessment for Knowledge, Skills & Competency-based Achievement Mapping",
     "description": "See how schools in Anugola, Odisha are performing on the SAKSHAM assessment.",
     "tagline": "Because every parent deserves to know",
-    "copyright": "© 2026 Government of Odisha"
+    "copyright": "© 2026 Anugola District Administration"
   },
   "back": "Back",
   "home": {
@@ -500,7 +500,7 @@
     "methodP1": "The SAKSHAM assessment measures students' competencies across key subjects.",
     "methodG5": "For Grade 5, the subjects assessed are Odia, English, Mathematics, and Environmental Studies.",
     "methodG8": "For Grade 8, the subjects assessed are Odia, English, Mathematics, Science, and Social Studies.",
-    "methodP2": "The assessment is conducted by the Government of Odisha and is independent of the school's internal examinations and marking practices. This helps provide an objective view of student learning.",
+    "methodP2": "The assessment is an Anugola District initiative, conducted independently of the school's internal examinations and marking practices. This helps provide an objective view of student learning.",
     "methodP3": "School performance is calculated using the percentage of questions answered correctly by students. For ease of understanding, this percentage is converted to a score on a scale of 0 to 10. For example, a score of 62% is shown as 6.2 out of 10. A higher score indicates that a greater proportion of students answered more questions correctly.",
     "methodP4": "Each school's overall score also falls into one of four performance bands: Excelling (above 75%, or 8–10 out of 10), Developing (51–75%, or 6–7 out of 10), Needs support (26–50%, or 3–5 out of 10), and Critical (25% and below, or 0–2 out of 10). The bands give a quick, at-a-glance sense of where a school stands.",
     "dlLor": "Complete Learning-Outcome report (PDF)",
@@ -578,7 +578,7 @@
       {
         "id": "who",
         "q": "Who conducts the assessment?",
-        "a": "SAKSHAM is a learning assessment run under the School & Mass Education Department, Government of Odisha. Grade 5 and Grade 8 children are assessed externally, so the results are independent of the school’s own marking.",
+        "a": "SAKSHAM is a learning assessment led by Anugola District. Grade 5 and Grade 8 children are assessed externally, so the results are independent of the school’s own marking.",
         "tags": [
           "parents",
           "heads",
@@ -707,8 +707,8 @@
     "privacyP1": "This site shows school-level results from the SAKSHAM assessment. It never shows any individual child's result, name or personal detail.",
     "privacyP2": "The site does not ask for, or store, any personal information from visitors. No login is needed. The downloadable research data is anonymised — roll numbers are removed and rows are shuffled.",
     "privacyP3": "For any question about the data on this site, contact the District Education Office, Anugola (see Contact Us).",
-    "termsP1": "The scores and reports on this site are published by the School & Mass Education Department, Government of Odisha, from the SAKSHAM assessment of Grade 5 and Grade 8, to help parents, school heads and officials understand and improve learning.",
-    "termsP2": "The data may be used and shared freely for education, research and reporting, with attribution to SAKSHAM / Government of Odisha. It must not be used to rank, shame or penalise individual children or teachers.",
+    "termsP1": "The scores and reports on this site are published by the Anugola District administration, from the SAKSHAM assessment of Grade 5 and Grade 8, to help parents, school heads and officials understand and improve learning.",
+    "termsP2": "The data may be used and shared freely for education, research and reporting, with attribution to SAKSHAM / Anugola District. It must not be used to rank, shame or penalise individual children or teachers.",
     "termsP3": "Scores describe one assessment round and should be read together with the school's context.",
     "a11yP1": "This site is built to be usable by everyone: Odia first with an English toggle, large type, high contrast, big touch targets, and it works on low-cost phones and slow connections.",
     "a11yP2": "Report cards can be downloaded as PDFs, and every score is shown as text as well as stars so it does not depend on colour alone.",
@@ -806,7 +806,7 @@
     "dyk2D": "Focus on learning outcomes and foundational skills.",
     "dyk3T": "Comprehensive and reliable",
     "dyk3D": "Every government school in Anugola, with a common test and consistent marking.",
-    "dyk4T": "Support for every child",
+    "dyk4T": "Focus on learning",
     "dyk4D": "Empowering parents, schools and officials to support every child's learning.",
     "statSchoolsL": "Schools Assessed",
     "statSchoolsC": "83% of total schools",
