@@ -240,57 +240,33 @@ export default function SchoolPage({
               </div>
             </section>
             <section className="gov-card p-5">
+              {/* "How to use the School Report Card?" — a 4-step guide. Step 3
+                  lists the three PTM/SMC questions as plain bullets. (Owner
+                  2026-07-21: replaced the old "What you can do" bullets and the
+                  toolkit dropdown with this single stepped guide.) */}
               <h2 className="text-base font-bold text-gov-ink">{v.whatYouCanDo}</h2>
-              <ul className="mt-2 space-y-2 text-sm text-gov-ink">
-                <li className="flex items-start gap-2">
-                  <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
-                  {v.doAsk.replace("{n}", num(overall10))}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
-                  {v.doCompare}
-                </li>
-              </ul>
-              {/* Parent toolkit (moved from Resources): a single "how to use the
-                  report card" flow. Step 3 reveals the three PTM/SMC questions in
-                  a nested dropdown. */}
-              <details className="group mt-3 rounded-xl border border-gov-line">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3.5 py-2.5 text-sm font-bold text-gov [&::-webkit-details-marker]:hidden">
-                  <span>{v.toolkitDropT}</span>
-                  <span aria-hidden className="text-lg leading-none text-gov transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <div className="border-t border-gov-line px-3.5 py-3">
-                  <ol className="space-y-3 text-[15px] text-gov-ink">
-                    {[v.toolkitH1, v.toolkitH2, v.toolkitH3, v.toolkitH4].map((s, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gov text-xs font-bold text-white">
-                          {i + 1}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <span>{s}</span>
-                          {/* Step 3: the three questions to ask, nested dropdown. */}
-                          {i === 2 && (
-                            <details className="group/q mt-2 rounded-lg border border-gov-line">
-                              <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-2 text-sm font-bold text-gov [&::-webkit-details-marker]:hidden">
-                                <span>{v.toolkitStepsT}</span>
-                                <span aria-hidden className="text-lg leading-none text-gov transition-transform group-open/q:rotate-45">+</span>
-                              </summary>
-                              <ul className="space-y-2 border-t border-gov-line px-3 py-2.5 text-[15px] text-gov-ink">
-                                {[v.toolkitS1, v.toolkitS2, v.toolkitS3].map((q, j) => (
-                                  <li key={j} className="flex items-start gap-2">
-                                    <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
-                                    <span>{q}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </details>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </details>
+              <ol className="mt-3 space-y-3 text-[15px] text-gov-ink">
+                {[v.toolkitH1, v.toolkitH2, v.toolkitH3, v.toolkitH4].map((s, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gov text-xs font-bold text-white">
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <span>{s}</span>
+                      {i === 2 && (
+                        <ul className="mt-2 space-y-1.5">
+                          {[v.toolkitS1, v.toolkitS2, v.toolkitS3].map((q, j) => (
+                            <li key={j} className="flex items-start gap-2">
+                              <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+                              <span>{q}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </section>
           </div>
         </div>
