@@ -290,13 +290,25 @@ export default function DistrictReportPage({
           <h2 className="text-lg font-bold text-gov-ink">{v.downloadsT}</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/block-report/?block=District", excel: false, view: true },
-              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", excel: true, view: false },
-              { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false, view: false },
-              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false, view: false },
+              { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/block-report/?block=District", excel: false, view: true, hl: false },
+              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", excel: true, view: false, hl: false },
+              { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false, view: false, hl: true },
+              { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false, view: false, hl: false },
             ].map((c) => (
-              <div key={c.t} className="flex flex-col rounded-xl border border-gov-line bg-white p-4 shadow-sm">
-                <div className="text-sm font-extrabold leading-snug text-gov-ink">{c.t}</div>
+              <div
+                key={c.t}
+                className={`flex flex-col rounded-xl border p-4 shadow-sm ${
+                  c.hl ? "border-accent/50 bg-accent/10" : "border-gov-line bg-white"
+                }`}
+              >
+                <div className="flex items-start gap-1.5">
+                  {c.hl && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E56A4F" aria-hidden className="mt-0.5 shrink-0">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                  )}
+                  <span className="text-sm font-extrabold leading-snug text-gov-ink">{c.t}</span>
+                </div>
                 <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{c.d}</p>
                 {c.view ? (
                   <a
@@ -314,7 +326,9 @@ export default function DistrictReportPage({
                     className={`mt-3 flex min-h-[42px] items-center justify-center rounded-lg px-3 text-sm font-bold transition ${
                       c.excel
                         ? "bg-[#217346] text-white shadow-sm hover:shadow-lift"
-                        : "border-2 border-gov text-gov hover:bg-gov-tint"
+                        : c.hl
+                          ? "border-2 border-accent text-gov-ink hover:bg-accent/20"
+                          : "border-2 border-gov text-gov hover:bg-gov-tint"
                     }`}
                   >
                     {v.dlBtn} ↓
