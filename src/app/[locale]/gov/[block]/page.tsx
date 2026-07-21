@@ -395,18 +395,22 @@ export default function GovBlockPage({
           </section>
         </div>
 
-        {/* ===== learning outcome report card (download; replaces on-page view) ===== */}
-        <section className="mt-6 gov-card p-5">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">{v.loCardT}</h2>
+        {/* ===== learning outcome report card — coral-highlighted key download ===== */}
+        <section className="mt-6 rounded-2xl border border-accent/50 bg-accent/10 p-5 shadow-card">
+          <div className="flex items-center gap-1.5">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#E56A4F" aria-hidden className="shrink-0">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <h2 className="text-xs font-bold uppercase tracking-wide text-gov-ink">{v.loCardT}</h2>
+          </div>
           <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
             <div className="min-w-0">
               <h3 className="text-lg font-extrabold text-gov-ink">
                 {fill(v.loCardTitle, { block: b.name })}
               </h3>
-              <p className="mt-1 max-w-xl text-sm text-muted">{v.loCardDesc}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[v.loTag1, v.loTag2, v.loTag3].map((tag) => (
-                  <span key={tag} className="rounded-full bg-gov-tint px-3 py-1 text-xs font-semibold text-gov-dark">
+                  <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gov-dark shadow-sm">
                     {tag}
                   </span>
                 ))}
