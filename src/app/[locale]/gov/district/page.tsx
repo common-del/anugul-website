@@ -12,6 +12,7 @@ import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { getBlockSlugs } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
+import { getSchools } from "@/lib/schools";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -83,6 +84,13 @@ export default function DistrictReportPage({
   );
   const best = flat.length ? flat.reduce((a, z) => (z.val > a.val ? z : a)) : null;
   const worst = flat.length ? flat.reduce((a, z) => (z.val < a.val ? z : a)) : null;
+
+  // Number of schools that scored a full 10/10 across the district — uses the
+  // same Math.round(pct/10) rule the report cards display, so it agrees with
+  // what a school's own card shows.
+  const highPerforming = Object.values(
+    getSchools() as unknown as Record<string, { overall: { score: number } }>,
+  ).filter((sc) => Math.round(sc.overall.score / 10) === 10).length;
 
   const stats = [
     {
@@ -265,16 +273,17 @@ export default function DistrictReportPage({
                     </span>
                   </li>
                 )}
-                {/* placeholder insight rows — dummy copy for the mockup, to be
-                    replaced with real (i18n'd) computed insights later */}
+                {/* number of schools scoring a full 10/10 across the district */}
                 <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 8v8M8 12h8" />
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
+                    <path d="M23 6l-9.5 9.5-5-5L1 18" />
+                    <path d="M17 6h6v6" />
                   </svg>
                   <span>
-                    <span className="block font-bold italic text-gov-ink">Third insight</span>
-                    <span className="mt-0.5 block text-xs italic text-muted">To be added later</span>
+                    <span className="block text-xs font-semibold text-muted">{v.insightHighPerformingL}</span>
+                    <span className="font-bold text-gov-ink">
+                      {fill(v.insightHighPerformingV, { n: num(highPerforming), max: num(10) })}
+                    </span>
                   </span>
                 </li>
               </ul>
