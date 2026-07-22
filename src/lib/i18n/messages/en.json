@@ -722,12 +722,11 @@
     "yes": "Yes",
     "no": "No",
     "govAboutT": "About SAKSHAM",
-    "govAboutBody": "SAKSHAM is a census assessment of learning in government schools of Anugola district, Odisha. It covered 1,361 schools and 28,079 children in Grades 5 and 8, tested across six subjects over two days — so every school, block, and cluster can see where children stand and where support is needed.",
+    "govAboutBody": "Aligned with the vision of the National Education Policy (NEP) 2020, SAKSHAM (Student Assessment for Knowledge, Skills & Holistic Competency-based Achievement Mapping) is Anugola district's initiative to strengthen school education through competency-based assessment and evidence-based decision-making.",
     "govAboutMore": "Read more",
     "govAboutMoreBody": [
-      "All Grade 5 and Grade 8 students in government schools across Anugola took part in a competency based assessment aligned with the state curriculum and expected learning outcomes.",
-      "The answer scripts were evaluated, and the results were combined at the school, cluster, block, and district levels. The findings on this website provide a clear view of student learning across the government education landscape of the district and can support planning, monitoring, and decision making.",
-      "The assessment data was also reviewed to identify learning gaps, common misconceptions, and areas where students need more support. These insights were linked to grade level competencies and learning outcomes to help teachers plan focused classroom support and help education officials target resources and interventions more effectively."
+      "The initiative began with a district-wide, standardised assessment of 28,079 students in Classes 5 and 8 across all 1,361 government schools. By assessing every school, SAKSHAM establishes a district-wide baseline of student learning, measuring students' skills and conceptual understanding rather than rote memorisation.",
+      "The assessment findings are published as aggregated Report Cards at the school, block, and district levels. When parents, schools, and education officials have a shared understanding of students' learning outcomes, they can collectively identify gaps, take informed action, and work together to improve learning across the education system."
     ],
     "govExploreT": "What would you like to explore?",
     "govExploreSub": "Choose the type of report you want to view.",
