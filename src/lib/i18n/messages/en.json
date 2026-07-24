@@ -478,10 +478,10 @@
     "faqHeads": "Principals",
     "faqResearchers": "Government / Organizations",
     "faqGovernment": "Government",
-    "faqBandExcelling": "Excelling — above 75% (8–10 out of 10)",
-    "faqBandDeveloping": "Developing — 51–75% (6–7 out of 10)",
-    "faqBandNeeds": "Needs support — 26–50% (3–5 out of 10)",
-    "faqBandUrgent": "Critical — 25% and below (0–2 out of 10)",
+    "faqBandExcelling": "Excelling — green, above 75% (8–10 out of 10)",
+    "faqBandDeveloping": "Developing — gold/amber, 51–75% (6–7 out of 10)",
+    "faqBandNeeds": "Needs support — orange, 26–50% (3–5 out of 10)",
+    "faqBandUrgent": "Critical — red, 25% and below (0–2 out of 10)",
     "faqNoResults": "No questions match your search.",
     "faqStillTitle": "Still have questions?",
     "faqStillText": "Write to the District Education Office, Anugola.",
@@ -589,7 +589,7 @@
       {
         "id": "overall",
         "q": "How is the overall score out of 10 calculated?",
-        "a": "It is a single number from 0 to 10 for the whole school, not for any one child. It shows how all the students assessed performed together, across every subject tested.\n\nRead it like a percentage: 6.2 out of 10 means 62%, and a higher number means students got more answers right.\n\nBecause the assessment was conducted across two days, not every child sat for every subject. But the score adjusts for this to stop uneven attendance from distorting the school's result. The score is not simply every child and every subject added up and divided.",
+        "a": "It is a single number from 0 to 10 for the whole school, not for any one child. It shows how all the students assessed performed together, across every subject tested.\n\nRead it like a percentage: 6 out of 10 means 60%, and a higher number means students got more answers right.\n\nBecause the assessment was conducted across two days, not every child sat for every subject. But the score adjusts for this to stop uneven attendance from distorting the school's result. The score is not simply every child and every subject added up and divided.",
         "tags": [
           "parents"
         ]
