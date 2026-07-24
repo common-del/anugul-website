@@ -3,25 +3,33 @@ import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import BandMeter from "@/components/BandMeter";
-import Comparison from "@/components/Comparison";
-import SubjectBars from "@/components/SubjectBars";
-import SchoolProfile, { type Profile } from "@/components/SchoolProfile";
-import SchoolContext, {
-  type Peer,
-  type ClusterPos,
-  type BrightSpotRef,
-  type Inputs,
-} from "@/components/SchoolContext";
-import Guidance from "@/components/Guidance";
-import ShareBar from "@/components/ShareBar";
+import WhatsAppShare from "@/components/WhatsAppShare";
+import VideoEmbed from "@/components/VideoEmbed";
+import Stars from "@/components/Stars";
+import CardLightbox from "@/components/CardLightbox";
+import { hasCard, cardUrl, cardImg } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
-import type { BandKey } from "@/lib/bands";
-import schoolsData from "@/data/schools.json";
+import { bandTint10, type BandKey } from "@/lib/bands";
+import { getSchools } from "@/lib/schools";
+import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
 
+type Profile = {
+  classRange: string | null;
+  management: string | null;
+  area: string | null;
+  enrolment: number | null;
+  teachers: number | null;
+  classrooms: number | null;
+  boundaryWall: string | null;
+  balvatika: string | null;
+};
+type Inputs = {
+  basicsIn?: string[];
+  basicsOut?: string[];
+} | null;
 type School = {
   udise: string;
   name: string;
@@ -30,26 +38,23 @@ type School = {
   overall: { score: number; band: BandKey };
   byGrade: Record<string, Record<string, number>>;
   assessedStudents: number | null;
-  comparison: {
-    blockName: string;
-    blockAverage: number;
-    districtAverage: number;
-    nearby: {
-      compared: number;
-      ahead: number;
-      behind: number;
-      likeForLike: boolean;
-      nearestKm: number | null;
-    };
-  };
   profile: Profile | null;
-  peer: Peer;
-  clusterPos: ClusterPos;
-  brightSpot: BrightSpotRef;
   inputs: Inputs;
+  neighbours: { udise: string; km: number | null }[];
 };
 
-const schools = schoolsData as unknown as Record<string, School>;
+const schools = getSchools() as unknown as Record<string, School>;
+
+// Block-wise "how to read your report card" explainer videos (YouTube IDs,
+// from the approved mock-up doc).
+const EXPLAINER: Record<string, string> = {
+  Anugola: "gn9tbf-tLkA",
+  Athamalik: "r04dfh8Gq94",
+  Talachera: "lq_Z0Ikqlag",
+};
+const EXPLAINER_DEFAULT = "OcBdapIlGHM";
+
+const score10 = (pct: number) => Math.round(pct / 10);
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -75,6 +80,8 @@ export function generateMetadata({
   };
 }
 
+// v2 parent report card (docx mock): /10 overall, subject scores, download +
+// WhatsApp, per-block explainer video, About Your School, named nearby list.
 export default function SchoolPage({
   params,
 }: {
@@ -85,104 +92,321 @@ export default function SchoolPage({
   if (!s) notFound();
   const locale = params.locale as Locale;
   const t = getDict(locale);
-  const hasSubjects = Object.keys(s.byGrade).length > 0;
+  const v = t.v2;
+  const num = (n: number) => fmtNum(n, locale);
+  const overall10 = score10(s.overall.score);
+
+  const neighbours = (s.neighbours ?? [])
+    // the source CSV occasionally lists a school as its own neighbour
+    .filter((n) => n.udise !== s.udise)
+    .map((n) => {
+      const ns = schools[n.udise];
+      return ns
+        ? {
+            udise: ns.udise,
+            name: ns.name,
+            cluster: ns.cluster,
+            km: n.km,
+            s10: score10(ns.overall.score),
+            band: ns.overall.band,
+          }
+        : null;
+    })
+    .filter(Boolean) as {
+    udise: string; name: string; cluster: string; km: number | null;
+    s10: number; band: BandKey;
+  }[];
+  neighbours.sort((a, z) => z.s10 - a.s10);
+
+  // About tiles, split into two rows: type + classes (top), then students +
+  // teachers + location (bottom), so Location sits with the counts and never
+  // spills to a lonely third row.
+  const p = s.profile;
+  const topInfo: { label: string; value: string }[] = [];
+  const mgmt = managementLabel(p?.management, v);
+  if (mgmt) topInfo.push({ label: t.profile.management, value: mgmt });
+  if (p?.classRange) topInfo.push({ label: t.profile.classRange, value: p.classRange });
+  const counts: { label: string; value: string }[] = [];
+  if (p?.enrolment != null) counts.push({ label: t.profile.students, value: num(p.enrolment) });
+  if (p?.teachers != null) counts.push({ label: t.profile.teachers, value: num(p.teachers) });
+  const area = areaLabel(p?.area, v);
+  if (area) counts.push({ label: t.profile.location, value: area });
+  const hasAbout = topInfo.length > 0 || counts.length > 0;
+
+  // Infrastructure lists for the About accordion; SMC pulled out as its own row.
+  const SMC_KEY = "SMC formed";
+  const bLabel = (k: string) => (t.peerCard.basics as Record<string, string>)[k] ?? k;
+  const infraIn = (s.inputs?.basicsIn ?? []).filter((k) => k !== SMC_KEY).map(bLabel);
+  const infraOut = (s.inputs?.basicsOut ?? []).filter((k) => k !== SMC_KEY).map(bLabel);
+  // Extra UDISE facilities appended to the same available / not-available lists.
+  const bal = boolYesNo(p?.balvatika);
+  if (bal === true) infraIn.push(v.balvatika);
+  else if (bal === false) infraOut.push(v.balvatika);
+  const wall = hasBoundaryWall(p?.boundaryWall);
+  if (wall === true) infraIn.push(v.boundaryWall);
+  else if (wall === false) infraOut.push(v.boundaryWall);
+  const smcFormed = s.inputs?.basicsIn?.includes(SMC_KEY)
+    ? true
+    : s.inputs?.basicsOut?.includes(SMC_KEY)
+      ? false
+      : null;
+  const hasDetails =
+    infraIn.length > 0 || infraOut.length > 0 || smcFormed !== null || p?.classrooms != null;
+  // Nearby-card tint = the school's /10 band colour, muted/translucent (8-10
+  // green, 6-7 orange, 3-5 gold, 0-2 red). Kept faint so AA holds; the score +
+  // stars remain the primary signal.
+  const tintFor = (s10: number) => bandTint10(s10);
 
   return (
     <PageShell>
-      <SiteHeader locale={locale} t={t} showBack />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
-        <section>
-          <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
-            {s.name}
-          </h1>
-          <p className="mt-1 text-sm text-muted">
-            {s.block} · {s.cluster}
-          </p>
-          <p className="mt-1 text-xs text-muted">
-            UDISE {s.udise}
-            {s.assessedStudents
-              ? ` · ${fmtNum(s.assessedStudents, locale)} ${t.report.studentsAssessed}`
-              : ""}
-          </p>
+      <SiteHeader locale={locale} t={t} showBack active="reports" />
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        {/* header row */}
+        <section className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
+          <div className="min-w-0">
+            <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
+              {s.name}
+            </h1>
+            <p className="mt-1.5 text-sm font-bold text-gov-ink">
+              UDISE: {s.udise} | {s.block} | {s.cluster}
+              {s.assessedStudents
+                ? ` | ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
+                : ""}
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center gap-3 rounded-2xl bg-gov-tint py-2 pl-4 pr-2">
+            <span className="max-w-[8rem] text-[12.5px] font-bold leading-tight tracking-wide text-gov-ink">
+              {v.overallPerformanceScore}
+            </span>
+            <span className="flex items-baseline gap-0.5 rounded-xl bg-gov px-4 py-2.5 tabular-nums text-white">
+              <span className="text-[26px] font-extrabold leading-none">{num(overall10)}</span>
+              <span className="text-xl font-bold leading-none text-white/70">/</span>
+              <span className="text-[26px] font-extrabold leading-none">{num(10)}</span>
+            </span>
+          </div>
         </section>
 
-        <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
-          <div className="space-y-6">
-            <BandMeter
-              score={s.overall.score}
-              band={s.overall.band}
-              label={t.band[s.overall.band]}
-              explain={t.report.overallExplain}
-              locale={locale}
-            />
-
-            <Link
-              href={`/${locale}/compare/?a=${s.udise}`}
-              className="no-print inline-flex items-center gap-1 text-sm font-semibold text-brand underline underline-offset-2"
-            >
-              {t.compare.cta} <span aria-hidden>→</span>
-            </Link>
-
-            <section>
-              <h2 className="mb-3 text-lg font-bold text-brand-ink">
-                {t.report.compareTitle}
-              </h2>
-              <Comparison
-                score={s.overall.score}
-                blockAverage={s.comparison.blockAverage}
-                nearby={s.comparison.nearby}
-                c={t.report}
-                locale={locale}
-              />
-            </section>
-          </div>
-
-          <div className="space-y-6 lg:mt-0">
-            <section>
-              <h2 className="mb-3 text-lg font-bold text-brand-ink">
-                {t.report.subjectsTitle}
-              </h2>
-              {hasSubjects ? (
-                <SubjectBars
-                  byGrade={s.byGrade}
-                  gradeLabels={t.grades}
-                  subjectLabels={t.subjects}
-                  locale={locale}
-                />
-              ) : (
-                <p className="rounded-xl border border-brand-line bg-white p-4 text-sm text-muted">
-                  {t.report.fewStudents}
-                </p>
-              )}
-            </section>
-
-            {s.profile && (
-              <SchoolProfile profile={s.profile} c={t.profile} locale={locale} />
+        {/* HERO: report card (left) | video + what you can do (right).
+            items-start: each column sizes to its own content — the right
+            column must never stretch to match the left. */}
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+          {/* left — the report card, first and largest */}
+          <section className="flex flex-col gov-card p-5">
+            <h2 className="text-lg font-bold text-gov-ink">{v.yourReportCard}</h2>
+            {hasCard(s.udise) ? (
+              <>
+                <div className="mt-3">
+                  <CardLightbox
+                    src={cardImg(s.udise)}
+                    alt={`${s.name} — ${v.yourReportCard}`}
+                    enlargeLabel={v.enlargeCard}
+                    closeLabel={v.closeCard}
+                    pageLabel={v.pageOneOf}
+                    digits={locale === "od" ? "୦୧୨୩୪୫୬୭୮୯" : undefined}
+                  />
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <a
+                    href={cardUrl(s.udise)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gov px-4 text-sm font-bold text-white shadow-sm transition hover:shadow-lift"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" />
+                    </svg>
+                    {v.downloadReportCard}
+                  </a>
+                  <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
+                </div>
+              </>
+            ) : (
+              <div className="mt-4">
+                <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
+              </div>
             )}
+          </section>
 
-            <SchoolContext
-              peer={s.peer}
-              clusterPos={s.clusterPos}
-              cluster={s.cluster}
-              block={s.block}
-              brightSpot={s.brightSpot}
-              inputs={s.inputs}
-              c={t.peerCard}
-              subjectLabels={t.subjects}
-              locale={locale}
-            />
+          {/* right — video (top) + what you can do (bottom) */}
+          <div className="flex flex-col gap-5">
+            <section className="gov-card p-5">
+              <h2 className="text-base font-bold text-gov-ink">{v.watchTitle}</h2>
+              <p className="mt-1 text-sm text-muted">{v.watchDesc}</p>
+              <div className="mt-3">
+                <VideoEmbed
+                  videoId={EXPLAINER[s.block] ?? EXPLAINER_DEFAULT}
+                  title={v.watchTitle}
+                />
+              </div>
+            </section>
+            <section className="gov-card p-5">
+              {/* "How to use the School Report Card?" — a 4-step guide. Step 3
+                  lists the three PTM/SMC questions as plain bullets. (Owner
+                  2026-07-21: replaced the old "What you can do" bullets and the
+                  toolkit dropdown with this single stepped guide.) */}
+              <h2 className="text-base font-bold text-gov-ink">{v.whatYouCanDo}</h2>
+              <ol className="mt-3 space-y-3 text-[15px] text-gov-ink">
+                {[v.toolkitH1, v.toolkitH2, v.toolkitH3, v.toolkitH4].map((s, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gov text-xs font-bold text-white">
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <span>{s}</span>
+                      {i === 2 && (
+                        <ul className="mt-2 space-y-1.5">
+                          {[v.toolkitS1, v.toolkitS2, v.toolkitS3].map((q, j) => (
+                            <li key={j} className="flex items-start gap-2">
+                              <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gov" />
+                              <span>{q}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
           </div>
         </div>
 
-        <div className="mt-6 space-y-6">
-          <Guidance c={t.guidance} />
-          <ShareBar schoolName={s.name} labels={t.share} />
-          <Link
-            href={`/${locale}/find/`}
-            className="no-print inline-block text-sm font-semibold text-brand underline underline-offset-2"
-          >
-            {t.school.backToFind}
-          </Link>
+        {/* About your school (left) | Nearby schools (right) */}
+        <div className="mt-5 space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+
+            {/* about your school */}
+            {(hasAbout || hasDetails) && (
+              <section className="gov-card p-5">
+                <h2 className="text-lg font-bold text-gov-ink">{v.aboutSchool}</h2>
+                {topInfo.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    {topInfo.map((a) => (
+                      <div
+                        key={a.label}
+                        className="rounded-lg border-l-4 border-gov-mid bg-gov-tint px-3.5 py-2.5"
+                      >
+                        <div className="text-lg font-extrabold leading-tight text-gov-ink">
+                          {a.value}
+                        </div>
+                        <div className="mt-0.5 text-xs text-muted">{a.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {counts.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {counts.map((a) => (
+                      <div
+                        key={a.label}
+                        className="rounded-lg border-l-4 border-gov-mid bg-gov-tint px-3.5 py-2.5"
+                      >
+                        <div className="text-lg font-extrabold leading-tight text-gov-ink">
+                          {a.value}
+                        </div>
+                        <div className="mt-0.5 text-xs text-muted">{a.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {hasDetails && (
+                  <details className="group mt-4 rounded-xl border border-gov-line">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-bold text-gov [&::-webkit-details-marker]:hidden">
+                      <span className="group-open:hidden">{v.viewMoreDetails}</span>
+                      <span className="hidden group-open:inline">{v.viewLessDetails}</span>
+                      <span aria-hidden className="text-lg leading-none text-gov transition-transform group-open:rotate-45">+</span>
+                    </summary>
+                    <div className="space-y-3 border-t border-gov-line px-4 py-3 text-sm">
+                      {infraIn.length > 0 && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.infraAvailable}</p>
+                          <p className="mt-0.5 text-muted">{infraIn.join(", ")}</p>
+                        </div>
+                      )}
+                      {infraOut.length > 0 && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.infraNotAvailable}</p>
+                          <p className="mt-0.5 text-[#C24E36]">{infraOut.join(", ")}</p>
+                        </div>
+                      )}
+                      {p?.classrooms != null && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.classroomsAvailable}</p>
+                          <p className="mt-0.5 text-muted">{num(p.classrooms)}</p>
+                        </div>
+                      )}
+                      {smcFormed !== null && (
+                        <div>
+                          <p className="font-semibold text-gov-ink">{v.smcFormation}</p>
+                          <p className="mt-0.5 text-muted">{smcFormed ? v.yes : v.no}</p>
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                )}
+                <p className="mt-3 text-xs text-muted">{v.aboutSource}</p>
+              </section>
+            )}
+
+            {/* nearby schools, named with /10 */}
+            {neighbours.length > 0 && (
+              <section className="overflow-hidden gov-card">
+                <div className="bg-gov px-5 py-3.5">
+                  <h2 className="text-base font-bold text-white">{v.nearbyTitle}</h2>
+                  <p className="mt-0.5 text-xs text-white/80">{v.nearbySub}</p>
+                </div>
+                <ul className="max-h-[28rem] divide-y divide-white/70 overflow-y-auto">
+                  {neighbours.map((n) => (
+                    <li key={n.udise}>
+                      <Link
+                        href={`/${locale}/school/${n.udise}/`}
+                        aria-label={v.viewReportAria
+                          .replace("{name}", n.name)
+                          .replace("{n}", num(n.s10))
+                          .replace("{max}", num(10))}
+                        className="flex min-h-[64px] items-center justify-between gap-3 px-4 py-3 transition hover:brightness-[0.97]"
+                        style={{ backgroundColor: tintFor(n.s10) }}
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-bold text-gov-ink">
+                            {n.name}
+                          </span>
+                          {n.km != null && (
+                            <span className="mt-0.5 block text-xs font-bold text-gov-ink">
+                              {v.kmAway.replace("{km}", num(n.km))}
+                            </span>
+                          )}
+                          <span className="mt-1 block">
+                            <Stars score={n.s10} size={16} label={`${num(n.s10)}/${num(10)}`} />
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2">
+                          <span className="tabular-nums">
+                            <span className="text-xl font-extrabold text-gov-ink">
+                              {num(n.s10)}
+                            </span>
+                            <span className="text-xs text-gov-ink/70">/{num(10)}</span>
+                          </span>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden
+                            className="text-gov-mid"
+                          >
+                            <path d="M9 6l6 6-6 6" />
+                          </svg>
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
         </div>
       </main>
       <SiteFooter locale={locale} t={t} />

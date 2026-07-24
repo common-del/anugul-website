@@ -100,7 +100,7 @@ export default function ClusterPage({
                   className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
                   style={{
                     backgroundColor: BAND_COLOR[s.band],
-                    color: s.band === "needs" ? "#12233d" : "#fff",
+                    color: s.band === "developing" ? "#12233d" : "#fff",
                   }}
                 >
                   {t.band[s.band]}

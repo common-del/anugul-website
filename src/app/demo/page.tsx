@@ -69,7 +69,7 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-neutral-800 px-6 py-8">
       <p className="mx-auto mb-6 max-w-4xl text-center text-sm text-neutral-300">
-        ଅନୁଗୁଳ ବିଦ୍ୟାଳୟ · Angul Schools — one site, phone and computer, in sync
+        ଅନୁଗୁଳ ବିଦ୍ୟାଳୟ · Anugola Schools — one site, phone and computer, in sync
       </p>
 
       <div className="flex flex-col items-center justify-center gap-10 xl:flex-row xl:items-start">

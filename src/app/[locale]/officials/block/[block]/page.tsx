@@ -32,9 +32,9 @@ function fill(s: string, vars: Record<string, string | number>) {
 const BAND_ORDER: BandKey[] = ["excelling", "developing", "needs", "urgent"];
 
 function heatColor(v: number) {
-  if (v >= 50) return { backgroundColor: "#b3261e", color: "#fff" };
-  if (v >= 30) return { backgroundColor: "#e07b1a", color: "#12233d" };
-  if (v >= 15) return { backgroundColor: "#f6d7b0", color: "#12233d" };
+  if (v >= 50) return { backgroundColor: "#C24E36", color: "#fff" };
+  if (v >= 30) return { backgroundColor: "#E5A24F", color: "#12233d" };
+  if (v >= 15) return { backgroundColor: "#FCEBE5", color: "#12233d" };
   return { backgroundColor: "#eef2f8", color: "#12233d" };
 }
 
@@ -239,7 +239,7 @@ export default function BlockPage({
                             {o.gap}{" "}
                             <span
                               className="font-semibold"
-                              style={{ color: r.gap < 0 ? "#b3261e" : "#1e6b3a" }}
+                              style={{ color: r.gap < 0 ? "#C24E36" : "#2D3A47" }}
                             >
                               {r.gap > 0 ? "+" : ""}
                               {fmtNum(r.gap, locale)}
@@ -258,7 +258,7 @@ export default function BlockPage({
                   <span
                     key={subj}
                     className="rounded-full bg-brand-tint px-3 py-1 text-sm tabular-nums"
-                    style={{ color: v < -5 ? "#b3261e" : "#12233d" }}
+                    style={{ color: v < -5 ? "#C24E36" : "#12233d" }}
                   >
                     {t.subjects[subj as keyof typeof t.subjects] ?? subj}{" "}
                     {v > 0 ? "+" : ""}
@@ -325,7 +325,7 @@ export default function BlockPage({
                       className="rounded-full px-3 py-1 text-sm font-bold"
                       style={{
                         backgroundColor: BAND_COLOR[k],
-                        color: k === "needs" ? "#12233d" : "#fff",
+                        color: k === "developing" ? "#12233d" : "#fff",
                       }}
                     >
                       {t.band[k]} · {num(b.bands.overall.counts[k])}
@@ -518,7 +518,7 @@ export default function BlockPage({
                           {t.subjects[h.subject as keyof typeof t.subjects] ?? h.subject} · {h.lo}
                         </span>
                       </span>
-                      <span className="shrink-0 font-semibold tabular-nums text-[#b3261e]">
+                      <span className="shrink-0 font-semibold tabular-nums text-[#C24E36]">
                         {pct(h.pct)}
                       </span>
                     </li>

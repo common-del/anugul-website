@@ -12,3 +12,4 @@ next-env.d.ts
 
 # NOTE: src/data/ is intentionally committed (aggregated, non-sensitive).
 # Raw/individual source data lives outside the repo and is never committed.
+

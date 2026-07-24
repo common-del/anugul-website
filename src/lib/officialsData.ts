@@ -42,6 +42,10 @@ export type BlockSlice = {
     weak_los?: { lo: string; subject: string; gl: string; pct: number; desc: string }[];
   }>;
   cognitive: Record<string, { by_cog: Record<string, number>; by_subject?: Record<string, Record<string, number>> } | null>;
+  skills: {
+    top: Record<string, { grade: string; skill: string; pct: number }[]>;
+    bottom: Record<string, { grade: string; skill: string; pct: number }[]>;
+  };
   miscon: MisconCard[];
   inputs: InputsRollup;
 };
@@ -69,6 +73,24 @@ export function getDistrictOfficials() {
 export function getBlockSlugs(): { name: string; slug: string }[] {
   return getDistrictOfficials().blocks;
 }
+
+// The standalone full report (public/block-report/index.html) keys blocks by
+// their ORIGINAL names (e.g. "Angul", not "Anugola"). Map the site slug -> key.
+const HTML_BLOCK: Record<string, string> = {
+  anugola: "Angul",
+  athamalik: "Athamallik",
+  banarpal: "Banarpal",
+  chhendipada: "Chhendipada",
+  kaniha: "Kaniha",
+  "kishore-nagar": "Kishore Nagar",
+  palalahada: "Pallahara",
+  talachera: "Talcher",
+};
+
+// Deep link to a block's page inside that standalone report (open in a new tab).
+export function blockReportUrl(slug: string): string {
+  return `/block-report/?block=${encodeURIComponent(HTML_BLOCK[slug] ?? "Angul")}`;
+}
 export function getBlock(slug: string): BlockSlice {
   return readJson(path.join("blocks", `${slug}.json`));
 }
@@ -81,6 +103,25 @@ export function getCluster(slug: string): ClusterSlice {
 export function getMisconceptions(): MisconCard[] {
   return readJson("misconceptions.json");
 }
+// Full-fidelity misconception library (from the SAKSHAM Academic LO report):
+// complete stem/xstem, all options (with Odia originals), key/trap, stimulus
+// image path, misconception + teaching note; per-unit response percentages.
+export type MislibCard = {
+  lo: string; stem: string; xstem?: string;
+  opts: Record<string, string>; oopts?: Record<string, string>;
+  key: string; trap: string; mis: string; note: string; img?: string;
+};
+export type MisuRow = {
+  g: string; sub: string; qno: number;
+  trap_pct: number; key_pct: number; n: number; conf: string;
+};
+export function getMislib(): {
+  cards: Record<string, MislibCard>;
+  units: Record<string, MisuRow[]>;
+} {
+  return readJson("mislib.json");
+}
+
 export function getItems(): {
   grade: string; subject: string; q_no: number; lo: string; desc: string;
   gl: string; cog: string | null; correct_pct: number; top_wrong_pct: number;

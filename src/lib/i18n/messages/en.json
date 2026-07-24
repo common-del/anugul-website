@@ -1,11 +1,11 @@
 {
   "site": {
-    "name": "Angul Schools",
-    "strapline": "Angul, Odisha | Know Your School's Performance",
+    "name": "SAKSHAM",
+    "strapline": "Anugola, Odisha | Know Your School's Performance",
     "subtitle": "SAKSHAM - Student Assessment for Knowledge, Skills & Competency-based Achievement Mapping",
-    "description": "See how schools in Angul, Odisha are performing on the SAKSHAM assessment.",
+    "description": "See how schools in Anugola, Odisha are performing on the SAKSHAM assessment.",
     "tagline": "Because every parent deserves to know",
-    "copyright": "© 2026 Government of Odisha"
+    "copyright": "© 2026 Anugola District Administration"
   },
   "back": "Back",
   "home": {
@@ -22,12 +22,12 @@
     }
   },
   "roles": {
-    "pageTitle": "For school heads, leaders & partners",
+    "pageTitle": "For principals, leaders & partners",
     "pageIntro": "Choose your role to see what you can do with the data.",
     "forYou": "What you can do",
     "backToParent": "I'm a parent — take me home",
     "schoolHead": {
-      "label": "School Head",
+      "label": "Principal",
       "text": "Open your school's full report card and compare it with other schools in your block.",
       "cta": "Open my school"
     },
@@ -61,14 +61,14 @@
   },
   "footerLinks": {
     "aboutSaksham": "About SAKSHAM",
-    "aboutAngul": "About Angul"
+    "aboutAngul": "About Anugola"
   },
   "aboutSaksham": {
     "title": "About SAKSHAM",
     "body": "Details about the SAKSHAM assessment will appear here soon."
   },
   "band": {
-    "urgent": "Needs urgent support",
+    "urgent": "Critical",
     "needs": "Needs support",
     "developing": "Developing",
     "excelling": "Excelling"
@@ -116,7 +116,10 @@
     "furnitureNone": "None",
     "yes": "Yes",
     "no": "No",
-    "needRepair": "{n} classroom(s) need major repair"
+    "needRepair": "{n} classroom(s) need major repair",
+    "management": "School management type",
+    "classRange": "Classes",
+    "location": "Location"
   },
   "peerCard": {
     "title": "Compared with similar schools",
@@ -252,10 +255,10 @@
     "hubDownloads": "Open data downloads",
     "printPage": "Print this page",
     "methodsParas": [
-      "SAKSHAM is a census assessment of government schools in Angul district: 1,361 schools and 28,079 children in Grades 5 and 8, tested over two days.",
+      "SAKSHAM is a census assessment of government schools in Anugola district: 1,361 schools and 28,079 children in Grades 5 and 8, tested over two days.",
       "Grade 5 answered 60 questions (Odia, English, Maths, EVS); Grade 8 answered 100 (Odia, English, Maths, Science, Social Studies). All questions were multiple-choice with one mark each.",
       "A child's subject score is the percentage of that subject's questions answered correctly. A child's overall score is the average of their subject scores. A school's score is the average of its children's overall scores. The pass line used throughout is 50%.",
-      "Bands: Needs urgent support (0–25), Needs support (26–50), Developing (51–75), Excelling (76–100). Bands are derived from the displayed rounded score.",
+      "Bands: Critical (0–25), Needs support (26–50), Developing (51–75), Excelling (76–100). Bands are derived from the displayed rounded score.",
       "The tests are internally reliable (Cronbach's alpha 0.90 for Grade 5, 0.91 for Grade 8). A small number of questions were excluded from item-level views for test-construction issues (for example, unclear rendering or ambiguous options).",
       "About 62% of questions tested the previous grade's content, allowing at-grade vs earlier-content comparisons. Cognitive-skill tags were assigned by hand and are reported for Grade 5 only.",
       "School facility data comes from UDISE records. Facilities and staffing explain very little of the difference in scores between schools (about 6%) — facility data here is for entitlements and targeting, not to explain results.",
@@ -265,7 +268,7 @@
     "dlClusters": "Cluster league, all blocks (CSV)",
     "dlItems": "Item bank with difficulty (CSV)",
     "inputsTitle": "What schools have",
-    "inputsIntro": "Inputs shown next to the result. In Angul these explain little of the score difference — read them for entitlement and targeting, not to explain a score.",
+    "inputsIntro": "Inputs shown next to the result. In Anugola these explain little of the score difference — read them for entitlement and targeting, not to explain a score.",
     "inputsCoverage": "Input data covers {withData} of {total} schools.",
     "inputsNoData": "No UDISE input data here yet. Request the extract for {block}.",
     "inputsBasics": "Basics in place: {n} of 8 on average",
@@ -305,7 +308,7 @@
     "dirEmpty": "No schools match your search.",
     "dirSortHint": "Tap a heading to sort.",
     "hubSchools": "School directory",
-    "schoolHeadKicker": "School head view",
+    "schoolHeadKicker": "Principal view",
     "neighboursTitle": "Nearest schools, ranked",
     "neighboursIntro": "The nearest schools, ordered by overall score. Where one leads this school, that is a place to look for practice to borrow.",
     "neighboursThis": "This school",
@@ -314,7 +317,7 @@
     "neighboursKm": "{km} km"
   },
   "analytics": {
-    "title": "How is Angul doing?",
+    "title": "How is Anugola doing?",
     "intro": "District and block-wise results from the SAKSHAM assessment.",
     "districtExplain": "Average score across all assessed government schools.",
     "schoolsAssessed": "schools assessed",
@@ -323,5 +326,576 @@
     "subjectTitle": "District performance by subject",
     "blockTitle": "Block-wise performance",
     "below50Title": "Children below 50% by block"
+  },
+  "v2": {
+    "govOdisha": "An Anugola District Initiative",
+    "iAmA": "I am a:",
+    "roleParent": "Parent",
+    "roleOrgs": "Govt/Orgs",
+    "navHome": "Home",
+    "navReports": "Reports",
+    "navHelp": "Help",
+    "menu": "Menu",
+    "helpFaqs": "FAQs",
+    "helpContact": "Contact Us",
+    "helpResources": "Resources",
+    "heroTitle": "By Improving Our Schools We Improve Our Child's Learning",
+    "heroDesc": "Find, understand and use school report cards to support your child's learning.",
+    "findSchool": "Find Your School",
+    "exploreReports": "Explore Reports",
+    "awarenessFilm": "Awareness Film",
+    "filmMinutes": "1 min",
+    "whoAreYou": "Who are you?",
+    "deptName": "School & Mass Education Department",
+    "badge1": "100% Government Data",
+    "badge2": "Transparent & Reliable",
+    "badge3": "For Better Learning Outcomes",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "accessibility": "Accessibility",
+    "comingSoon": "This page is being prepared. Content will be added soon.",
+    "reportsTitle": "Reports",
+    "reportsIntro": "Block and district report cards from the SAKSHAM assessment.",
+    "govTitle": "Select Block / District",
+    "govIntro": "Click a block to view its detailed report card and analytics.",
+    "faqTitle": "Frequently Asked Questions",
+    "resourcesTitle": "Resources",
+    "contactTitle": "Contact Us",
+    "contactOffice": "District Education Office, Anugola",
+    "findTitle": "Find Your School",
+    "findIntro": "Open your school's report card and see what to do to support your child's learning.",
+    "findTile1": "View your child's school report card",
+    "findTile2": "Talk to other parents about the School report card",
+    "findTile3": "Enquire with your school about the report card",
+    "findTile4": "Compare with nearby schools",
+    "findTipT": "Tip for Parents",
+    "findTipB": "Search for your child's school or select your block to view its report card and next steps.",
+    "findBannerT": "Your involvement makes a difference",
+    "findBannerB": "When parents and schools work together, children learn better and grow with confidence.",
+    "filtersLabel": "Filters (optional)",
+    "blockLabel": "Block",
+    "clusterLabel": "Cluster",
+    "allOption": "All",
+    "schoolsFound": "Schools found ({n})",
+    "openReport": "Open Report",
+    "overallScore": "Overall Score",
+    "overallPerformanceScore": "OVERALL SCORE (out of 10)",
+    "youAre": "You are:",
+    "downloadPdf": "Download Report Card (PDF)",
+    "shareWhatsApp": "Share on WhatsApp",
+    "watchTitle": "Watch: How to read your School Report Card",
+    "watchDesc": "A short video to help you understand the report.",
+    "watchCta": "Watch Video",
+    "aboutSchool": "About Your School",
+    "nearbyTitle": "Want to see how the nearby schools are performing?",
+    "nearbySub": "Tap a school to open its report card.",
+    "kmAway": "{km} km",
+    "subjectsTitle": "Subject scores (out of 10)",
+    "followUs": "Follow us:",
+    "districtAllBlocks": "District / All Blocks",
+    "clickBlockHint": "Click a block on the map, or choose from the list.",
+    "districtOverview": "Anugola district at a glance",
+    "districtAverage": "District average",
+    "topBlock": "Top block",
+    "blockReport": "Block Report Card",
+    "overallBlockScore": "Overall Block Score",
+    "vsDistrictAvg": "Compared to district average of {n}",
+    "blockOverview": "Block overview",
+    "gradesCovered": "Grades covered",
+    "keyInsights": "Key insights from {block}",
+    "bestSubject": "Best performing subject",
+    "bestCluster": "Best cluster",
+    "clusterNeedsSupport": "Cluster that needs most support",
+    "bestSchool": "Best school",
+    "schoolNeedsSupport": "School that needs most support",
+    "gradeWiseScores": "Grade-wise scores",
+    "subjectVsDistrictT": "Subjects vs district",
+    "clusterPerformance": "Cluster-level performance",
+    "bandSegregation": "Schools by band",
+    "whatBandsMean": "What do these bands mean?",
+    "weakestLosT": "Learning outcomes that need most support",
+    "downloadsT": "Downloads",
+    "otherBlockReports": "See other block reports",
+    "downloadDataSheet": "Download data sheet (CSV)",
+    "schoolLevelReports": "School-level reports",
+    "openBlock": "Open block report",
+    "schoolsWord": "schools",
+    "bandDescExcelling": "8 to 10",
+    "bandDescDeveloping": "6 to 7",
+    "bandDescNeeds": "3 to 5",
+    "bandDescUrgent": "0 to 2",
+    "principalRole": "Principal",
+    "ourSchool": "Our school",
+    "blockTop": "Block top",
+    "principalActionsTitle": "What should you do as a Principal?",
+    "principalActionsIntro": "Take these 3 simple actions to improve learning in your school.",
+    "pa1Title": "Read and understand the report card",
+    "pa1Text": "Go through the scores and identify strengths and areas for improvement.",
+    "pa2Title": "Discuss with respective teachers",
+    "pa2Text": "Share the results with teachers and plan together for improvement.",
+    "pa3Title": "Follow the plan shared by DIET & CRCCs",
+    "pa3Text": "Implement the academic support plan shared by DIET & CRCCs.",
+    "principalView": "Principal view",
+    "showingFirst": "Showing the first {shown} of {n} — refine your search to see the rest.",
+    "bestLosT": "Learning outcomes where this block does well",
+    "subjectsWord": "Subjects",
+    "reportsFindT": "Your school's report card",
+    "reportsFindDesc": "Search for your school and open its report card.",
+    "reportsDistrictT": "District overview",
+    "reportsDistrictDesc": "How Anugola district and all its blocks are doing.",
+    "reportsBlocksT": "Block report cards",
+    "filmClose": "Close",
+    "nearMe": "Schools near me",
+    "nearMeFinding": "Finding schools near you…",
+    "nearMeDenied": "Location not available on this phone. Find your school step by step below.",
+    "nearMeResults": "Schools nearest to you",
+    "stepFindTitle": "Find your school step by step",
+    "chooseBlock": "1. Choose your block",
+    "chooseCluster": "2. Choose your area (cluster)",
+    "pickSchool": "3. Tap your school",
+    "changeSel": "Change",
+    "typeSearchTitle": "Can you type? Search by name or UDISE",
+    "bandStripTitle": "Where this school stands",
+    "bandStripLine": "This school is in the “{band}” band ({desc}).",
+    "whatYouCanDo": "How to use the School Report Card?",
+    "switchBlock": "Change block",
+    "downloadBlockPdf": "Download block report (PDF)",
+    "downloadLorPdf": "Complete Learning-Outcome report (PDF)",
+    "downloadLorCsv": "Learning-Outcome data (CSV)",
+    "searchAny": "Search by school, block, cluster or UDISE",
+    "searchNote": "Search by school, block, cluster or UDISE.",
+    "showMore": "Show {n} more",
+    "showLess": "Show fewer",
+    "printedCardTitle": "Your printed report card",
+    "printedCardTap": "Tap the card to download it (PDF)",
+    "roleHead": "Principal",
+    "headFindIntro": "Open your school's report card and see what to do as the Principal.",
+    "faqIntro": "Search, or browse by who you are.",
+    "faqSearch": "Search questions…",
+    "faqGroupsLabel": "Browse by",
+    "faqAll": "All",
+    "faqParents": "Parents",
+    "faqHeads": "Principals",
+    "faqResearchers": "Government / Organizations",
+    "faqGovernment": "Government",
+    "faqBandExcelling": "Excelling — green, above 75% (8–10 out of 10)",
+    "faqBandDeveloping": "Developing — gold/amber, 51–75% (6–7 out of 10)",
+    "faqBandNeeds": "Needs support — orange, 26–50% (3–5 out of 10)",
+    "faqBandUrgent": "Critical — red, 25% and below (0–2 out of 10)",
+    "faqNoResults": "No questions match your search.",
+    "faqStillTitle": "Still have questions?",
+    "faqStillText": "Write to the District Education Office, Anugola.",
+    "resTitle": "Resources",
+    "resIntro": "Understand the report card, how the scores are made, and what to do next.",
+    "resVideosT": "Videos",
+    "resVideosD": "Short films that explain the report card and how to use it.",
+    "resMethodT": "Assessment methodology",
+    "resMethodD": "How the assessment works and how the scores are calculated.",
+    "resDownloadsT": "Downloads",
+    "resDownloadsD": "Reports and data you can download.",
+    "resToolkitT": "Toolkit",
+    "resToolkitD": "Simple steps to act on the report card.",
+    "resAwarenessFilm": "Awareness film",
+    "resExplainer": "How to read your report card",
+    "dlGroupDistrict": "District",
+    "dlGroupBlock": "Block",
+    "dlViewBlockReport": "View Full Block Report",
+    "dlLor": "Complete Learning-Outcome report (PDF)",
+    "dlLorCsv": "Learning-Outcome data (CSV)",
+    "dlBlocks": "Block aggregates (CSV)",
+    "dlBlockCards": "Block report cards",
+    "toolkitS1": "Our school scored ___ out of 10. What is the plan to improve this year?",
+    "toolkitS2": "Our weakest subject is ___. What extra help will children get in it?",
+    "toolkitS3": "A nearby school scores higher with the same resources. What are they doing differently?",
+    "toolkitH1": "Find your school and open its report card.",
+    "toolkitH2": "Watch the short explainer video to understand the score.",
+    "toolkitH3": "Take the card to the next PTM or SMC meeting and ask the following questions:",
+    "toolkitH4": "Next year, check whether the score has improved.",
+    "contactEmailL": "Email",
+    "contactPhoneL": "Phone",
+    "contactPending": "To be updated",
+    "contactName": "Your name",
+    "contactNamePh": "Your name",
+    "contactMsg": "Your message",
+    "contactMsgPh": "Write your message",
+    "contactSend": "Send",
+    "contactSubject": "Anugola Schools — enquiry",
+    "contactNoEmail": "Sending will be enabled once the office email is added.",
+    "faqItems": [
+      {
+        "id": "what",
+        "q": "What is the SAKSHAM School Report Card?",
+        "a": "The report card shows how well a government school in Anugola did overall on the SAKSHAM assessment. It is based on all the Grade 5 and Grade 8 students in that school who took the test. It does not show any single student's score.\n\nEach school gets an overall score out of 10, and separate scores for Grade 5 and Grade 8. The card also shows the score of the top-scoring school.\n\nThe scores help teachers and parents see what the school does well and where it can do better. The top school's score is shown as an example of what's possible to achieve. Schools are not ranked against each other. The point of this report card is to help each school see where it currently stands and keep improving from its current position.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "purpose",
+        "q": "What is the purpose of the School Report Card?",
+        "a": "To give parents, teachers, and officials an honest, shared picture of how much children are learning in the school, so everyone can act on it. This is a whole school's report card, not one child's. It is not a ranking, and it is not meant to reward or punish anyone. It is a starting point: something for parents, teachers, and schools to talk about together and work on, so children learn better.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "who",
+        "q": "Who conducts the assessment?",
+        "a": "This initiative is led by the District of Anugola, Odisha. The assessment was led by the Office of the Collector and District Magistrate, Anugola, Odisha. The Anugola District Education Office ran the implementation.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "when",
+        "q": "When did the assessment take place?",
+        "a": "Children were tested over two days in December 2025.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "blocktop",
+        "q": "What does the block's top score tell me?",
+        "a": "It is the highest score reached by any government school in your block on the same assessment. It shows what a school in your own block has already achieved, so it is a realistic goal for your school as well. If your school is well below this goal, that is a fair thing to raise with the school and the SMC.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "often",
+        "q": "How often is the report card updated?",
+        "a": "Once a year, after each round of the SAKSHAM assessment.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "bands",
+        "q": "What do the colour bands mean?",
+        "a": "Based on the percentage scored by schools, they are grouped into one of four performance bands:\n\nThese colour bands provide a quick and clear view of a school's performance and define the level and urgency of support they need.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "whygrades",
+        "q": "Why only Grade 5 and Grade 8?",
+        "a": "Grade 5 and Grade 8 are important milestones in a child's schooling. Grade 5 is the end of primary school, and Grade 8 is the end of upper primary. Checking learning at these two points shows whether children have the skills they need before they move to the next stage.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "overall",
+        "q": "How is the overall score out of 10 calculated?",
+        "a": "It is a single number from 0 to 10 for the whole school, not for any one child. It shows how all the students assessed performed together, across every subject tested.\n\nRead it like a percentage: 6 out of 10 means 60%, and a higher number means students got more answers right.\n\nBecause the assessment was conducted across two days, not every child sat for every subject. But the score adjusts for this to stop uneven attendance from distorting the school's result. The score is not simply every child and every subject added up and divided.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "onlylearning",
+        "q": "Does the school report card only measure learning?",
+        "a": "Yes. This report card looks only at learning: how much children in the school are actually learning. Other important things, like the state of school buildings or teacher attendance, are not part of it. The purpose is to keep the focus on learning, and improve learning for every school.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "mychild",
+        "q": "Where is my own child's score in this?",
+        "a": "This report card does not show any single child's score. It shows how your child's whole school is doing together. To know how your own child is doing, please talk to the class teacher.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "privacy",
+        "q": "Is any child's name or personal information shown?",
+        "a": "No. The report card shows numbers for schools, blocks, and the district only. It does not name any child, and it does not show any personal details for a particular child.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "lowscore",
+        "q": "Does a low score mean my child, or the teacher or the school, is failing?",
+        "a": "No. A low score means many children in the school have not yet reached the level expected for their grade. There can be many reasons for this which are applicable to the larger system, not to any one child or one teacher. The point is to find where help is needed and collectively work to improve school quality for all schools.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "absent",
+        "q": "What if my child was absent on the assessment day?",
+        "a": "The score is a school average, so a few children being absent does not change the overall picture much. And because no individual scores are shown, being absent has no effect on your child.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "useparent",
+        "q": "How can I use the report card as a parent?",
+        "a": "Start with your school's report card. Look at its overall score, and at how other government schools in your block are doing. Then take it to the next parent meeting or School Management Committee (SMC) meeting. Ask the principal and teachers what the school plans to improve this year, how they plan to do it, and how you can help.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "notlisted",
+        "q": "What if my school is not listed?",
+        "a": "If your school is not listed, it may be because it is not a government school covered by this assessment, or it did not have Grade 5 or Grade 8 students who took the test, or there was a data issue. If you think your school should be listed, write to the District Education Office with the school's name and UDISE code.",
+        "tags": [
+          "heads"
+        ]
+      },
+      {
+        "id": "wrongdata",
+        "q": "What if I think the data for my school is wrong?",
+        "a": "Write to the District Education Office. Include your school's name and UDISE code, and explain what looks wrong.",
+        "tags": [
+          "heads"
+        ]
+      },
+      {
+        "id": "reliable",
+        "q": "How reliable is the score? Can I trust it?",
+        "a": "It is based on a census, not a small sample. That means nearly all government schools, and the Grade 5 and Grade 8 children present on the test day, took part. Every school took the same test, and the testing was run independently of the school. That makes it a fair, like-for-like measure at the school level.",
+        "tags": [
+          "researchers"
+        ]
+      }
+    ],
+    "dataHubT": "Data & Analysis",
+    "dataHubD": "District-wide analysis and the full data catalogue for your own research.",
+    "dataTitle": "Data & Analysis",
+    "dataIntro": "How Anugola's results break down — and every dataset behind this site, downloadable for your own analysis.",
+    "dataViewsT": "District analysis",
+    "aboveClusterT": "Schools scoring far above their own cluster",
+    "aboveClusterD": "Bright spots per block — worth a visit to learn what works.",
+    "bandsByBlockT": "Schools in the four bands, by block",
+    "loTopT": "Strongest learning outcomes (district)",
+    "misconIntroData": "Questions where many children across the district chose the same wrong answer. The full set is in the downloads below.",
+    "dlCatalogT": "Download the data",
+    "dlCatalogIntro": "Every cut of the SAKSHAM data behind this site, as CSV. Student rows are anonymised — roll numbers are removed and rows shuffled; in very small classes a row may still be guessable, so handle with care. No names exist in any file.",
+    "dlOpenBlue": "Advanced research view (item bank, psychometrics)",
+    "schoolsWord2": "schools",
+    "myClusterT": "Your cluster",
+    "myBlockT": "Your block",
+    "blockMisconT": "Common wrong answers in your block",
+    "blockMisconD": "Real questions where many children chose the same wrong answer — worth discussing with your teachers.",
+    "openBlockReport": "Open your block report",
+    "youHere": "Your school",
+    "dataFiles": [
+      {
+        "file": "students_anonymised.csv",
+        "label": "Student-level scores (anonymised)",
+        "desc": "One row per student per subject: school, block, cluster, grade, pseudo-ID, % correct. 128,504 rows."
+      },
+      {
+        "file": "school_grade_subject.csv",
+        "label": "School × grade × subject",
+        "desc": "Every school's score in every assessed grade and subject, with block, cluster and setting."
+      },
+      {
+        "file": "schools_overall.csv",
+        "label": "Schools master (with coordinates)",
+        "desc": "One row per school: overall %, band, /10 score, students assessed, latitude/longitude."
+      },
+      {
+        "file": "cluster_league.csv",
+        "label": "Cluster league (all blocks)",
+        "desc": "Every cluster's score, schools and students, with best and worst school."
+      },
+      {
+        "file": "block_grade_subject.csv",
+        "label": "Block × grade × subject",
+        "desc": "Each block's average in every grade and subject."
+      },
+      {
+        "file": "block_aggregates.csv",
+        "label": "Block aggregates",
+        "desc": "Overall, grade-wise, % below 50 and % proficient for the eight blocks."
+      },
+      {
+        "file": "learning_outcomes.csv",
+        "label": "Learning outcomes (district, per item)",
+        "desc": "All 151 assessed items: LO code, description, grade level, cognitive tag, % correct."
+      },
+      {
+        "file": "learning_outcomes_by_block.csv",
+        "label": "Learning outcomes by block",
+        "desc": "Each block's strongest and weakest learning outcomes with % correct."
+      },
+      {
+        "file": "misconceptions_by_block.csv",
+        "label": "Misconceptions by block",
+        "desc": "Every common-wrong-answer question per block, with options and explanation."
+      },
+      {
+        "file": "items_clean.csv",
+        "label": "Item bank with difficulty & discrimination",
+        "desc": "All validated items with psychometrics (difficulty, discrimination) for measurement research."
+      }
+    ],
+    "misAnswerTag": "answer ✓ · {pct}% chose this",
+    "misTrapTag": "most-chosen wrong answer · {pct}% chose this",
+    "misLabel": "Misconception:",
+    "misTry": "Try:",
+    "misStimCap": "Item stem / stimulus, as printed in the question paper",
+    "misIndicative": "* Indicative only: based on very few pupils or a single question, so read it with caution.",
+    "misOrderNote": "The specific wrong answer many pupils pick, with what it reveals and a teaching response. Ordered by how many pupils fell for it.",
+    "privacyP1": "This site shows school-level results from the SAKSHAM assessment. It never shows any individual child's result, name or personal detail.",
+    "privacyP2": "The site does not ask for, or store, any personal information from visitors. No login is needed. The downloadable research data is anonymised — roll numbers are removed and rows are shuffled.",
+    "privacyP3": "For any question about the data on this site, contact the District Education Office, Anugola (see Contact Us).",
+    "termsP1": "The scores and reports on this site are published by the Anugola District administration, from the SAKSHAM assessment of Grade 5 and Grade 8, to help parents, principals and officials understand and improve learning.",
+    "termsP2": "The data may be used and shared freely for education, research and reporting, with attribution to SAKSHAM / Anugola District. It must not be used to rank, shame or penalise individual children or teachers.",
+    "termsP3": "Scores describe one assessment round and should be read together with the school's context.",
+    "a11yP1": "This site is built to be usable by everyone: Odia first with an English toggle, large type, high contrast, big touch targets, and it works on low-cost phones and slow connections.",
+    "a11yP2": "Report cards can be downloaded as PDFs, and every score is shown as text as well as stars so it does not depend on colour alone.",
+    "a11yP3": "If any part of this site is hard to use — with a screen reader, keyboard or otherwise — please tell us via Contact Us so we can fix it.",
+    "filmDesc": "What Anugola's school report card means for your child",
+    "viewReportAria": "View report for {name}, overall score {n} out of {max}",
+    "yourReportCard": "Your School Report Card",
+    "downloadReportCard": "Download Report Card",
+    "enlargeCard": "Enlarge report card",
+    "closeCard": "Close",
+    "viewMoreDetails": "View more details",
+    "viewLessDetails": "Hide details",
+    "infraAvailable": "Infrastructure available",
+    "infraNotAvailable": "Infrastructure not available",
+    "smcFormation": "SMC formation",
+    "yes": "Yes",
+    "no": "No",
+    "govAboutT": "About SAKSHAM",
+    "govAboutBody": "Aligned with the vision of the National Education Policy (NEP) 2020, SAKSHAM (Student Assessment for Knowledge, Skills & Holistic Competency-based Achievement Mapping) is Anugola district's initiative to strengthen school education through competency-based assessment and evidence-based decision-making.",
+    "govAboutMore": "Read more",
+    "govAboutMoreBody": [
+      "The initiative began with a district-wide, standardised assessment of 28,079 students in Classes 5 and 8 across all 1,361 government schools. By assessing every school, SAKSHAM establishes a district-wide baseline of student learning, measuring students' skills and conceptual understanding rather than rote memorisation.",
+      "The assessment findings are published as aggregated Report Cards at the school, block, and district levels. When parents, schools, and education officials have a shared understanding of students' learning outcomes, they can collectively identify gaps, take informed action, and work together to improve learning across the education system."
+    ],
+    "govExploreT": "What would you like to explore?",
+    "govExploreSub": "Choose the type of report you want to view.",
+    "govBlockCardT": "Block Reports",
+    "govBlockCardD": "View block-wise performance in Anugola District",
+    "govDistrictCardT": "District Report",
+    "govDistrictCardD": "View overall performance of Anugola District",
+    "govChooseBlock": "Choose a block",
+    "govDisclaimer": "All reports are based on the SAKSHAM assessment of Grade 5 and Grade 8 students.",
+    "distTitle": "District Report — {name}",
+    "glanceT": "District at a Glance",
+    "legendT": "Score bands",
+    "legend75": "75% and above",
+    "legend60": "60% – 74%",
+    "legend45": "45% – 59%",
+    "legend0": "Below 45%",
+    "perfBlocksT": "Performance by Blocks",
+    "viewAllBlocks": "View All Block Reports",
+    "gradewiseT": "Grade-wise Performance",
+    "distAvgCaption": "District average: {n}",
+    "keyInsightsPlain": "Key Insights",
+    "insightBestSubjectL": "Best performing subject",
+    "insightNeedsAttentionL": "Subject needing most attention",
+    "insightHighPerformingL": "Number of high-performing schools",
+    "insightHighPerformingV": "{n} scored a full {max}/{max}",
+    "insightPlaceholderL": "More insights will be added after the next assessment cycle.",
+    "dlDistPdfT": "View Full District Report",
+    "dlDistPdfD": "Opens the full interactive district report",
+    "dlDistXlsxT": "District Report (Excel)",
+    "dlDistXlsxD": "Blocks, schools and subject data in one workbook",
+    "dlDistCsvT": "District Data (CSV)",
+    "dlDistCsvD": "Every school's score out of 10, with block and cluster",
+    "dlLoCsvT": "Learning Outcomes (CSV)",
+    "dlLoCsvD": "Learning-outcome level results for deeper analysis",
+    "dlBtn": "Download",
+    "dlViewBtn": "View",
+    "blockReportCardT": "Block Report Card",
+    "ofDistrictSchools": "of {n} schools in the district",
+    "colSubject": "Subject",
+    "colBlock": "Block",
+    "colDistrict": "District",
+    "colDiff": "Diff",
+    "legendNormal": "Normal",
+    "legendUnder": "Underperformer (below 50%)",
+    "vsDistrictShortL": "Block vs district",
+    "vsDistrictShortV": "{block} vs {district}",
+    "loCardT": "Learning Outcome Report Card",
+    "loCardTitle": "Learning Outcome Report",
+    "loCardDesc": "Download the detailed learning outcome report showing subject-wise, grade-wise, and school-wise performance data.",
+    "loTag1": "Subject-wise breakdown",
+    "loTag2": "School-level data",
+    "loTag3": "Grade 5 & Grade 8",
+    "dlPdfShort": "Download PDF",
+    "dlCsvShort": "Download CSV",
+    "downloadsShareT": "Downloads & Share",
+    "dlPdfRowT": "View full Block Report",
+    "dlPdfRowD": "Opens this block's full interactive report",
+    "dlCsvRowT": "Download CSV Data",
+    "dlCsvRowD": "Raw data for further analysis",
+    "shareRowD": "Share summary with your team",
+    "pageOneOf": "Page 1 of {n}",
+    "homeAboutT": "About SAKSHAM",
+    "homeAboutBody": "SAKSHAM (Student Assessment for Knowledge, Skills & Holistic Competency-based Achievement Mapping) is an education initiative of Anugola district, Odisha. It empowers parents, schools, and education officials to assess the quality of student learning, identify areas for improvement, and take informed action to ensure every child receives a high-quality education.",
+    "homeAboutMore": "Read more",
+    "homeAboutMoreBody": [
+      "In December 2025, the district conducted its first standardised assessment for all students in Classes 5 and 8 across government schools. Rather than testing rote memorisation, the assessment measured students' conceptual understanding and skills in core subjects: Odia, Mathematics, English, EVS/Science, and Social Science.",
+      "The assessment results were analysed to prepare report cards at the school, block, and district levels. These report cards present an aggregated view of learning outcomes, helping identify strengths and areas for improvement across schools and administrative units. They reflect overall student performance and do not include the scores of individual students."
+    ],
+    "homeDykT": "Did you know?",
+    "dyk1T": "First competency-based assessment",
+    "dyk1D": "of Grade 5 & Grade 8 students in Anugola district, Odisha.",
+    "dyk2T": "Aligned with the National Education Policy 2020",
+    "dyk2D": "Focus on learning outcomes and foundational skills.",
+    "dyk3T": "Comprehensive and reliable",
+    "dyk3D": "Every government school in Anugola, with a standardised assessment and rubric.",
+    "dyk4T": "Focus on learning",
+    "dyk4D": "Empowering parents, schools and officials to support every child's learning.",
+    "statSchoolsL": "Schools Assessed",
+    "statSchoolsC": "83% of total schools",
+    "statStudentsL": "Students Assessed",
+    "statStudentsC": "Grade 5 & Grade 8",
+    "statBlocksL": "Blocks Covered",
+    "statBlocksC": "Anugola District",
+    "statDataL": "Government Data",
+    "statDataC": "Verified & Reliable",
+    "headTile1": "View your school's report card",
+    "headTile2": "Discuss the report card with teachers and SMC members",
+    "headTile3": "Follow the improvement plan, as guided by the district, with integrity",
+    "headTile4": "Support every child's learning",
+    "headTipT": "Tip for Principals",
+    "headTipB": "Search for your school or select your block to view your school's report card and key actions.",
+    "headBannerT": "Your leadership makes a difference",
+    "headBannerB": "Use data to identify strengths, address learning gaps and create better outcomes for every student.",
+    "dlMisPdfT": "Misconceptions Report (PDF)",
+    "dlMisPdfD": "Identify the most common misconceptions in Anugola District",
+    "headWhatT": "What should you do as a Principal?",
+    "headWhatD": "Three simple steps to turn this report card into action.",
+    "dietFull": "District Institute of Education and Training",
+    "crccFull": "Cluster Resource Centre Coordinators",
+    "tileMgmt": "School Management Type",
+    "tileClasses": "Classes",
+    "tileStudents": "Students",
+    "tileTeachers": "Teachers",
+    "tileUdise": "UDISE Code",
+    "tileCluster": "Cluster",
+    "tileLocation": "Location",
+    "mgmtGovernment": "Government",
+    "mgmtAided": "Government-aided",
+    "mgmtTribal": "Tribal welfare",
+    "areaRural": "Rural",
+    "areaUrban": "Urban",
+    "aboutSource": "Source: UDISE data 2025-26",
+    "balvatika": "Balvatika",
+    "boundaryWall": "Boundary wall",
+    "classroomsAvailable": "Available classrooms",
+    "headExploreT": "Explore More Reports",
+    "headExploreD": "Use these reports to understand learning levels and plan better.",
+    "exp1T": "Misconceptions Report",
+    "exp1D": "Identify the most common misconceptions in Anugola District.",
+    "exp2T": "Block Performance Report",
+    "exp2D": "View block-wise performance in Anugola District.",
+    "exp3T": "District Performance Report",
+    "exp3D": "View overall performance of Anugola District."
   }
 }

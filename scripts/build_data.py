@@ -14,6 +14,7 @@ Source dir can be overridden with env SAKSHAM_SOURCE.
 
 import csv
 import json
+import math
 import os
 import sys
 from collections import defaultdict
@@ -258,10 +259,17 @@ for u, c in canon.items():
         "neighbours": [{"udise": nu, "km": km} for (nu, km) in use],
     }
 
-# search index (light, ships to client). Name/block/cluster only — deliberately
-# NO scores or bands, so the client asset can't be scraped into a league table.
+# search index (light, ships to client). v2: includes the /10 score shown on
+# result cards — the user reversed the earlier no-scores-for-parents decision
+# (2026-07-06, docx mock: named schools with scores are now public by design).
 search = [
-    {"u": s["udise"], "n": s["name"], "b": s["block"], "c": s["cluster"]}
+    {"u": s["udise"], "n": s["name"], "b": s["block"], "c": s["cluster"],
+     # setting (Urban/Rural) is the only extra geographical field the sources
+     # hold — no village/pincode/panchayat exist in any source file.
+     "st": (s.get("profile") or {}).get("area") or "",
+     # floor(x+0.5) matches JS Math.round on the report page — python round()
+     # is half-to-even and made 17 schools show a different /10 in Find.
+     "s10": int(math.floor(s["overall"]["score"] / 10 + 0.5)), "band": s["overall"]["band"]}
     for s in schools.values()
 ]
 search.sort(key=lambda x: x["n"])
@@ -306,7 +314,18 @@ keysuspect_los = {str(i["lo"]).strip() for i in d_items if i.get("keysuspect")}
 BROKEN_MISCON = {("Grade 8", "Maths", 6), ("Grade 8", "Odia", 20), ("Grade 8", "SST", 15)}
 
 def clean_weak_los(lst):
-    return [w for w in (lst or []) if str(w.get("lo", "")).strip() not in keysuspect_los]
+    # Drops key-suspect LOs and rows whose LO code contradicts the subject —
+    # the G8 language papers have known Odia/English cross-tagging (e.g. an
+    # 'OD 811' row labelled English on Talcher).
+    out = []
+    for w in (lst or []):
+        lo = str(w.get("lo", "")).strip()
+        if lo in keysuspect_los:
+            continue
+        if lo.startswith("OD") and w.get("subject") != "Odia":
+            continue
+        out.append(w)
+    return out
 
 def band_list(schools_list):
     out = []
@@ -645,18 +664,139 @@ with open(os.path.join(DL, "block_aggregates.csv"), "w", encoding="utf-8", newli
                     district["below50"].get(b), district["proficiency"].get(b)])
 with open(os.path.join(DL, "cluster_league.csv"), "w", encoding="utf-8", newline="") as f:
     w = csv.writer(f)
-    w.writerow(["block", "cluster", "score", "students", "schools", "best_school", "worst_school"])
+    # Scale convention (owner, 2026-07-09): SCHOOL-level numbers are always
+    # /10 in downloads; cluster/block/district stay %. best/worst school here
+    # are school-level, so they ship on the 10-point scale.
+    w.writerow(["block", "cluster", "score", "students", "schools",
+                "best_school_out_of_10", "worst_school_out_of_10"])
     for bname, bd in sorted(blocks.items()):
         for r in bd["cluster_league"]["rows"]:
             w.writerow([bname, r["cluster"], r["score"], r["students"], r["schools"],
-                        r["best_school"], r["worst_school"]])
+                        int(math.floor(r["best_school"] / 10 + 0.5)),
+                        int(math.floor(r["worst_school"] / 10 + 0.5))])
+# Owner decision 2026-07-09: three LOs the LO report excludes at LO level are
+# dropped from every CSV so the downloads agree with each other.
+LO_DROP = {"E 409", "M 804", "OD 709"}
 with open(os.path.join(DL, "items_clean.csv"), "w", encoding="utf-8", newline="") as f:
     w = csv.writer(f)
     w.writerow(["grade", "subject", "q_no", "lo", "gl", "desc", "correct_pct", "top_wrong_pct", "blank_pct"])
     for i in items_clean:
+        if str(i["lo"]).strip() in LO_DROP:
+            continue
         w.writerow([i["grade"], i["subject"], i["q_no"], i["lo"], i["gl"], i["desc"],
                     i["correct_pct"], i["top_wrong_pct"], i["blank"]])
 print("  wrote downloads: block_aggregates.csv, cluster_league.csv, items_clean.csv")
+
+# ---------- researcher download suite (public, multiple cuts) -----------------
+# Granularity ceiling chosen by the owner (2026-07-07): anonymised student rows
+# are public. Anonymisation: Roll_Number destroyed and replaced by a pseudo id
+# randomly assigned within (school, grade); rows shuffled; no names/DOB exist in
+# the source. Residual small-class re-identification risk was flagged and accepted.
+import random as _random
+
+_rng = _random.Random(20260707)
+
+# 1) anonymised student-level (long: one row per student x subject)
+_stu_rows = []
+_pseudo = {}   # (udise, grade, roll) -> pseudo id within school+grade
+_counter = defaultdict(int)
+for row in read_csv("Studentwise_Scores.csv"):
+    u = udise(row["UDISE_Code"])
+    if u not in canon:
+        continue
+    grade = (row.get("Grade") or "").strip()
+    subj = (row.get("Subject") or "").strip()
+    pct = num(row.get("Perc"))
+    if not grade or not subj or pct is None:
+        continue
+    key = (u, grade, str(row.get("Roll_Number") or "").strip())
+    if key not in _pseudo:
+        _counter[(u, grade)] += 1
+        _pseudo[key] = _counter[(u, grade)]
+    _stu_rows.append([u, canon[u]["name"], canon[u]["block"], canon[u]["cluster"],
+                      grade, _pseudo[key], subj, pct])
+# shuffle then re-number pseudo ids in shuffled order so output order carries
+# no trace of the roll sequence
+_rng.shuffle(_stu_rows)
+with open(os.path.join(DL, "students_anonymised.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["udise", "school_name", "block", "cluster", "grade",
+                "student_pseudo_id", "subject", "pct_correct"])
+    w.writerows(_stu_rows)
+print(f"  wrote students_anonymised.csv ({len(_stu_rows)} rows)")
+
+# Data note shipped alongside the CSV (owner decision 2026-07-09): in some
+# multi-section schools two or more children share a school+grade+roll key in
+# the source, so they appear under ONE student_pseudo_id with repeated subject
+# rows. Disclosed rather than repaired — the source has no section column, so
+# any split would be a guess.
+with open(os.path.join(DL, "students_anonymised_README.txt"), "w", encoding="utf-8") as f:
+    f.write(
+        "students_anonymised.csv — data notes\n"
+        "\n"
+        "* One row per student x subject. student_pseudo_id is randomly assigned\n"
+        "  within each (school, grade) and carries no trace of real roll numbers.\n"
+        "* Known limitation: in some multi-section schools, two or more children\n"
+        "  shared a school+grade+roll number in the source data (about 1,050 such\n"
+        "  keys across ~220 schools). These children appear under a SINGLE\n"
+        "  student_pseudo_id, so a pseudo-student can carry more than one score\n"
+        "  for the same subject. The source has no section column, so these\n"
+        "  records cannot be reliably separated.\n"
+        "* The official assessed-student count (28,079) counts such merged\n"
+        "  records once.\n"
+    )
+print("  wrote students_anonymised_README.txt")
+
+# 2) school x grade x subject (finest safe aggregate). Scale convention:
+# school-level numbers ship /10 (whole), never %.
+with open(os.path.join(DL, "school_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["udise", "school_name", "block", "cluster", "setting",
+                "grade", "subject", "score_out_of_10"])
+    for u, s in sorted(schools.items()):
+        st = (s.get("profile") or {}).get("area") or ""
+        for g in sorted(s["byGrade"]):
+            for subj in sorted(s["byGrade"][g]):
+                w.writerow([u, s["name"], s["block"], s["cluster"], st,
+                            g, subj, int(math.floor(s["byGrade"][g][subj] / 10 + 0.5))])
+
+# 3) schools master. Owner decision 2026-07-09: downloads must NOT carry
+# lat/lon, overall_pct or band — only the /10 score shown on the site.
+with open(os.path.join(DL, "schools_overall.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["udise", "school_name", "block", "cluster", "setting",
+                "score_out_of_10", "students_assessed"])
+    for u, s in sorted(schools.items()):
+        st = (s.get("profile") or {}).get("area") or ""
+        w.writerow([u, s["name"], s["block"], s["cluster"], st,
+                    int(math.floor(s["overall"]["score"] / 10 + 0.5)),
+                    s["assessedStudents"] or ""])
+
+# 4) block x grade x subject
+with open(os.path.join(DL, "block_grade_subject.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "grade", "subject", "pct_correct"])
+    for b in district_out["blocks"]:
+        for g, subs in (b.get("subjects") or {}).items():
+            for subj, v in sorted(subs.items()):
+                w.writerow([b["name"], g, subj, v])
+
+# 5) misconceptions by block + 6) best/weakest LOs by block (from officials slices)
+with open(os.path.join(DL, "misconceptions_by_block.csv"), "w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["block", "grade", "subject", "q_no", "pct_chose_wrong",
+                "wrong_option", "correct_option", "question", "why_it_matters"])
+    for bname in sorted(blocks):
+        bslug = block_slugs[bname]
+        bj = json.load(open(os.path.join(OFF_DIR, "blocks", f"{bslug}.json"), encoding="utf-8"))
+        for m in bj.get("miscon", []):
+            w.writerow([bname, m["grade"], m["subject"], m["qno"], m.get("pct") or "",
+                        m["chosen"], m["correct"], m["stem"], m["text"]])
+# learning_outcomes_by_block.csv is generated by build_mislib.py (owner
+# decision 2026-07-09: ALL LOs per block from the LO report, no strength/gap
+# 'kind' column) — no longer written here, so a data rebuild can't regress it.
+print("  wrote researcher cuts: school_grade_subject, schools_overall, "
+      "block_grade_subject, misconceptions_by_block")
 
 # ---------- QA / coverage ----------------------------------------------------
 
@@ -760,8 +900,13 @@ def dump(base, name, obj):
 dump(OUT, "schools.json", schools)
 dump(OUT, "district.json", district_out)
 dump(OUT, "_qa.json", qa)
-# client assets for the Find page — name/block/cluster + map only, no scores
+# client assets for the Find page — name/block/cluster + /10 score + map
 dump(PUBLIC, "search-index.json", search)
+# coordinates for the "Schools near me" GPS path (only schools that have them)
+geo = [{"u": u, "lat": round(v["lat"], 5), "lon": round(v["lon"], 5)}
+       for u, v in ll.items()
+       if u in schools and v.get("lat") is not None and v.get("lon") is not None]
+dump(PUBLIC, "geo.json", geo)
 dump(PUBLIC, "district-map.json", district_map)
 
 # per-school compact records for the client-side Compare view (one file each,
@@ -775,6 +920,16 @@ for u, s in schools.items():
     with open(os.path.join(SCHOOL_DIR, f"{u}.json"), "w", encoding="utf-8") as f:
         json.dump(rec, f, ensure_ascii=False, separators=(",", ":"))
 print(f"  wrote {len(schools)} per-school JSON -> public/data/school/")
+
+# --- apply official unit renames (district + blocks) to all emitted data -----
+# Govt renamed (2026): Angul->Anugola, Athamallik->Athamalik, Pallahara->
+# Palalahada, Talcher->Talachera. Slugs/filenames keep the original spelling so
+# URLs + PDF references stay stable; only display VALUES change. Idempotent.
+try:
+    from apply_unit_renames import apply as _apply_unit_renames
+    _apply_unit_renames()
+except Exception as _e:
+    print("  WARN: unit rename post-process skipped:", _e)
 
 print("\n--- QA summary ---")
 print(json.dumps(qa, ensure_ascii=False, indent=2)[:2000])
