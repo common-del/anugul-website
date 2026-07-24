@@ -33,11 +33,21 @@ export default function FaqAccordion({
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return items.filter(
-      (it) =>
-        (group === "all" || it.tags.includes(group)) &&
-        (!needle || `${it.q} ${it.a}`.toLowerCase().includes(needle)),
-    );
+    const matches = (it: Item) =>
+      !needle || `${it.q} ${it.a}`.toLowerCase().includes(needle);
+    // On a specific role tab, that role's own questions come FIRST, followed by
+    // the general ("all"-tagged) questions. The "All" tab shows everything in
+    // document order (general first, then the role-specific groups).
+    const ordered =
+      group === "all"
+        ? items
+        : [
+            ...items.filter((it) => it.tags.includes(group)),
+            ...items.filter(
+              (it) => it.tags.includes("all") && !it.tags.includes(group),
+            ),
+          ];
+    return ordered.filter(matches);
   }, [items, q, group]);
 
   const groups: Group[] = ["all", "parents", "heads", "researchers"];

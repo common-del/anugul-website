@@ -524,99 +524,146 @@
     "faqItems": [
       {
         "id": "what",
-        "q": "What is the Saksham School Report Card?",
-        "a": "The school level report card presents the overall performance of all Grade 5 and Grade 8 students in a given government school in Anugola who appeared for the SAKSHAM assessment. It does not display the score or performance of any individual student.\n\nEach school receives an overall score out of 10, along with separate scores for Grade 5 and Grade 8. The report also shows the score of the top performing school.\n\nThese results help teachers and parents understand the school's strengths and identify areas that need improvement. The top school score is included as a reference point, not for direct comparison. Its purpose is to help schools understand their current position and encourage continued improvement.",
+        "q": "What is the SAKSHAM School Report Card?",
+        "a": "The report card shows how well a government school in Anugola did overall on the SAKSHAM assessment. It is based on all the Grade 5 and Grade 8 students in that school who took the test. It does not show any single student's score.\n\nEach school gets an overall score out of 10, and separate scores for Grade 5 and Grade 8. The card also shows the score of the top-scoring school.\n\nThe scores help teachers and parents see what the school does well and where it can do better. The top school's score is shown as an example of what's possible to achieve. Schools are not ranked against each other. The point of this report card is to help each school see where it currently stands and keep improving from its current position.",
         "tags": [
-          "parents",
-          "heads",
-          "researchers",
-          "government"
+          "all"
         ]
       },
       {
-        "id": "overall",
-        "q": "How is the overall score out of 10 calculated?",
-        "a": "Based on the SAKSHAM assessment results, the proportion of correctly answered questions becomes a percentage. Then the overall obtained percentage is brought to a 0-10 scale for simplicity of understanding. For example - if a school scored 62% it would appear as 6 out of 10. A higher score means more children are answering more questions correctly.",
+        "id": "purpose",
+        "q": "What is the purpose of the School Report Card?",
+        "a": "To give parents, teachers, and officials an honest, shared picture of how much children are learning in the school, so everyone can act on it. This is a whole school's report card, not one child's. It is not a ranking, and it is not meant to reward or punish anyone. It is a starting point: something for parents, teachers, and schools to talk about together and work on, so children learn better.",
         "tags": [
-          "parents",
-          "heads"
-        ]
-      },
-      {
-        "id": "subjects",
-        "q": "What do the subject scores mean?",
-        "a": "Each subject — Odia, English, Maths, EVS, Science or Social Studies — has its own score out of 10, shown as stars. It tells you how children in that school are doing in that subject against the full mark. Low subject scores show where children need the most help.",
-        "tags": [
-          "parents",
-          "heads"
-        ]
-      },
-      {
-        "id": "bands",
-        "q": "What do the colour bands mean?",
-        "a": "Every school's score falls into one of four colour bands. Each band covers a range of scores, shown here as both a percentage and out of 10:\n\nThese colour bands provide a quick and clear view of a school's performance without requiring readers to examine the detailed scores.",
-        "tags": [
-          "parents",
-          "heads",
-          "researchers",
-          "government"
-        ]
-      },
-      {
-        "id": "useparent",
-        "q": "How can I use the report card as a parent?",
-        "a": "The School Report Card helps parents understand the strengths and weaknesses in children's learning.\n\nParents can watch the explainer video to learn how to read and understand the report card. After reviewing it, they can discuss the findings with other parents and share their concerns and suggestions during the next Parent-Teacher Meeting (PTM) or School Management Committee meeting. They can also speak with the Principal about the challenges, suggest possible solutions, and work with the school to improve children's learning.",
-        "tags": [
-          "parents"
+          "all"
         ]
       },
       {
         "id": "who",
         "q": "Who conducts the assessment?",
-        "a": "SAKSHAM is a learning assessment led by Anugola District. Grade 5 and Grade 8 children are assessed externally, so the results are independent of the school’s own marking.",
+        "a": "This initiative is led by the District of Anugola, Odisha. The assessment was led by the Office of the Collector and District Magistrate, Anugola, Odisha. The Anugola District Education Office ran the implementation.",
         "tags": [
-          "parents",
-          "heads",
-          "researchers",
-          "government"
+          "all"
+        ]
+      },
+      {
+        "id": "when",
+        "q": "When did the assessment take place?",
+        "a": "Children were tested over two days in December 2025.",
+        "tags": [
+          "all"
+        ]
+      },
+      {
+        "id": "blocktop",
+        "q": "What does the block's top score tell me?",
+        "a": "It is the highest score reached by any government school in your block on the same assessment. It shows what a school in your own block has already achieved, so it is a realistic goal for your school as well. If your school is well below this goal, that is a fair thing to raise with the school and the SMC.",
+        "tags": [
+          "all"
         ]
       },
       {
         "id": "often",
         "q": "How often is the report card updated?",
-        "a": "The card shown here is for the 2025-26 assessment year. It is refreshed when a new round of SAKSHAM results becomes available, so you can track whether your school improves over time.",
+        "a": "Once a year, after each round of the SAKSHAM assessment.",
         "tags": [
-          "parents",
-          "heads",
-          "government"
+          "all"
         ]
       },
       {
-        "id": "compare",
-        "q": "Can I compare my school with other schools?",
-        "a": "Yes. Each report card lists the nearest schools with their scores, so you can see how your school compares locally. Researchers and officials can also open block-level reports that rank clusters and schools.",
+        "id": "bands",
+        "q": "What do the colour bands mean?",
+        "a": "Based on the percentage scored by schools, they are grouped into one of four performance bands:\n\nThese colour bands provide a quick and clear view of a school's performance and define the level and urgency of support they need.",
         "tags": [
-          "parents",
-          "heads",
-          "researchers"
+          "all"
+        ]
+      },
+      {
+        "id": "whygrades",
+        "q": "Why only Grade 5 and Grade 8?",
+        "a": "Grade 5 and Grade 8 are important milestones in a child's schooling. Grade 5 is the end of primary school, and Grade 8 is the end of upper primary. Checking learning at these two points shows whether children have the skills they need before they move to the next stage.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "overall",
+        "q": "How is the overall score out of 10 calculated?",
+        "a": "It is a single number from 0 to 10 for the whole school, not for any one child. It shows how all the students assessed performed together, across every subject tested.\n\nRead it like a percentage: 6.2 out of 10 means 62%, and a higher number means students got more answers right.\n\nBecause the assessment was conducted across two days, not every child sat for every subject. But the score adjusts for this to stop uneven attendance from distorting the school's result. The score is not simply every child and every subject added up and divided.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "onlylearning",
+        "q": "Does the school report card only measure learning?",
+        "a": "Yes. This report card looks only at learning: how much children in the school are actually learning. Other important things, like the state of school buildings or teacher attendance, are not part of it. The purpose is to keep the focus on learning, and improve learning for every school.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "mychild",
+        "q": "Where is my own child's score in this?",
+        "a": "This report card does not show any single child's score. It shows how your child's whole school is doing together. To know how your own child is doing, please talk to the class teacher.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "privacy",
+        "q": "Is any child's name or personal information shown?",
+        "a": "No. The report card shows numbers for schools, blocks, and the district only. It does not name any child, and it does not show any personal details for a particular child.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "lowscore",
+        "q": "Does a low score mean my child, or the teacher or the school, is failing?",
+        "a": "No. A low score means many children in the school have not yet reached the level expected for their grade. There can be many reasons for this which are applicable to the larger system, not to any one child or one teacher. The point is to find where help is needed and collectively work to improve school quality for all schools.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "absent",
+        "q": "What if my child was absent on the assessment day?",
+        "a": "The score is a school average, so a few children being absent does not change the overall picture much. And because no individual scores are shown, being absent has no effect on your child.",
+        "tags": [
+          "parents"
+        ]
+      },
+      {
+        "id": "useparent",
+        "q": "How can I use the report card as a parent?",
+        "a": "Start with your school's report card. Look at its overall score, and at how other government schools in your block are doing. Then take it to the next parent meeting or School Management Committee (SMC) meeting. Ask the principal and teachers what the school plans to improve this year, how they plan to do it, and how you can help.",
+        "tags": [
+          "parents"
         ]
       },
       {
         "id": "notlisted",
         "q": "What if my school is not listed?",
-        "a": "A few schools could not be matched to the assessment data and do not have a card yet. If you cannot find your school, please contact the District Education Office, Anugola (see Contact Us) with the school name and UDISE code.",
+        "a": "If your school is not listed, it may be because it is not a government school covered by this assessment, or it did not have Grade 5 or Grade 8 students who took the test, or there was a data issue. If you think your school should be listed, write to the District Education Office with the school's name and UDISE code.",
         "tags": [
-          "parents",
           "heads"
         ]
       },
       {
-        "id": "download",
-        "q": "Can I download the data?",
-        "a": "Yes. The Researcher view offers the complete Learning-Outcome report and a data sheet (CSV), and each block report card can be downloaded as a PDF.",
+        "id": "wrongdata",
+        "q": "What if I think the data for my school is wrong?",
+        "a": "Write to the District Education Office. Include your school's name and UDISE code, and explain what looks wrong.",
         "tags": [
-          "researchers",
-          "government"
+          "heads"
+        ]
+      },
+      {
+        "id": "reliable",
+        "q": "How reliable is the score? Can I trust it?",
+        "a": "It is based on a census, not a small sample. That means nearly all government schools, and the Grade 5 and Grade 8 children present on the test day, took part. Every school took the same test, and the testing was run independently of the school. That makes it a fair, like-for-like measure at the school level.",
+        "tags": [
+          "researchers"
         ]
       }
     ],
