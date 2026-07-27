@@ -24,7 +24,7 @@ import re
 
 from apply_unit_renames import RENAME
 
-SRC_DIR = os.environ.get("SAKSHAM_SOURCE", r"D:\Claude_Cowork_CSF\SAKSHAM_Analysis")
+SRC_DIR = os.environ.get("SAKSHAM_SOURCE", "SAKSHAM_Analysis")
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, ".."))
 OUT_JSON = os.path.join(ROOT, "src", "data", "officials", "mislib.json")

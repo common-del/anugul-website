@@ -12,7 +12,7 @@ import json, os, re, time
 import fitz
 from PIL import Image
 
-SRC = os.environ.get("CARD_SRC", r"C:\Users\CSF\Desktop\Anugul_Parent\Output")
+SRC = os.environ.get("CARD_SRC", "card-source")
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.normpath(os.path.join(HERE, "..", "public", "data", "cardimg"))
 MANIFEST = os.path.normpath(os.path.join(HERE, "..", "public", "data", "pdf-cards.json"))

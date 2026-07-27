@@ -19,9 +19,10 @@ import os
 import sys
 from collections import defaultdict
 
-SOURCE = os.environ.get(
-    "SAKSHAM_SOURCE", r"D:\Claude_Cowork_CSF\SAKSHAM_Analysis"
-)
+# Point this at your local raw SAKSHAM_Analysis folder via the SAKSHAM_SOURCE
+# env var. Default is a neutral relative path so no machine-specific path is
+# committed to the public repo.
+SOURCE = os.environ.get("SAKSHAM_SOURCE", "SAKSHAM_Analysis")
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.normpath(os.path.join(HERE, "..", "src", "data"))
 

@@ -29,7 +29,15 @@ export default function DemoSync() {
     const onMessage = (e: MessageEvent) => {
       if (e.origin !== location.origin) return;
       const d = e.data;
-      if (d && d.type === "demo-goto" && typeof d.href === "string") {
+      // Only follow a rooted, same-origin path ("/..." but not "//..."), so the
+      // relayed href can never become a javascript:/external navigation sink —
+      // mirrors the ?start= check the demo page applies. Defense-in-depth.
+      const rooted =
+        !!d &&
+        typeof d.href === "string" &&
+        d.href.startsWith("/") &&
+        !d.href.startsWith("//");
+      if (d && d.type === "demo-goto" && rooted) {
         if (location.pathname + location.search !== d.href) {
           window.location.href = d.href; // full load: simple + static-safe
         }

@@ -28,7 +28,7 @@ export default function WatchCard({
         {play ? (
           <iframe
             className="h-full w-full"
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+            src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
             title={title}
             allow="autoplay; encrypted-media"
             allowFullScreen
