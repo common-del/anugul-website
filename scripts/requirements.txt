@@ -1,0 +1,10 @@
+# Build-time dependencies for the data/PDF/image scripts in this folder.
+# These run locally/offline to regenerate site data — they are NOT part of the
+# Vercel deploy (that runs `next build` on the already-committed static files).
+#
+# Version floors avoid known-vulnerable older releases of the PDF/image parsers.
+# For full reproducibility, pin to the exact versions you build with:
+#   pip install -r scripts/requirements.txt && pip freeze > scripts/requirements.lock
+PyMuPDF>=1.24        # imported as `fitz` (build_cardimg.py, build_*_pdf.py, build_district_report.py)
+Pillow>=10.4         # imported as `PIL` (build_cardimg.py)
+openpyxl>=3.1        # xlsx reader/writer (build_data.py, build_district_report.py)
