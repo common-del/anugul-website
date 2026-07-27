@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { latin, odia } from "@/lib/fonts";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Anugola Schools",
@@ -15,7 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="or" className={`${latin.variable} ${odia.variable}`}>
-      <body className="bg-gov-canvas">{children}</body>
+      <body className="bg-gov-canvas">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
