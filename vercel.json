@@ -18,6 +18,10 @@
     { "source": "/data/downloads/blocks/talcher.pdf", "destination": "/data/downloads/blocks/talachera.pdf", "permanent": true },
 
     { "source": "/:locale(od|en)/reports/", "destination": "/:locale/gov/", "permanent": false },
-    { "source": "/:locale(od|en)/gov/data/", "destination": "/:locale/gov/district/", "permanent": false }
+    { "source": "/:locale(od|en)/gov/data/", "destination": "/:locale/gov/district/", "permanent": false },
+
+    { "source": "/:locale(od|en)/privacy/", "destination": "/:locale/website-policies/", "permanent": true },
+    { "source": "/:locale(od|en)/terms/", "destination": "/:locale/website-policies/", "permanent": true },
+    { "source": "/:locale(od|en)/accessibility/", "destination": "/:locale/website-policies/", "permanent": true }
   ]
 }

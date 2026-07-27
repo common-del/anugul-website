@@ -10,10 +10,11 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-// TODO: fill in the real DEO Angul contact details. Leave "" until confirmed —
-// the form disables Send and shows a note when the email is empty.
-const DEO_EMAIL = "";
-const DEO_PHONE = "";
+// Dedicated website inbox (owner 2026-07-27). Postal address sourced from the
+// public Google listing for the District Education Office, Angul. No public
+// phone line.
+const DEO_EMAIL = "anugolasaksham@gmail.com";
+const DEO_ADDRESS = "District Education Office, Amalapada, Angul, Odisha – 759122";
 
 export default function ContactPage({
   params,
@@ -25,11 +26,6 @@ export default function ContactPage({
   const t = getDict(locale);
   const v = t.v2;
 
-  const rows = [
-    { label: v.contactEmailL, value: DEO_EMAIL },
-    { label: v.contactPhoneL, value: DEO_PHONE },
-  ];
-
   return (
     <PageShell zone="full">
       <SiteHeader locale={locale} t={t} showBack />
@@ -40,19 +36,19 @@ export default function ContactPage({
 
         <section className="mt-4 gov-card p-5">
           <p className="font-bold text-gov-ink">{v.contactOffice}</p>
-          <dl className="mt-3 space-y-1.5 text-sm">
-            {rows.map((r) => (
-              <div key={r.label} className="flex gap-2">
-                <dt className="w-16 shrink-0 font-semibold text-muted">{r.label}</dt>
-                <dd className="text-gov-ink">
-                  {r.value ? (
-                    r.value
-                  ) : (
-                    <span className="italic text-muted">{v.contactPending}</span>
-                  )}
-                </dd>
-              </div>
-            ))}
+          <p className="mt-1 text-sm leading-relaxed text-gov-ink">{DEO_ADDRESS}</p>
+          <dl className="mt-3 text-sm">
+            <div className="flex gap-2">
+              <dt className="w-16 shrink-0 font-semibold text-muted">{v.contactEmailL}</dt>
+              <dd className="text-gov-ink">
+                <a
+                  href={`mailto:${DEO_EMAIL}`}
+                  className="underline underline-offset-2 hover:text-gov"
+                >
+                  {DEO_EMAIL}
+                </a>
+              </dd>
+            </div>
           </dl>
         </section>
 
