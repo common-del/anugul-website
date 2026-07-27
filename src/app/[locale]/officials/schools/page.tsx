@@ -6,7 +6,7 @@ import SchoolDirectory, { type DirRow } from "@/components/SchoolDirectory";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import type { BandKey } from "@/lib/bands";
-import schoolsData from "@/data/schools.json";
+import { getSchools } from "@/lib/schools";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -23,7 +23,7 @@ export default function SchoolsPage({ params }: { params: { locale: string } }) 
   const t = getDict(locale);
   const o = t.officials;
 
-  const rows: DirRow[] = Object.values(schoolsData as Record<string, School>)
+  const rows: DirRow[] = Object.values(getSchools() as Record<string, School>)
     .map((s) => ({
       udise: s.udise,
       name: s.name,

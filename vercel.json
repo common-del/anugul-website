@@ -1,3 +1,23 @@
 {
-  "redirects": [{ "source": "/", "destination": "/od/", "permanent": false }]
+  "redirects": [
+    { "source": "/", "destination": "/od/", "permanent": false },
+
+    { "source": "/:locale(od|en)/gov/angul/", "destination": "/:locale/gov/anugola/", "permanent": true },
+    { "source": "/:locale(od|en)/gov/athamallik/", "destination": "/:locale/gov/athamalik/", "permanent": true },
+    { "source": "/:locale(od|en)/gov/pallahara/", "destination": "/:locale/gov/palalahada/", "permanent": true },
+    { "source": "/:locale(od|en)/gov/talcher/", "destination": "/:locale/gov/talachera/", "permanent": true },
+
+    { "source": "/:locale(od|en)/officials/block/angul/", "destination": "/:locale/officials/block/anugola/", "permanent": true },
+    { "source": "/:locale(od|en)/officials/block/athamallik/", "destination": "/:locale/officials/block/athamalik/", "permanent": true },
+    { "source": "/:locale(od|en)/officials/block/pallahara/", "destination": "/:locale/officials/block/palalahada/", "permanent": true },
+    { "source": "/:locale(od|en)/officials/block/talcher/", "destination": "/:locale/officials/block/talachera/", "permanent": true },
+
+    { "source": "/data/downloads/blocks/angul.pdf", "destination": "/data/downloads/blocks/anugola.pdf", "permanent": true },
+    { "source": "/data/downloads/blocks/athamallik.pdf", "destination": "/data/downloads/blocks/athamalik.pdf", "permanent": true },
+    { "source": "/data/downloads/blocks/pallahara.pdf", "destination": "/data/downloads/blocks/palalahada.pdf", "permanent": true },
+    { "source": "/data/downloads/blocks/talcher.pdf", "destination": "/data/downloads/blocks/talachera.pdf", "permanent": true },
+
+    { "source": "/:locale(od|en)/reports/", "destination": "/:locale/gov/", "permanent": false },
+    { "source": "/:locale(od|en)/gov/data/", "destination": "/:locale/gov/district/", "permanent": false }
+  ]
 }

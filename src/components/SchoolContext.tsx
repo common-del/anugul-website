@@ -128,7 +128,7 @@ export default function SchoolContext({
               </li>
             )}
             {inputs.basicsOut && inputs.basicsOut.length > 0 && (
-              <li className="text-[#b3261e]">
+              <li className="text-[#C24E36]">
                 <span className="font-semibold">{c.rteBasicsOut}:</span>{" "}
                 {inputs.basicsOut.map((b) => c.basics[b] ?? b).join(", ")}
               </li>
@@ -137,7 +137,7 @@ export default function SchoolContext({
               <li>{fill(c.rtePtr, { ptr: num(inputs.ptr), norm: num(inputs.ptrNorm) })}</li>
             )}
             {inputs.singleTeacher && (
-              <li className="font-semibold text-[#b3261e]">{c.rteSingle}</li>
+              <li className="font-semibold text-[#C24E36]">{c.rteSingle}</li>
             )}
           </ul>
         ) : (

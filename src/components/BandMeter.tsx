@@ -30,8 +30,8 @@ export default function BandMeter({
           className="rounded-full px-3 py-1.5 text-sm font-bold"
           style={{
             backgroundColor: color,
-            /* amber needs dark text to meet contrast; others use white */
-            color: band === "needs" ? "#12233d" : "#ffffff",
+            /* the light gold fill (developing) needs dark text; others use white */
+            color: band === "developing" ? "#12233d" : "#ffffff",
           }}
         >
           {label}

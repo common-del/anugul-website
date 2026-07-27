@@ -156,7 +156,7 @@ export default function AnalyticsPage({
                     </Link>
                     <span
                       className="font-semibold tabular-nums"
-                      style={{ color: v >= 30 ? "#b3261e" : "#12233d" }}
+                      style={{ color: v >= 30 ? "#C24E36" : "#12233d" }}
                     >
                       {fmtPercent(Math.round(v), locale)}
                     </span>
