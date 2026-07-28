@@ -1,5 +1,6 @@
 import { fmtNum, fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName, clusterName } from "@/lib/placeNames";
 
 export type Peer = {
   nPeers: number; median: number | null; pctile: number | null;
@@ -94,10 +95,10 @@ export default function SchoolContext({
       {clusterPos && (
         <p className="mt-3 text-sm text-muted">
           {fill(c.clusterLine, {
-            cluster,
+            cluster: clusterName(cluster, locale),
             rank: num(clusterPos.rank),
             of: num(clusterPos.of),
-            block,
+            block: blockName(block, locale),
           })}
         </p>
       )}

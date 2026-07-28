@@ -5,6 +5,7 @@ import Link from "next/link";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, type BandKey } from "@/lib/bands";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName, clusterName } from "@/lib/placeNames";
 
 export type DirRow = {
   udise: string; name: string; block: string; cluster: string;
@@ -127,8 +128,8 @@ export default function SchoolDirectory({
                     {r.name}
                   </Link>
                 </td>
-                <td className="py-1.5 pr-2 text-muted">{r.block}</td>
-                <td className="py-1.5 pr-2 text-muted">{r.cluster}</td>
+                <td className="py-1.5 pr-2 text-muted">{blockName(r.block, locale)}</td>
+                <td className="py-1.5 pr-2 text-muted">{clusterName(r.cluster, locale)}</td>
                 <td className="py-1.5 pr-2">
                   <span
                     className="rounded-full px-2 py-0.5 text-xs font-bold"

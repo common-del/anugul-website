@@ -8,6 +8,7 @@ import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import InputsCard from "@/components/InputsCard";
+import { blockName, clusterName } from "@/lib/placeNames";
 import {
   getBlock,
   getBlockSlugs,
@@ -85,13 +86,13 @@ export default function BlockPage({
       <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
         <p className="text-sm font-semibold text-accent-dark">{o.blockTitle}</p>
         <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
-          {b.name}
+          {blockName(b.name, locale)}
         </h1>
         <p className="mt-1 text-sm text-muted">
           {fill(o.rankLine, {
             rank: num(vb.rank),
             n: num(vb.n_blocks),
-            best: vb.best_name,
+            best: blockName(vb.best_name, locale),
             bestScore: pct(vb.best),
             district: pct(vb.district_avg),
           })}
@@ -119,7 +120,7 @@ export default function BlockPage({
 
         {/* inputs juxtaposed with the outcome above */}
         <div className="mt-6">
-          <InputsCard data={b.inputs} unitName={b.name} o={o} locale={locale} />
+          <InputsCard data={b.inputs} unitName={blockName(b.name, locale)} o={o} locale={locale} />
         </div>
 
         <div className="mt-6 space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:space-y-0">
@@ -179,7 +180,7 @@ export default function BlockPage({
                         >
                           {s.name}
                         </Link>
-                        <span className="block text-xs text-muted">{s.cluster}</span>
+                        <span className="block text-xs text-muted">{clusterName(s.cluster, locale)}</span>
                       </td>
                       <td
                         className="py-1.5 pr-2 text-right font-semibold tabular-nums"
@@ -377,7 +378,7 @@ export default function BlockPage({
               <tbody>
                 {b.cluster_league.rows.map((r) => (
                   <tr key={r.cluster} className="border-t border-brand-line">
-                    <td className="py-1.5 pr-2">{r.cluster}</td>
+                    <td className="py-1.5 pr-2">{clusterName(r.cluster, locale)}</td>
                     <td
                       className="py-1.5 pr-2 text-right font-semibold tabular-nums"
                       style={{ color: BAND_TEXT[bandFromScore(r.score)] }}
@@ -421,7 +422,7 @@ export default function BlockPage({
                   .sort((a, z) => (z[1]._overall ?? 0) - (a[1]._overall ?? 0))
                   .map(([cluster, row]) => (
                     <tr key={cluster} className="border-t border-brand-line">
-                      <td className="py-1 pr-2">{cluster}</td>
+                      <td className="py-1 pr-2">{clusterName(cluster, locale)}</td>
                       {heatSubjects.map((s) => (
                         <td key={s} className="px-0.5 py-0.5 text-center">
                           {row[s] !== undefined ? (

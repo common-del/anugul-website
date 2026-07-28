@@ -6,6 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import BandMeter from "@/components/BandMeter";
 import SubjectBars from "@/components/SubjectBars";
 import SchoolProfile, { type Profile } from "@/components/SchoolProfile";
+import { blockName, clusterName } from "@/lib/placeNames";
 import SchoolContext, {
   type Peer, type ClusterPos, type BrightSpotRef, type Inputs,
 } from "@/components/SchoolContext";
@@ -67,7 +68,7 @@ export default function OfficialSchoolPage({
         <section>
           <p className="text-sm font-semibold text-accent-dark">{o.schoolHeadKicker}</p>
           <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">{s.name}</h1>
-          <p className="mt-1 text-sm text-muted">{s.block} · {s.cluster}</p>
+          <p className="mt-1 text-sm text-muted">{blockName(s.block, locale)} · {clusterName(s.cluster, locale)}</p>
           <p className="mt-1 text-xs text-muted">
             UDISE {s.udise}
             {s.assessedStudents ? ` · ${fmtNum(s.assessedStudents, locale)} ${t.report.studentsAssessed}` : ""}

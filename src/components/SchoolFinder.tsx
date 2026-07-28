@@ -6,6 +6,7 @@ import { fmtNum } from "@/lib/format";
 import type { BandKey } from "@/lib/bands";
 import Stars from "@/components/Stars";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName, clusterName } from "@/lib/placeNames";
 
 type Item = { u: string; n: string; b: string; c: string; st: string; s10: number; band: BandKey };
 type Geo = { u: string; lat: number; lon: number };
@@ -373,8 +374,8 @@ export default function SchoolFinder({
 
         {block && (
           <p className="flex flex-wrap items-center gap-x-2 text-sm">
-            <span className="font-bold text-gov-ink">{block}</span>
-            {cluster && <span className="font-bold text-gov-ink">· {cluster}</span>}
+            <span className="font-bold text-gov-ink">{blockName(block, locale)}</span>
+            {cluster && <span className="font-bold text-gov-ink">· {clusterName(cluster, locale)}</span>}
             <button
               type="button"
               onClick={() => (cluster ? setCluster("") : setBlock(""))}

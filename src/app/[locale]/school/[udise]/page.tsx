@@ -11,6 +11,7 @@ import { hasCard, cardUrl, cardImg } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { blockName, clusterName } from "@/lib/placeNames";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
@@ -168,7 +169,7 @@ export default function SchoolPage({
               {s.name}
             </h1>
             <p className="mt-1.5 text-sm font-bold text-gov-ink">
-              UDISE: {s.udise} | {s.block} | {s.cluster}
+              UDISE: {s.udise} | {blockName(s.block, locale)} | {clusterName(s.cluster, locale)}
               {s.assessedStudents
                 ? ` | ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
                 : ""}

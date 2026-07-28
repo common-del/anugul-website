@@ -9,6 +9,7 @@ import { getDict } from "@/lib/i18n/dict";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT } from "@/lib/bands";
 import InputsCard from "@/components/InputsCard";
+import { blockName, clusterName } from "@/lib/placeNames";
 import { getCluster, getClusterIndex, type ClusterSlice } from "@/lib/officialsData";
 
 export function generateStaticParams() {
@@ -52,22 +53,22 @@ export default function ClusterPage({
       <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-6">
         <p className="text-sm font-semibold text-accent-dark">{o.clusterTitle}</p>
         <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">
-          {c.cluster}
+          {clusterName(c.cluster, locale)}
         </h1>
         <p className="mt-1 text-sm text-muted">
           <Link
             href={`/${locale}/officials/block/${c.blockSlug}/`}
             className="text-brand underline-offset-2 hover:underline"
           >
-            {c.block}
+            {blockName(c.block, locale)}
           </Link>{" "}
-          · {fill(o.clusterRankLine, { rank: num(c.rank), of: num(c.of), block: c.block })}
+          · {fill(o.clusterRankLine, { rank: num(c.rank), of: num(c.of), block: blockName(c.block, locale) })}
         </p>
 
         <div className="mt-4 grid grid-cols-3 gap-3">
           {[
             { v: pct(c.score), l: o.leagueScore },
-            { v: pct(c.blockScore), l: c.block },
+            { v: pct(c.blockScore), l: blockName(c.block, locale) },
             { v: num(c.students), l: o.leagueStudents },
           ].map((s) => (
             <div key={s.l} className="rounded-xl bg-brand-tint p-3">
@@ -81,7 +82,7 @@ export default function ClusterPage({
 
         {/* inputs juxtaposed with the score above */}
         <div className="mt-6">
-          <InputsCard data={c.inputs} unitName={c.cluster} o={o} locale={locale} />
+          <InputsCard data={c.inputs} unitName={clusterName(c.cluster, locale)} o={o} locale={locale} />
         </div>
 
         {/* schools with bands */}
