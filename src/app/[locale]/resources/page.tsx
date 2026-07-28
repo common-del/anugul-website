@@ -126,8 +126,10 @@ export default function ResourcesPage({
               (Owner 2026-07-21: replaced the inline description; the detail —
               assessment design, the analysis, and how the % becomes a /10 score
               — now lives in the downloadable document.) */}
+          {/* The ?v= tag is a cache-buster: bump it whenever the PDF is
+              replaced so browsers fetch the new file instead of a stale cached copy. */}
           <a
-            href="/data/downloads/assessment_methodology.pdf"
+            href="/data/downloads/assessment_methodology.pdf?v=20260728"
             download
             className="group gov-card flex items-center gap-3 p-5 transition hover:bg-gov-tint hover:shadow-lift"
           >
