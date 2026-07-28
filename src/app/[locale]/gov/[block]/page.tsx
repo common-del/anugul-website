@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
+import { blockName, clusterName } from "@/lib/placeNames";
 import Gauge from "@/components/Gauge";
 import { mapBandColor } from "@/components/DistrictMapBands";
 import SubjectsVsDistrict, { type SubjectRow } from "@/components/SubjectsVsDistrict";
@@ -92,8 +93,8 @@ export default function GovBlockPage({
       n: pct(bestSubj.block),
       good: true,
     },
-    bestCluster && { l: v.bestCluster, val: bestCluster.cluster, n: pct(bestCluster.score), good: true },
-    worstCluster && { l: v.clusterNeedsSupport, val: worstCluster.cluster, n: pct(worstCluster.score), good: false },
+    bestCluster && { l: v.bestCluster, val: clusterName(bestCluster.cluster, locale), n: pct(bestCluster.score), good: true },
+    worstCluster && { l: v.clusterNeedsSupport, val: clusterName(worstCluster.cluster, locale), n: pct(worstCluster.score), good: false },
     // Scale convention: school-level numbers show /10, never % (admin units
     // — cluster/block/district — stay %).
     bestSchool && {
@@ -165,7 +166,7 @@ export default function GovBlockPage({
             />
           </div>
           <div className="sm:justify-self-end">
-            <WhatsAppShare label={v.shareWhatsApp} text={`${b.name} ${v.blockReportCardT}`} />
+            <WhatsAppShare label={v.shareWhatsApp} text={`${blockName(b.name, locale)} ${v.blockReportCardT}`} />
           </div>
         </div>
 
@@ -177,7 +178,7 @@ export default function GovBlockPage({
             </svg>
             <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                {v.overallBlockScore} · {b.name}
+                {v.overallBlockScore} · {blockName(b.name, locale)}
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-4xl font-extrabold tabular-nums" style={{ color: BAND_TEXT[overallBand] }}>
@@ -228,7 +229,7 @@ export default function GovBlockPage({
         {/* ===== key insights (6 cards, sentiment-tinted) ===== */}
         <section className="mt-6 gov-card p-5">
           <h2 className="text-lg font-bold text-gov-ink">
-            {fill(v.keyInsights, { block: b.name })}
+            {fill(v.keyInsights, { block: blockName(b.name, locale) })}
           </h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {insights.map((ins) => (
@@ -382,7 +383,7 @@ export default function GovBlockPage({
                 const under = c.score < 50;
                 return (
                   <div key={c.cluster} className="flex items-center gap-3 text-sm">
-                    <span className="w-32 shrink-0 truncate text-gov-ink sm:w-40">{c.cluster}</span>
+                    <span className="w-32 shrink-0 truncate text-gov-ink sm:w-40">{clusterName(c.cluster, locale)}</span>
                     <span className="h-4 flex-1 overflow-hidden rounded bg-gov-tint">
                       <span
                         className="block h-full rounded"

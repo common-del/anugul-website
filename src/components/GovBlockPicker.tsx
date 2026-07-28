@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName } from "@/lib/placeNames";
 
 type Marker = { name: string; x: number; y: number };
 type DistrictMap = { viewBox: string; path: string; blocks: Marker[] };
@@ -64,7 +65,7 @@ export default function GovBlockPicker({
                 }}
                 role="button"
                 tabIndex={0}
-                aria-label={b.name}
+                aria-label={blockName(b.name, locale)}
               >
                 <circle cx={b.x} cy={b.y} r="6" fill="transparent" />
                 <circle cx={b.x} cy={b.y} r="1.8" className="fill-gov group-hover:fill-accent" />
@@ -76,7 +77,7 @@ export default function GovBlockPicker({
                   className="pointer-events-none fill-gov-ink group-hover:fill-gov"
                   style={{ fontWeight: 700 }}
                 >
-                  {b.name}
+                  {blockName(b.name, locale)}
                 </text>
               </g>
             ))}
@@ -93,7 +94,7 @@ export default function GovBlockPicker({
         >
           <option value="">{labels.allBlocks}</option>
           {names.map((n) => (
-            <option key={n} value={n}>{n}</option>
+            <option key={n} value={n}>{blockName(n, locale)}</option>
           ))}
         </select>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -104,7 +105,7 @@ export default function GovBlockPicker({
               onClick={() => go(n)}
               className="min-h-[44px] rounded-full bg-white px-4 text-sm font-semibold text-gov ring-1 ring-gov-line shadow-sm transition-shadow hover:bg-gov-tint hover:shadow"
             >
-              {n}
+              {blockName(n, locale)}
             </button>
           ))}
         </div>

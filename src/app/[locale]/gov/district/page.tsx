@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
+import { blockName } from "@/lib/placeNames";
 import Gauge from "@/components/Gauge";
 import DistrictMapBands, { mapBandColor, rankOrange } from "@/components/DistrictMapBands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -127,7 +128,7 @@ export default function DistrictReportPage({
             identical arrangement to the block report */}
         <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr,auto,1fr]">
           <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
-            {fill(v.distTitle, { name: district.name })}
+            {fill(v.distTitle, { name: blockName(district.name, locale) })}
           </h1>
           <div className="sm:justify-self-center">
             <BlockSwitcher
@@ -140,7 +141,7 @@ export default function DistrictReportPage({
           <div className="sm:justify-self-end">
             <WhatsAppShare
               label={v.shareWhatsApp}
-              text={fill(v.distTitle, { name: district.name })}
+              text={fill(v.distTitle, { name: blockName(district.name, locale) })}
             />
           </div>
         </div>
@@ -186,7 +187,7 @@ export default function DistrictReportPage({
                   className="flex items-center gap-2 text-sm hover:opacity-90"
                 >
                   <span className="w-24 shrink-0 truncate font-semibold text-gov-ink">
-                    {b.name}
+                    {blockName(b.name, locale)}
                   </span>
                   <span className="h-5 flex-1 overflow-hidden rounded bg-gov-tint">
                     <span
