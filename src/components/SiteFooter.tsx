@@ -18,7 +18,6 @@ export default function SiteFooter({
     { href: `/${locale}/faq/`, label: v.helpFaqs },
     { href: `/${locale}/resources/`, label: v.helpResources },
     { href: `/${locale}/contact/`, label: v.helpContact },
-    { href: `/${locale}/feedback/`, label: v.footFeedback },
     { href: `/${locale}/website-policies/`, label: v.footPolicies },
     { href: "https://rtiodisha.gov.in/", label: v.footRti, external: true },
     { href: `/${locale}/sitemap/`, label: v.footSitemap },

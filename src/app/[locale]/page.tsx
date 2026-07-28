@@ -92,11 +92,14 @@ export default function Home({ params }: { params: { locale: string } }) {
       icon: "M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21v-1a6 6 0 0112 0v1M20 21v-1a6 6 0 00-3-5.2" },
     { val: num(district.blocks.length), l: v.statBlocksL, c: v.statBlocksC,
       icon: "M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" },
+    { val: "100%", l: v.statDataL, c: v.statDataC,
+      icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4" },
   ];
 
-  // per-tile divider classes: 1 col (mobile) → 3-up (sm+)
+  // per-tile divider classes: 1 col (mobile) → 4-up (sm+)
   const tileBorder = [
     "",
+    "border-t border-gov-line sm:border-t-0 sm:border-l",
     "border-t border-gov-line sm:border-t-0 sm:border-l",
     "border-t border-gov-line sm:border-t-0 sm:border-l",
   ];
@@ -210,9 +213,9 @@ export default function Home({ params }: { params: { locale: string } }) {
           </div>
         </section>
 
-        {/* statistics band — three tiles, dividers only */}
+        {/* statistics band — four tiles, dividers only */}
         <section className="mt-5 gov-card">
-          <div className="grid grid-cols-1 sm:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-4">
             {stats.map((s, i) => (
               <div
                 key={s.l}
