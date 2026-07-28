@@ -4,7 +4,7 @@ import type { Messages } from "@/lib/i18n/dict";
 
 // v2 footer: a links row (help + legal/legitimacy) with Follow-us, then a
 // bottom line with the copyright + content-owner / last-updated note. The
-// legal links (Website Policies, Feedback/Grievance, RTI, Sitemap) were added
+// legal links (Website Policies, RTI, Sitemap) were added
 // 2026-07-27 for the site's official-website requirements.
 export default function SiteFooter({
   locale,
