@@ -36,7 +36,6 @@ export default function WebsitePoliciesPage({
       <SiteHeader locale={locale} t={t} showBack />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
         <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">{v.wpTitle}</h1>
-        <p className="mt-1 text-muted">{v.wpIntro}</p>
 
         <nav className="mt-4 flex flex-wrap gap-2">
           {sections.map((s) => (
