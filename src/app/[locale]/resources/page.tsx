@@ -118,6 +118,7 @@ export default function ResourcesPage({
                 blocks={blockNames}
                 chooseLabel={v.govChooseBlock}
                 title={v.resExplainer}
+                locale={locale}
               />
             </div>
           </details>

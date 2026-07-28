@@ -173,7 +173,7 @@ export default function SchoolFinder({
       <span className="min-w-0 flex-1">
         <span className="block truncate font-bold text-gov-ink">{s.n}</span>
         <span className="mt-0.5 block truncate text-xs text-muted">
-          {s.b} · {s.c}
+          {blockName(s.b, locale)} · {clusterName(s.c, locale)}
           {km != null ? ` · ${labels.kmAway.replace("{km}", num(Math.round(km * 10) / 10))}` : ""}
         </span>
         <span className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1">
@@ -367,7 +367,7 @@ export default function SchoolFinder({
           <>
             <p className="text-sm font-semibold text-muted">{labels.chooseBlock}</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              {blocks.map((b) => chip(b, () => setBlock(b)))}
+              {blocks.map((b) => chip(blockName(b, locale), () => setBlock(b)))}
             </div>
           </>
         )}
@@ -390,7 +390,7 @@ export default function SchoolFinder({
           <>
             <p className="mt-2 text-sm font-semibold text-muted">{labels.chooseCluster}</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              {clusters.map((c) => chip(c, () => setCluster(c)))}
+              {clusters.map((c) => chip(clusterName(c, locale), () => setCluster(c)))}
             </div>
           </>
         )}

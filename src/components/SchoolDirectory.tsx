@@ -99,7 +99,7 @@ export default function SchoolDirectory({
         >
           <option value="">{o.dirAllBlocks}</option>
           {blocks.map((b) => (
-            <option key={b} value={b}>{b}</option>
+            <option key={b} value={b}>{blockName(b, locale)}</option>
           ))}
         </select>
       </div>

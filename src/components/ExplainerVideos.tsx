@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import VideoEmbed from "./VideoEmbed";
+import type { Locale } from "@/lib/i18n/config";
+import { blockName } from "@/lib/placeNames";
 
 // The "How to read your report card" explainer differs by block — 4 films
 // across the 8 blocks (owner). Anugola, Athamalik and Talachera have their
@@ -17,10 +19,12 @@ export default function ExplainerVideos({
   blocks,
   chooseLabel,
   title,
+  locale,
 }: {
   blocks: string[];
   chooseLabel: string;
   title: string;
+  locale: Locale;
 }) {
   const [block, setBlock] = useState(blocks[0] ?? "");
   const videoId = BLOCK_VIDEO[block] ?? DEFAULT_VIDEO;
@@ -37,7 +41,7 @@ export default function ExplainerVideos({
         >
           {blocks.map((b) => (
             <option key={b} value={b}>
-              {b}
+              {blockName(b, locale)}
             </option>
           ))}
         </select>

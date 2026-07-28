@@ -8,6 +8,7 @@ import Stars from "@/components/Stars";
 import CardLightbox from "@/components/CardLightbox";
 import { hasCard, cardUrl, cardImg, hasHcard, hcardUrl, hcardImg } from "@/lib/cards";
 import { getBlockSlugs } from "@/lib/officialsData";
+import { blockName, clusterName } from "@/lib/placeNames";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { fmtNum } from "@/lib/format";
@@ -173,7 +174,7 @@ export default function PrincipalPage({
           <div className="min-w-0">
             <h1 className="text-2xl font-extrabold leading-tight text-gov">{s.name}</h1>
             <p className="mt-1.5 text-sm font-bold text-gov-ink">
-              UDISE: {s.udise} | {s.block} | {s.cluster}
+              UDISE: {s.udise} | {blockName(s.block, locale)} | {clusterName(s.cluster, locale)}
               {s.assessedStudents
                 ? ` | ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
                 : ""}
