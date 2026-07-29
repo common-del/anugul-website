@@ -160,6 +160,9 @@ td{padding:10px 12px}
  .lead{margin-left:0}
  #kpis{flex-direction:column}.kpi-hero,.kpi-col{flex:auto}.kpi{min-width:0}.kpi-hero .n{font-size:46px}
  .stepnav button{padding:11px 16px;font-size:14px}
+ #pills{min-width:0;max-width:100%}
+ #subjvarWrap,#bandBlockDist{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+ #insightsWrap>.kpi{flex:1 1 42%}
 }
 @media print{
  .toolbar,.pills,.skip,.stepnav,.frow{display:none!important}
@@ -203,8 +206,8 @@ function profMax(){return Math.max(...Object.values(D.proficiency));}
 function weak8str(){const w=Object.entries(D.subject_means["Grade 8"]).filter(([s,m])=>m<55).map(([s,m])=>s);return w.length?w.join(" and "):"English and Science";}
 function insight(b){const d=DATA.blocks[b],v=d.vs_best.overall;return fill("insight",{block:b,score:d.headline.overall,rank:v.rank,nblocks:v.n_blocks});}
 function renderSystem(){const vbar=[["Between blocks",D.variance.block,"#5F6368"],["Between clusters",D.variance.cluster,"#7FA8D0"],["Between schools",D.variance.school,"#00316B"],["Between children in the same class",D.variance.child,"#C99A00"]];
- let bar='<div class="vbar">';vbar.forEach(x=>{const ex=x[0]==="Between schools"?";box-shadow:inset 0 0 0 3px #FFD400;font-weight:800;font-size:13px":"";bar+=`<div style="width:${x[1]}%;background:${x[2]}${ex}">${x[1]}%</div>`;});bar+='</div>';
- let leg='<div class="vlegend">';vbar.forEach(x=>{const hb=x[0]==="Between schools";leg+=`<span><span class="sw" style="background:${x[2]}"></span>${hb?"<b>"+x[0]+"</b>":x[0]}</span>`;});leg+='</div>';
+ let bar='<div class="vbar">';vbar.forEach(x=>{const ex=x[0]==="Between schools"?";box-shadow:inset 0 0 0 3px #FFD400;font-weight:800;font-size:13px":"";const inlbl=x[1]>=12?`${x[1]}%`:"";bar+=`<div style="width:${x[1]}%;background:${x[2]}${ex}">${inlbl}</div>`;});bar+='</div>';
+ let leg='<div class="vlegend">';vbar.forEach(x=>{const hb=x[0]==="Between schools";const t=x[0]+" "+x[1]+"%";leg+=`<span><span class="sw" style="background:${x[2]}"></span>${hb?"<b>"+t+"</b>":t}</span>`;});leg+='</div>';
  document.getElementById("systemWrap").innerHTML=bar+leg;}
 
 function renderPanels(b){
