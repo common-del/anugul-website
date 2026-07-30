@@ -19,8 +19,11 @@ export function generateMetadata({
   if (!isLocale(params.locale)) return {};
   const t = getDict(params.locale);
   return {
-    metadataBase: new URL("https://anugul-website.vercel.app"),
-    title: t.site.name,
+    metadataBase: new URL("https://anugolasaksham.in"),
+    title: {
+      default: t.site.seoTitle,
+      template: `%s · ${t.site.name}`,
+    },
     description: t.site.description,
     alternates: {
       languages: { or: "/od/", en: "/en/", "x-default": "/od/" },
