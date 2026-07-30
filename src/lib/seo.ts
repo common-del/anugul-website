@@ -245,6 +245,40 @@ function crumbLd(items: { name: string; url: string }[]) {
   };
 }
 
+// A crumb's path is locale-relative (trailing slash). The visible Breadcrumbs
+// component and the BreadcrumbList schema both build from these, so they can
+// never drift apart.
+export type Crumb = { name: string; path: string };
+
+export function schoolCrumbs(
+  locale: Locale,
+  name: string,
+  blockDisplay: string,
+  blockSlug: string | undefined,
+  udise: string,
+): Crumb[] {
+  const c: Crumb[] = [
+    { name: pick(CRUMB.home, locale), path: "" },
+    { name: pick(CRUMB.district, locale), path: "gov/district/" },
+  ];
+  if (blockSlug) {
+    c.push({ name: `${blockDisplay} ${pick(CRUMB.block, locale)}`, path: `gov/${blockSlug}/` });
+  }
+  c.push({ name, path: `school/${udise}/` });
+  return c;
+}
+
+export function blockCrumbs(locale: Locale, blockDisplay: string, blockSlug: string): Crumb[] {
+  return [
+    { name: pick(CRUMB.home, locale), path: "" },
+    { name: pick(CRUMB.district, locale), path: "gov/district/" },
+    { name: `${blockDisplay} ${pick(CRUMB.block, locale)}`, path: `gov/${blockSlug}/` },
+  ];
+}
+
+const crumbsToLd = (locale: Locale, crumbs: Crumb[]) =>
+  crumbLd(crumbs.map((c) => ({ name: c.name, url: absUrl(locale, c.path) })));
+
 export function schoolBreadcrumbLd(
   locale: Locale,
   name: string,
@@ -252,26 +286,11 @@ export function schoolBreadcrumbLd(
   blockSlug: string | undefined,
   udise: string,
 ) {
-  const items = [
-    { name: pick(CRUMB.home, locale), url: absUrl(locale, "") },
-    { name: pick(CRUMB.district, locale), url: absUrl(locale, "gov/district/") },
-  ];
-  if (blockSlug) {
-    items.push({
-      name: `${blockDisplay} ${pick(CRUMB.block, locale)}`,
-      url: absUrl(locale, `gov/${blockSlug}/`),
-    });
-  }
-  items.push({ name, url: absUrl(locale, `school/${udise}/`) });
-  return crumbLd(items);
+  return crumbsToLd(locale, schoolCrumbs(locale, name, blockDisplay, blockSlug, udise));
 }
 
 export function blockBreadcrumbLd(locale: Locale, blockDisplay: string, blockSlug: string) {
-  return crumbLd([
-    { name: pick(CRUMB.home, locale), url: absUrl(locale, "") },
-    { name: pick(CRUMB.district, locale), url: absUrl(locale, "gov/district/") },
-    { name: `${blockDisplay} ${pick(CRUMB.block, locale)}`, url: absUrl(locale, `gov/${blockSlug}/`) },
-  ]);
+  return crumbsToLd(locale, blockCrumbs(locale, blockDisplay, blockSlug));
 }
 
 function stripMd(s: string) {

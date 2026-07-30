@@ -15,8 +15,9 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { getBlock, getBlockSlugs, blockReportUrl, type BlockSlice } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
-import { pageMeta, blockSeo, blockBreadcrumbLd } from "@/lib/seo";
+import { pageMeta, blockSeo, blockBreadcrumbLd, blockCrumbs } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -172,6 +173,7 @@ export default function GovBlockPage({
       <JsonLd data={blockBreadcrumbLd(locale, blockName(b.name, locale), b.slug)} />
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        <Breadcrumbs crumbs={blockCrumbs(locale, blockName(b.name, locale), b.slug)} locale={locale} />
         {/* ===== top row: title | block switcher (centre) | WhatsApp (right)
                — same arrangement as the district report ===== */}
         <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr,auto,1fr]">

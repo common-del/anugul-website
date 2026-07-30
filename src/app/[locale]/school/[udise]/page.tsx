@@ -15,9 +15,10 @@ import { blockName, clusterName } from "@/lib/placeNames";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
-import { pageMeta, schoolSeo, schoolLd, schoolBreadcrumbLd, schoolParagraph, absUrl } from "@/lib/seo";
+import { pageMeta, schoolSeo, schoolLd, schoolBreadcrumbLd, schoolParagraph, absUrl, schoolCrumbs } from "@/lib/seo";
 import { getBlockSlugs } from "@/lib/officialsData";
 import JsonLd from "@/components/JsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
 
 type Profile = {
@@ -172,6 +173,10 @@ export default function SchoolPage({
             schoolLd(s.name, blockName(s.block, locale), s.udise, absUrl(locale, `school/${s.udise}/`)),
             schoolBreadcrumbLd(locale, s.name, blockName(s.block, locale), blockSlug, s.udise),
           ]}
+        />
+        <Breadcrumbs
+          crumbs={schoolCrumbs(locale, s.name, blockName(s.block, locale), blockSlug, s.udise)}
+          locale={locale}
         />
         {/* header row */}
         <section className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
