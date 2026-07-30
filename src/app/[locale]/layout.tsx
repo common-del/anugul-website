@@ -28,6 +28,27 @@ export function generateMetadata({
     alternates: {
       languages: { or: "/od/", en: "/en/", "x-default": "/od/" },
     },
+    openGraph: {
+      type: "website",
+      siteName: t.site.name,
+      locale: params.locale === "od" ? "or_IN" : "en_IN",
+      title: t.site.seoTitle,
+      description: t.site.description,
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Anugola (Angul) Saksham — Government School Report Cards",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t.site.seoTitle,
+      description: t.site.description,
+      images: ["/og-image.png"],
+    },
   };
 }
 

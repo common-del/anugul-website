@@ -77,7 +77,17 @@ export function generateMetadata({
   return {
     title,
     description: t.site.description,
-    openGraph: { title, description: t.site.description },
+    openGraph: {
+      title,
+      description: t.site.description,
+      images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: t.site.description,
+      images: ["/og-image.png"],
+    },
   };
 }
 
