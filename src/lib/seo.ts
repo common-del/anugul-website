@@ -160,3 +160,143 @@ export function govSeo(l: Locale): TD {
     }, l),
   };
 }
+
+// ---- Structured data (JSON-LD) ----
+
+export const absUrl = (locale: Locale, path: string) => `${BASE}/${locale}/${path}`;
+
+const CRUMB = {
+  home: { en: "Home", od: "ମୂଳପୃଷ୍ଠା" },
+  district: { en: "Anugola (Angul) District", od: "ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲା" },
+  block: { en: "Block", od: "ବ୍ଲକ୍" },
+};
+
+export function orgLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "GovernmentOrganization",
+    name: SITE,
+    alternateName: "SAKSHAM — Anugola (Angul) District",
+    url: BASE,
+    logo: `${BASE}/og-image.png`,
+    areaServed: "Angul district, Odisha, India",
+    description:
+      "School report cards and SAKSHAM competency-based assessment results for government schools in Anugola (Angul) district, Odisha.",
+  };
+}
+
+export function websiteLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE,
+    url: BASE,
+    inLanguage: ["en", "or"],
+  };
+}
+
+export function schoolLd(name: string, block: string, udise: string, url: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "School",
+    name,
+    url,
+    identifier: { "@type": "PropertyValue", propertyID: "UDISE", value: udise },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: block,
+      addressRegion: "Odisha",
+      addressCountry: "IN",
+    },
+    parentOrganization: {
+      "@type": "GovernmentOrganization",
+      name: "School & Mass Education Department, Anugola (Angul) District, Odisha",
+    },
+  };
+}
+
+export function districtLd(locale: Locale, description: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: pick({
+      en: "Anugola (Angul) District — SAKSHAM School Performance",
+      od: "ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲା — ସକ୍ଷମ ବିଦ୍ୟାଳୟ ପ୍ରଦର୍ଶନ",
+    }, locale),
+    description,
+    url: absUrl(locale, "gov/district/"),
+    creator: { "@type": "GovernmentOrganization", name: SITE },
+    spatialCoverage: "Angul district, Odisha, India",
+    variableMeasured: ["Overall SAKSHAM score", "Grade 5 score", "Grade 8 score", "Learning outcomes"],
+    isAccessibleForFree: true,
+  };
+}
+
+function crumbLd(items: { name: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: it.url,
+    })),
+  };
+}
+
+export function schoolBreadcrumbLd(
+  locale: Locale,
+  name: string,
+  blockDisplay: string,
+  blockSlug: string | undefined,
+  udise: string,
+) {
+  const items = [
+    { name: pick(CRUMB.home, locale), url: absUrl(locale, "") },
+    { name: pick(CRUMB.district, locale), url: absUrl(locale, "gov/district/") },
+  ];
+  if (blockSlug) {
+    items.push({
+      name: `${blockDisplay} ${pick(CRUMB.block, locale)}`,
+      url: absUrl(locale, `gov/${blockSlug}/`),
+    });
+  }
+  items.push({ name, url: absUrl(locale, `school/${udise}/`) });
+  return crumbLd(items);
+}
+
+export function blockBreadcrumbLd(locale: Locale, blockDisplay: string, blockSlug: string) {
+  return crumbLd([
+    { name: pick(CRUMB.home, locale), url: absUrl(locale, "") },
+    { name: pick(CRUMB.district, locale), url: absUrl(locale, "gov/district/") },
+    { name: `${blockDisplay} ${pick(CRUMB.block, locale)}`, url: absUrl(locale, `gov/${blockSlug}/`) },
+  ]);
+}
+
+function stripMd(s: string) {
+  return s
+    .replace(/\*\*/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/<[^>]+>/g, "")
+    .trim();
+}
+
+export function faqPageLd(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: { "@type": "Answer", text: stripMd(it.a) },
+    })),
+  };
+}
+
+export function schoolParagraph(locale: Locale, name: string, block: string): string {
+  return pick({
+    en: `This report card presents how ${name} in ${block} block, Anugola (Angul) district performed on the SAKSHAM competency-based assessment — its overall score, grade-wise learning outcomes, enrolment and other quality indicators, to help parents, the community and education officials understand and act on the school's performance.`,
+    od: `ଏହି ରିପୋର୍ଟ କାର୍ଡ ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ${block} ବ୍ଲକ୍ର ${name} ସକ୍ଷମ ମୂଲ୍ୟାଙ୍କନରେ କିପରି ପ୍ରଦର୍ଶନ କଲା ଦର୍ଶାଏ — ସାମଗ୍ରିକ ସ୍କୋର, ଶ୍ରେଣୀ-ଅନୁସାରେ ଶିକ୍ଷଣ ଫଳାଫଳ, ନାମଲେଖା ଓ ଅନ୍ୟ ଗୁଣବତ୍ତା ସୂଚକ, ଯାହା ଅଭିଭାବକ, ସମ୍ପ୍ରଦାୟ ଓ ଶିକ୍ଷା ଅଧିକାରୀଙ୍କୁ ବିଦ୍ୟାଳୟର ପ୍ରଦର୍ଶନ ବୁଝି କାର୍ଯ୍ୟ କରିବାରେ ସାହାଯ୍ୟ କରେ।`,
+  }, locale);
+}

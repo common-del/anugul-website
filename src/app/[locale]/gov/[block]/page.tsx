@@ -15,7 +15,8 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { getBlock, getBlockSlugs, blockReportUrl, type BlockSlice } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
-import { pageMeta, blockSeo } from "@/lib/seo";
+import { pageMeta, blockSeo, blockBreadcrumbLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -168,6 +169,7 @@ export default function GovBlockPage({
 
   return (
     <PageShell>
+      <JsonLd data={blockBreadcrumbLd(locale, blockName(b.name, locale), b.slug)} />
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* ===== top row: title | block switcher (centre) | WhatsApp (right)

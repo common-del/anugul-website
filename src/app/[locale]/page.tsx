@@ -6,7 +6,8 @@ import SiteFooter from "@/components/SiteFooter";
 import AwarenessFilm from "@/components/AwarenessFilm";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
-import { pageMeta, homeSeo } from "@/lib/seo";
+import { pageMeta, homeSeo, orgLd, websiteLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import { fmtNum } from "@/lib/format";
 import districtData from "@/data/district.json";
 
@@ -114,6 +115,7 @@ export default function Home({ params }: { params: { locale: string } }) {
 
   return (
     <PageShell zone="full">
+      <JsonLd data={[orgLd(), websiteLd()]} />
       <SiteHeader locale={locale} t={t} active="home" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">
         <div className="space-y-5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-6 lg:space-y-0">

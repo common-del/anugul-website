@@ -15,7 +15,9 @@ import { blockName, clusterName } from "@/lib/placeNames";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
-import { pageMeta, schoolSeo } from "@/lib/seo";
+import { pageMeta, schoolSeo, schoolLd, schoolBreadcrumbLd, schoolParagraph, absUrl } from "@/lib/seo";
+import { getBlockSlugs } from "@/lib/officialsData";
+import JsonLd from "@/components/JsonLd";
 import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
 
 type Profile = {
@@ -159,11 +161,18 @@ export default function SchoolPage({
   // green, 6-7 orange, 3-5 gold, 0-2 red). Kept faint so AA holds; the score +
   // stars remain the primary signal.
   const tintFor = (s10: number) => bandTint10(s10);
+  const blockSlug = getBlockSlugs().find((bl) => bl.name === s.block)?.slug;
 
   return (
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack active="reports" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        <JsonLd
+          data={[
+            schoolLd(s.name, blockName(s.block, locale), s.udise, absUrl(locale, `school/${s.udise}/`)),
+            schoolBreadcrumbLd(locale, s.name, blockName(s.block, locale), blockSlug, s.udise),
+          ]}
+        />
         {/* header row */}
         <section className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <div className="min-w-0">
@@ -188,6 +197,10 @@ export default function SchoolPage({
             </span>
           </div>
         </section>
+
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+          {schoolParagraph(locale, s.name, blockName(s.block, locale))}
+        </p>
 
         {/* HERO: report card (left) | video + what you can do (right).
             items-start: each column sizes to its own content — the right

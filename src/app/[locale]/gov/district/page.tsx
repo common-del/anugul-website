@@ -14,7 +14,8 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { getBlockSlugs } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
 import { getSchools } from "@/lib/schools";
-import { pageMeta, districtSeo } from "@/lib/seo";
+import { pageMeta, districtSeo, districtLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -135,6 +136,12 @@ export default function DistrictReportPage({
 
   return (
     <PageShell>
+      <JsonLd
+        data={districtLd(
+          locale,
+          districtSeo(locale, district.districtAverage, district.blocks.length, district.schoolsAssessed).description,
+        )}
+      />
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* top row: title | block switcher (centre) | WhatsApp (right) —
