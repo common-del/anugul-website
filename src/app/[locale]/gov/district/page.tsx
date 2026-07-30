@@ -14,6 +14,7 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { getBlockSlugs } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
 import { getSchools } from "@/lib/schools";
+import { pageMeta, districtSeo } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -29,6 +30,18 @@ type District = {
   blocks: { name: string; average: number; schools: number; students: number; g5: number; g8: number }[];
 };
 const district = districtData as unknown as District;
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = districtSeo(
+    locale,
+    district.districtAverage,
+    district.blocks.length,
+    district.schoolsAssessed,
+  );
+  return pageMeta(locale, "gov/district/", title, description);
+}
 
 function fill(s: string, vars: Record<string, string | number>) {
   return Object.entries(vars).reduce(

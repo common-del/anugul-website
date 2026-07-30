@@ -8,9 +8,17 @@ import ExplainerVideos from "@/components/ExplainerVideos";
 import { getBlockSlugs, blockReportUrl } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta, resourcesSeo } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = resourcesSeo(locale);
+  return pageMeta(locale, "resources/", title, description);
 }
 
 type Kind = "download" | "view" | "link";

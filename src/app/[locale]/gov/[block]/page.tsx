@@ -15,6 +15,7 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { getBlock, getBlockSlugs, blockReportUrl, type BlockSlice } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
+import { pageMeta, blockSeo } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -22,6 +23,24 @@ export function generateStaticParams() {
   );
 }
 export const dynamicParams = false;
+
+export function generateMetadata({ params }: { params: { locale: string; block: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  let b: BlockSlice;
+  try {
+    b = getBlock(params.block);
+  } catch {
+    return {};
+  }
+  const { title, description } = blockSeo(
+    locale,
+    blockName(b.name, locale),
+    b.headline.overall,
+    b.headline.schools,
+  );
+  return pageMeta(locale, `gov/${params.block}/`, title, description);
+}
 
 const BAND_ORDER: BandKey[] = ["excelling", "developing", "needs", "urgent"];
 

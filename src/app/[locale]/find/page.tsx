@@ -5,9 +5,17 @@ import SiteFooter from "@/components/SiteFooter";
 import SchoolFinder from "@/components/SchoolFinder";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta, findSeo } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = findSeo(locale);
+  return pageMeta(locale, "find/", title, description);
 }
 
 export default function FindPage({ params }: { params: { locale: string } }) {

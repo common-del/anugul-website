@@ -6,11 +6,19 @@ import SiteFooter from "@/components/SiteFooter";
 import AwarenessFilm from "@/components/AwarenessFilm";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta, homeSeo } from "@/lib/seo";
 import { fmtNum } from "@/lib/format";
 import districtData from "@/data/district.json";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = homeSeo(locale);
+  return pageMeta(locale, "", title, description);
 }
 
 type District = {

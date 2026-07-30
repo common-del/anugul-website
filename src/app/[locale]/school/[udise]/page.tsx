@@ -15,6 +15,7 @@ import { blockName, clusterName } from "@/lib/placeNames";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
+import { pageMeta, schoolSeo } from "@/lib/seo";
 import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
 
 type Profile = {
@@ -72,23 +73,14 @@ export function generateMetadata({
   if (!isLocale(params.locale)) return {};
   const s = schools[params.udise];
   if (!s) return {};
-  const t = getDict(params.locale);
-  const title = `${s.name} · ${t.site.name}`;
-  return {
-    title,
-    description: t.site.description,
-    openGraph: {
-      title,
-      description: t.site.description,
-      images: [{ url: "/og-image.png", width: 1200, height: 630 }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: t.site.description,
-      images: ["/og-image.png"],
-    },
-  };
+  const locale = params.locale as Locale;
+  const { title, description } = schoolSeo(
+    locale,
+    s.name,
+    blockName(s.block, locale),
+    score10(s.overall.score),
+  );
+  return pageMeta(locale, `school/${params.udise}/`, title, description);
 }
 
 // v2 parent report card (docx mock): /10 overall, subject scores, download +

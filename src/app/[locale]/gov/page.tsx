@@ -7,9 +7,17 @@ import BlockReportsCard from "@/components/BlockReportsCard";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import { getBlockSlugs } from "@/lib/officialsData";
+import { pageMeta, govSeo } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = govSeo(locale);
+  return pageMeta(locale, "gov/", title, description);
 }
 
 // Unified reports landing (mock-up Screen 5): "Explore Reports" on Home, the
