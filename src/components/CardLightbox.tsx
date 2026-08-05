@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 
 // Report-card preview + lightbox. The preview is a TEASER: capped at a fixed
 // height for every school regardless of page count; anything taller is
@@ -75,7 +76,10 @@ export default function CardLightbox({
         )}
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            track("report_card_open");
+            setOpen(true);
+          }}
           aria-label={enlargeLabel}
           className="absolute bottom-2 left-2 grid h-10 w-10 place-items-center rounded-lg bg-white/90 text-gov shadow ring-1 ring-gov-line transition hover:bg-white"
         >

@@ -1,5 +1,7 @@
 "use client";
 
+import { track } from "@/lib/analytics";
+
 // Green "Share on WhatsApp" button (docx mock). Shares the school name and
 // the current page URL; wa.me works in browser and app alike.
 export default function WhatsAppShare({
@@ -10,6 +12,7 @@ export default function WhatsAppShare({
   text: string;
 }) {
   const onClick = () => {
+    track("share", { method: "whatsapp" });
     const msg = `${text} ${window.location.href}`;
     window.open(
       `https://wa.me/?text=${encodeURIComponent(msg)}`,

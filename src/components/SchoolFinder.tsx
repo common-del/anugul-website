@@ -7,6 +7,7 @@ import type { BandKey } from "@/lib/bands";
 import Stars from "@/components/Stars";
 import type { Locale } from "@/lib/i18n/config";
 import { blockName, clusterName } from "@/lib/placeNames";
+import { track } from "@/lib/analytics";
 
 type Item = { u: string; n: string; b: string; c: string; st: string; s10: number; band: BandKey };
 type Geo = { u: string; lat: number; lon: number };
@@ -125,6 +126,15 @@ export default function SchoolFinder({
       .map(({ g, km }) => ({ item: byU.get(g.u), km }))
       .filter((x): x is { item: Item; km: number } => !!x.item);
   }, [pos, geo, index, byU]);
+
+  // Fire a GA "search" event ~1s after the visitor stops typing (>=2 chars),
+  // so we capture real searches without an event per keystroke.
+  useEffect(() => {
+    const query = q.trim();
+    if (query.length < 2) return;
+    const id = setTimeout(() => track("search", { search_term: query.toLowerCase() }), 900);
+    return () => clearTimeout(id);
+  }, [q]);
 
   // global search across every field we actually hold
   const searchMatches = useMemo(() => {

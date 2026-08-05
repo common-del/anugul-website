@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n/config";
+import { track } from "@/lib/analytics";
 
 // One block, prepared server-side (geometry + rank-orange fill + preformatted
 // % label). Kept serialisable so the server component can hand it across the
@@ -51,6 +52,7 @@ export default function DistrictMapCanvas({
           >
             <g
               className="cursor-pointer transition duration-150 hover:brightness-90"
+              onClick={() => track("map_block_select", { block: b.name })}
               onMouseEnter={() => setHovered(b.name)}
               onMouseLeave={() => setHovered((h) => (h === b.name ? null : h))}
               onFocus={() => setHovered(b.name)}

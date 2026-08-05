@@ -46,7 +46,7 @@ export default function ConsentBanner() {
             strategy="afterInteractive"
           />
           <Script id="ga-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('set','user_properties',{site_language:location.pathname.indexOf('/od/')===0?'od':'en'});gtag('config','${GA_ID}');`}
           </Script>
         </>
       )}
