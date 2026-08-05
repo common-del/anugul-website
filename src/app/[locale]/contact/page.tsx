@@ -3,6 +3,7 @@ import PageShell from "@/components/PageShell";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
+import EmailLink from "@/components/EmailLink";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 
@@ -41,12 +42,12 @@ export default function ContactPage({
             <div className="flex gap-2">
               <dt className="w-16 shrink-0 font-semibold text-muted">{v.contactEmailL}</dt>
               <dd className="text-gov-ink">
-                <a
-                  href={`mailto:${DEO_EMAIL}`}
+                <EmailLink
+                  email={DEO_EMAIL}
                   className="underline underline-offset-2 hover:text-gov"
                 >
                   {DEO_EMAIL}
-                </a>
+                </EmailLink>
               </dd>
             </div>
           </dl>

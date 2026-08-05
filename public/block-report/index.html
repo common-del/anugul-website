@@ -1,5 +1,23 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SAKSHAM Block Report</title>
+<script>
+/* Consent-gated GA — this standalone report is a separate file from the Next
+   app, so it needs its own tag. Same origin means it reads the SAME consent
+   choice the site stored; it only tracks visitors who already accepted, and
+   never prompts on its own. Reports one page_view + a report_html_view event
+   tagged with the block/district that was opened. */
+(function(){
+  try{ if(localStorage.getItem('saksham-analytics-consent')!=='granted') return; }catch(e){ return; }
+  var G='G-ERVHWZPKGC';
+  var s=document.createElement('script'); s.async=true;
+  s.src='https://www.googletagmanager.com/gtag/js?id='+G; document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[]; function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config',G);
+  var b=new URLSearchParams(location.search).get('block')||'District';
+  gtag('event','report_html_view',{report_block:b});
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--blue:#00316B;--yellow:#FFD400;--gold:#D4B000;--near:#0F0F0F;--grey:#5F6368;--lblue:#EBF3FA;--lgold:#FFF2CC;--grid:#E6E9ED;--green:#2D8B4E;--amber:#C77D00;--red:#C0392B}
