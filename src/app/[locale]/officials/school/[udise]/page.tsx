@@ -7,6 +7,7 @@ import BandMeter from "@/components/BandMeter";
 import SubjectBars from "@/components/SubjectBars";
 import SchoolProfile, { type Profile } from "@/components/SchoolProfile";
 import { blockName, clusterName } from "@/lib/placeNames";
+import { schoolDisplayName } from "@/lib/schoolNames";
 import SchoolContext, {
   type Peer, type ClusterPos, type BrightSpotRef, type Inputs,
 } from "@/components/SchoolContext";
@@ -47,15 +48,16 @@ export default function OfficialSchoolPage({
   const locale = params.locale as Locale;
   const t = getDict(locale);
   const o = t.officials;
+  const dispName = schoolDisplayName(s.udise, s.name, locale);
   const hasSubjects = Object.keys(s.byGrade).length > 0;
 
-  const self: NbRow = { name: s.name, score: s.overall.score, band: s.overall.band, byGrade: s.byGrade };
+  const self: NbRow = { name: dispName, score: s.overall.score, band: s.overall.band, byGrade: s.byGrade };
   const neighbours: NbRow[] = (s.neighbours ?? [])
     .map((n) => {
       const ns = schools[n.udise];
       if (!ns) return null;
       return {
-        udise: ns.udise, name: ns.name, score: ns.overall.score,
+        udise: ns.udise, name: schoolDisplayName(ns.udise, ns.name, locale), score: ns.overall.score,
         band: ns.overall.band, byGrade: ns.byGrade, km: n.km,
       };
     })
@@ -67,7 +69,7 @@ export default function OfficialSchoolPage({
       <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">
         <section>
           <p className="text-sm font-semibold text-accent-dark">{o.schoolHeadKicker}</p>
-          <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">{s.name}</h1>
+          <h1 className="text-2xl font-extrabold leading-tight text-brand-ink">{dispName}</h1>
           <p className="mt-1 text-sm text-muted">{blockName(s.block, locale)} · {clusterName(s.cluster, locale)}</p>
           <p className="mt-1 text-xs text-muted">
             UDISE {s.udise}

@@ -10,6 +10,7 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT } from "@/lib/bands";
 import InputsCard from "@/components/InputsCard";
 import { blockName, clusterName } from "@/lib/placeNames";
+import { schoolDisplayName } from "@/lib/schoolNames";
 import { getCluster, getClusterIndex, type ClusterSlice } from "@/lib/officialsData";
 
 export function generateStaticParams() {
@@ -95,7 +96,7 @@ export default function ClusterPage({
                   href={`/${locale}/school/${s.udise}/`}
                   className="min-w-0 flex-1 text-brand underline-offset-2 hover:underline"
                 >
-                  {s.name}
+                  {schoolDisplayName(s.udise, s.name, locale)}
                 </Link>
                 <span
                   className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
@@ -137,9 +138,9 @@ export default function ClusterPage({
               {c.brightSpots.map((s, i) => (
                 <li key={`b${i}`} className="rounded-xl bg-white px-4 py-3">
                   {fill(o.brightLine, {
-                    name: s.name,
+                    name: schoolDisplayName(s.udise, s.name, locale),
                     score: pct(s.score),
-                    cluster: c.cluster,
+                    cluster: clusterName(c.cluster, locale),
                     clusterScore: pct(s.cluster_score),
                     students: num(s.students),
                   })}

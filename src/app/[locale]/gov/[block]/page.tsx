@@ -6,6 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
 import { blockName, clusterName } from "@/lib/placeNames";
+import { schoolDisplayName } from "@/lib/schoolNames";
 import Gauge from "@/components/Gauge";
 import { mapBandColor } from "@/components/DistrictMapBands";
 import SubjectsVsDistrict, { type SubjectRow } from "@/components/SubjectsVsDistrict";
@@ -120,13 +121,13 @@ export default function GovBlockPage({
     // — cluster/block/district — stay %).
     bestSchool && {
       l: v.bestSchool,
-      val: bestSchool.name,
+      val: schoolDisplayName(bestSchool.udise, bestSchool.name, locale),
       n: `${num(Math.round(bestSchool.score / 10))}/${num(10)}`,
       good: true,
     },
     worstSchool && {
       l: v.schoolNeedsSupport,
-      val: worstSchool.name,
+      val: schoolDisplayName(worstSchool.udise, worstSchool.name, locale),
       n: `${num(Math.round(worstSchool.score / 10))}/${num(10)}`,
       good: false,
     },

@@ -1,6 +1,7 @@
 import { fmtNum, fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
 import { blockName, clusterName } from "@/lib/placeNames";
+import { schoolDisplayName } from "@/lib/schoolNames";
 
 export type Peer = {
   nPeers: number; median: number | null; pctile: number | null;
@@ -9,7 +10,7 @@ export type Peer = {
 } | null;
 export type ClusterPos = { rank: number; of: number; score: number } | null;
 export type BrightSpotRef = {
-  name: string; score: number; cluster_score: number;
+  udise: string; name: string; score: number; cluster_score: number;
 } | null;
 export type Inputs = {
   ptr: number | null; ptrNorm: number | null; ptrOver: number | null;
@@ -110,7 +111,7 @@ export default function SchoolContext({
           </p>
           <p className="mt-1 text-sm text-brand-ink">
             {fill(c.brightLine, {
-              name: brightSpot.name,
+              name: schoolDisplayName(brightSpot.udise, brightSpot.name, locale),
               score: fmtPercent(Math.round(brightSpot.score), locale),
               clusterScore: fmtPercent(Math.round(brightSpot.cluster_score), locale),
             })}

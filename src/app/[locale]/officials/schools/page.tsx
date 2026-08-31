@@ -7,6 +7,7 @@ import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
 import type { BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
+import { schoolDisplayName } from "@/lib/schoolNames";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -26,7 +27,7 @@ export default function SchoolsPage({ params }: { params: { locale: string } }) 
   const rows: DirRow[] = Object.values(getSchools() as Record<string, School>)
     .map((s) => ({
       udise: s.udise,
-      name: s.name,
+      name: schoolDisplayName(s.udise, s.name, locale),
       block: s.block,
       cluster: s.cluster,
       score: s.overall.score,

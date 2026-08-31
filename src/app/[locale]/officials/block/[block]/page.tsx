@@ -9,6 +9,7 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import InputsCard from "@/components/InputsCard";
 import { blockName, clusterName } from "@/lib/placeNames";
+import { schoolDisplayName } from "@/lib/schoolNames";
 import {
   getBlock,
   getBlockSlugs,
@@ -178,7 +179,7 @@ export default function BlockPage({
                           href={`/${locale}/school/${s.udise}/`}
                           className="text-brand underline-offset-2 hover:underline"
                         >
-                          {s.name}
+                          {schoolDisplayName(s.udise, s.name, locale)}
                         </Link>
                         <span className="block text-xs text-muted">{clusterName(s.cluster, locale)}</span>
                       </td>
@@ -282,13 +283,13 @@ export default function BlockPage({
                       href={`/${locale}/school/${s.udise}/`}
                       className="font-bold text-brand underline-offset-2 hover:underline"
                     >
-                      {s.name}
+                      {schoolDisplayName(s.udise, s.name, locale)}
                     </Link>
                     <span className="block text-brand-ink">
                       {fill(o.brightLine, {
                         name: "",
                         score: pct(s.score),
-                        cluster: s.cluster,
+                        cluster: clusterName(s.cluster, locale),
                         clusterScore: pct(s.cluster_score),
                         students: num(s.students),
                       }).replace(/^ +/, "")}
@@ -345,7 +346,7 @@ export default function BlockPage({
                         href={`/${locale}/school/${s.udise}/`}
                         className="min-w-0 flex-1 truncate text-brand underline-offset-2 hover:underline"
                       >
-                        {s.name}
+                        {schoolDisplayName(s.udise, s.name, locale)}
                       </Link>
                       <span
                         className="shrink-0 font-semibold tabular-nums"
