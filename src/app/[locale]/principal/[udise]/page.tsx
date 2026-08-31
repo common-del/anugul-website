@@ -15,6 +15,8 @@ import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
 import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
+import { getExtraSchools, schoolDisplayName } from "@/lib/schoolNames";
+import NoResultSchool from "@/components/NoResultSchool";
 
 type Profile = {
   classRange: string | null;
@@ -36,12 +38,14 @@ type School = {
   neighbours: { udise: string; km: number | null }[];
 };
 const schools = getSchools() as unknown as Record<string, School>;
+const extraById = new Map(getExtraSchools().map((e) => [e.id, e]));
 const score10 = (pct: number) => Math.round(pct / 10);
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    Object.keys(schools).map((udise) => ({ locale, udise })),
-  );
+  return locales.flatMap((locale) => [
+    ...Object.keys(schools).map((udise) => ({ locale, udise })),
+    ...[...extraById.values()].map((e) => ({ locale, udise: e.id })),
+  ]);
 }
 export const dynamicParams = false;
 
@@ -83,13 +87,28 @@ export default function PrincipalPage({
   params: { locale: string; udise: string };
 }) {
   if (!isLocale(params.locale)) notFound();
+  const locale = params.locale as Locale;
+  const ex = extraById.get(params.udise);
+  if (ex) {
+    const td = getDict(locale);
+    return (
+      <NoResultSchool
+        locale={locale}
+        t={td}
+        name={locale === "od" && ex.nameOd ? ex.nameOd : ex.name}
+        block={ex.block}
+        cluster={ex.cluster}
+        findHref={`/${locale}/school-head/`}
+      />
+    );
+  }
   const s = schools[params.udise];
   if (!s) notFound();
-  const locale = params.locale as Locale;
   const t = getDict(locale);
   const v = t.v2;
   const num = (n: number) => fmtNum(n, locale);
   const overall10 = score10(s.overall.score);
+  const dispName = schoolDisplayName(s.udise, s.name, locale);
 
   // Colourful action icons (owner 2026-07-21): larger, each a distinct hue in a
   // soft tinted disc, spaced to fill the column — replaces the flat slate line
@@ -141,7 +160,7 @@ export default function PrincipalPage({
     .map((n) => {
       const ns = schools[n.udise];
       return ns
-        ? { udise: ns.udise, name: ns.name, km: n.km, s10: score10(ns.overall.score) }
+        ? { udise: ns.udise, name: schoolDisplayName(ns.udise, ns.name, locale), km: n.km, s10: score10(ns.overall.score) }
         : null;
     })
     .filter(Boolean) as { udise: string; name: string; km: number | null; s10: number }[];
@@ -172,7 +191,7 @@ export default function PrincipalPage({
         {/* ===== heading + overall score (tight label+badge group) ===== */}
         <section className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <div className="min-w-0">
-            <h1 className="text-2xl font-extrabold leading-tight text-gov">{s.name}</h1>
+            <h1 className="text-2xl font-extrabold leading-tight text-gov">{dispName}</h1>
             <p className="mt-1.5 text-sm font-bold text-gov-ink">
               UDISE: {s.udise} | {blockName(s.block, locale)} | {clusterName(s.cluster, locale)}
               {s.assessedStudents
@@ -200,7 +219,7 @@ export default function PrincipalPage({
               <div className="mt-3">
                 <CardLightbox
                   src={hasHcard(s.udise) ? hcardImg(s.udise) : cardImg(s.udise)}
-                  alt={`${s.name} — ${v.yourReportCard}`}
+                  alt={`${dispName} — ${v.yourReportCard}`}
                   enlargeLabel={v.enlargeCard}
                   closeLabel={v.closeCard}
                   pageLabel={v.pageOneOf}
@@ -222,7 +241,7 @@ export default function PrincipalPage({
                   {v.downloadReportCard}
                 </a>
               )}
-              <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
+              <WhatsAppShare label={v.shareWhatsApp} text={dispName} />
             </div>
           </section>
 

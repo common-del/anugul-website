@@ -1,0 +1,200 @@
+[
+ {
+  "id": "21150119102",
+  "udise": "21150119102",
+  "block": "Anugola",
+  "cluster": "BADAKERA UPS",
+  "name": "CHANDRABAHAL UPS",
+  "nameOd": "ଚନ୍ଦ୍ରବାହାଳ  ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150102503",
+  "udise": "21150102503",
+  "block": "Anugola",
+  "cluster": "BADAKERA UPS",
+  "name": "POST BASIC SCHOOL, CHAMPATIMUNDA",
+  "nameOd": "ପୋଷ୍ଟ ବେସିକ୍ ସ୍କୁଲ, ଚମ୍ପତ୍ତିମୁଣ୍ଡା",
+  "odVerified": true
+ },
+ {
+  "id": "21150111003",
+  "udise": "21150111003",
+  "block": "Anugola",
+  "cluster": "Jhatakipasi PS",
+  "name": "Kamarpasi PS",
+  "nameOd": "କମରପଶି ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150210001",
+  "udise": "21150210001",
+  "block": "Athamalik",
+  "cluster": "MAIMURA PS",
+  "name": "Raida  pps",
+  "nameOd": "ରଇଡା  ପ୍ରକଳ୍ପ  ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150220602",
+  "udise": "21150220602",
+  "block": "Athamalik",
+  "cluster": "MAIMURA PS",
+  "name": "Kutulusinga ups",
+  "nameOd": "କୁତୁଲୁସିଙ୍ଗା ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ (ବ୍ଲକ୍ ଗ୍ରାଣ୍ଟ)",
+  "odVerified": true
+ },
+ {
+  "id": "21150212601",
+  "udise": "21150212601",
+  "block": "Athamalik",
+  "cluster": "SASTRIJEE UPS, KRUTIBASPUR",
+  "name": "KHADAGABAGAL PS",
+  "nameOd": "ଖଡଗବାହାଳ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150209703",
+  "udise": "21150209703",
+  "block": "Athamalik",
+  "cluster": "TAPADHOL",
+  "name": "KANTAPADA UPS",
+  "nameOd": "କନ୍ତପଡା ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150303151",
+  "udise": "21150303151",
+  "block": "Banarpal",
+  "cluster": "GOVT NODAL HIGH SCHOOL GOTAMARA",
+  "name": "INDIRAGANDHI GIRLS HIGH SCHOOL",
+  "nameOd": "ଇନ୍ଦିରାଗାନ୍ଧୀ ବାଳିକା ଉଚ୍ଚ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150306251",
+  "udise": "21150306251",
+  "block": "Banarpal",
+  "cluster": "Kumanda Jarasingha Cluster",
+  "name": "Jarasingha Girls HS",
+  "nameOd": "ଜରସିଂହା ବାଳିକା ଉଚ୍ଚ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150402402",
+  "udise": "21150402402",
+  "block": "Chhendipada",
+  "cluster": "Korada ups",
+  "name": "Gopiballavapur ups",
+  "nameOd": "ଗୋପିବଲ୍ଲଭପୁର ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150409501",
+  "udise": "21150409501",
+  "block": "Chhendipada",
+  "cluster": "Korada ups",
+  "name": "Astasambhu ups",
+  "nameOd": "ଅଷ୍ଚଶମ୍ଭୁ ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150409702",
+  "udise": "21150409702",
+  "block": "Chhendipada",
+  "cluster": "Korada ups",
+  "name": "Putagadia ups",
+  "nameOd": "ପୁଟଗାଡିଆ ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": true
+ },
+ {
+  "id": "21150515251",
+  "udise": "21150515251",
+  "block": "Kaniha",
+  "cluster": "GOVT UPS JARADA",
+  "name": "Regional High school Gandaberena",
+  "nameOd": "ଆଞ୍ଚଳିକ ଉଚ୍ଚ ବିଦ୍ୟାଳୟ, ଗଣ୍ଡବେରେଣା",
+  "odVerified": true
+ },
+ {
+  "id": "21150727101",
+  "udise": "21150727101",
+  "block": "Palalahada",
+  "cluster": "HK Mahatab ups Iswaranagar",
+  "name": "Govt ps Rayadihi",
+  "nameOd": "ସରକାରୀ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ ରୟାଡି ଇ",
+  "odVerified": true
+ },
+ {
+  "id": "21150718206",
+  "udise": "21150718206",
+  "block": "Palalahada",
+  "cluster": "HK Mahatab ups Iswaranagar",
+  "name": "Govt ps Uditnagar",
+  "nameOd": "ସରକାରୀ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ ଉଦିତ୍ ନଗର",
+  "odVerified": true
+ },
+ {
+  "id": "ns-saradhapur-a-ups",
+  "udise": null,
+  "block": "Anugola",
+  "cluster": "PNHS Kumurisingha",
+  "name": "Saradhapur (A)UPS",
+  "nameOd": "ଶରଧାପୁର (ଏ) ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": false
+ },
+ {
+  "id": "ns-hanadiha-ps",
+  "udise": null,
+  "block": "Anugola",
+  "cluster": "PNHS Kumurisingha",
+  "name": "Hanadiha PS",
+  "nameOd": "ହନଦିହା ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": false
+ },
+ {
+  "id": "ns-tumursingha-aided-ups",
+  "udise": null,
+  "block": "Athamalik",
+  "cluster": "RADHAMADHAB GOVT. HIGH SCHOOL PAIKSAHI",
+  "name": "TUMURSINGHA AIDED UPS",
+  "nameOd": "ତୁମୁରସିଂହା ସାହାଯ୍ୟପ୍ରାପ୍ତ ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": false
+ },
+ {
+  "id": "ns-govt-ps-nuapada",
+  "udise": null,
+  "block": "Banarpal",
+  "cluster": "GOVT UPS TURANG",
+  "name": "GOVT PS NUAPADA",
+  "nameOd": "ସରକାରୀ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ ନୂଆପଡ଼ା",
+  "odVerified": false
+ },
+ {
+  "id": "ns-arahat-ughs",
+  "udise": null,
+  "block": "Banarpal",
+  "cluster": "TULASIPAL CLUSTER",
+  "name": "Arahat ughs",
+  "nameOd": "ଅରହଟ ଉନ୍ନୀତ ଉଚ୍ଚ ବିଦ୍ୟାଳୟ",
+  "odVerified": false
+ },
+ {
+  "id": "ns-maheshwar-ups",
+  "udise": null,
+  "block": "Kaniha",
+  "cluster": "GOVT UPS ARKIL",
+  "name": "Maheshwar ups",
+  "nameOd": "ମହେଶ୍ୱର ଉଚ୍ଚ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": false
+ },
+ {
+  "id": "ns-diajharan-ps",
+  "udise": null,
+  "block": "Talachera",
+  "cluster": "Gobara NHS",
+  "name": "Diajharan PS",
+  "nameOd": "ଡିଆଝରନ ପ୍ରାଥମିକ ବିଦ୍ୟାଳୟ",
+  "odVerified": false
+ }
+]

@@ -96,6 +96,7 @@ export default function FindPage({ params }: { params: { locale: string } }) {
               showingFirst: v.showingFirst,
               kmAway: v.kmAway,
               viewReportAria: v.viewReportAria,
+              noResultChip: v.noResultChip,
             }}
           />
         </div>
