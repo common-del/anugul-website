@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/config";
+import { expandName } from "@/lib/expandName";
 
 // Display-only place-name localisation (owner 2026-07-28). Data keys, slugs and
 // URLs are UNCHANGED; this maps the block/cluster names that appear in the data
@@ -195,7 +196,7 @@ export function blockName(name: string, locale: Locale): string {
   return b ? (locale === "od" ? b.od : b.en) : name;
 }
 
-/** Localised cluster display name; English clusters are unchanged, Odia from the review. */
+/** Localised cluster display name; English with acronyms written in full, Odia from the review. */
 export function clusterName(name: string, locale: Locale): string {
-  return locale === "od" ? (CLUSTER_OD[name] || name) : name;
+  return locale === "od" ? (CLUSTER_OD[name] || name) : expandName(name);
 }

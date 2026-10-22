@@ -19,6 +19,8 @@ import districtData from "@/data/district.json";
 import { pageMeta, blockSeo, blockBreadcrumbLd, blockCrumbs } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BandCards from "@/components/BandCards";
+import { getClusterIndex } from "@/lib/officialsData";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -108,15 +110,21 @@ export default function GovBlockPage({
   const schoolsAsc = b.bands.overall?.schools ?? [];
   const bestSchool = schoolsAsc[schoolsAsc.length - 1] ?? null;
   const worstSchool = schoolsAsc[0] ?? null;
+  const clSlug = Object.fromEntries(
+    getClusterIndex().filter((c) => c.block === b.name).map((c) => [c.cluster, c.slug]),
+  );
+  const principalFind = (cluster: string) =>
+    `/${locale}/school-head/?block=${encodeURIComponent(b.name)}&cluster=${encodeURIComponent(cluster)}`;
   const insights = [
     bestSubj && {
       l: v.bestSubject,
       val: `${subj(bestSubj.subject)} · ${grade(bestSubj.grade)}`,
       n: pct(bestSubj.block),
       good: true,
+      href: "",
     },
-    bestCluster && { l: v.bestCluster, val: clusterName(bestCluster.cluster, locale), n: pct(bestCluster.score), good: true },
-    worstCluster && { l: v.clusterNeedsSupport, val: clusterName(worstCluster.cluster, locale), n: pct(worstCluster.score), good: false },
+    bestCluster && { l: v.bestCluster, val: clusterName(bestCluster.cluster, locale), n: pct(bestCluster.score), good: true, href: principalFind(bestCluster.cluster) },
+    worstCluster && { l: v.clusterNeedsSupport, val: clusterName(worstCluster.cluster, locale), n: pct(worstCluster.score), good: false, href: principalFind(worstCluster.cluster) },
     // Scale convention: school-level numbers show /10, never % (admin units
     // — cluster/block/district — stay %).
     bestSchool && {
@@ -124,20 +132,23 @@ export default function GovBlockPage({
       val: schoolDisplayName(bestSchool.udise, bestSchool.name, locale),
       n: `${num(Math.round(bestSchool.score / 10))}/${num(10)}`,
       good: true,
+      href: `/${locale}/principal/${bestSchool.udise}/`,
     },
     worstSchool && {
       l: v.schoolNeedsSupport,
       val: schoolDisplayName(worstSchool.udise, worstSchool.name, locale),
       n: `${num(Math.round(worstSchool.score / 10))}/${num(10)}`,
       good: false,
+      href: `/${locale}/principal/${worstSchool.udise}/`,
     },
     {
       l: v.vsDistrictShortL,
       val: fill(v.vsDistrictShortV, { block: pct(b.headline.overall), district: pct(distAvg) }),
       n: `${b.headline.overall >= distAvg ? "+" : ""}${num(Math.round((b.headline.overall - distAvg) * 10) / 10)}`,
       good: b.headline.overall >= distAvg,
+      href: "",
     },
-  ].filter(Boolean) as { l: string; val: string; n: string; good: boolean }[];
+  ].filter(Boolean) as { l: string; val: string; n: string; good: boolean; href: string }[];
 
   // ---- subjects vs district (toggle table data, pre-localised) ----
   const gradesTable: Record<string, SubjectRow[]> = {};
@@ -229,17 +240,17 @@ export default function GovBlockPage({
               <div className="text-lg font-extrabold leading-tight text-gov-ink">
                 {num(b.headline.schools)}
               </div>
-              <div className="mt-0.5 text-xs text-muted">{t.analytics.schoolsAssessed}</div>
-              <div className="mt-1 text-[11px] text-muted">
-                {fill(v.ofDistrictSchools, { n: num(district.schoolsAssessed) })}
+              <div className="mt-0.5 text-xs text-muted">
+                {fill(v.schoolsAssessedInBlock, { n: num(b.headline.schools) })}
               </div>
             </div>
             <div className="gov-card p-4">
               <div className="text-lg font-extrabold leading-tight text-gov-ink">
                 {num(b.headline.students)}
               </div>
-              <div className="mt-0.5 text-xs text-muted">{t.analytics.studentsAssessed}</div>
-              <div className="mt-1 text-[11px] text-muted">{v.loTag3}</div>
+              <div className="mt-0.5 text-xs text-muted">
+                {fill(v.studentsAssessedG5G8, { n: num(b.headline.students) })}
+              </div>
             </div>
             <div className="gov-card p-4">
               <div className="text-[13px] font-extrabold leading-snug text-gov-ink">
@@ -255,13 +266,11 @@ export default function GovBlockPage({
           <h2 className="text-lg font-bold text-gov-ink">
             {fill(v.keyInsights, { block: blockName(b.name, locale) })}
           </h2>
+          <p className="mt-0.5 text-xs text-muted">{v.insightsClickHint}</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {insights.map((ins) => (
-              <div
-                key={ins.l}
-                className="rounded-xl p-3.5"
-                style={{ backgroundColor: ins.good ? "#E9ECEE" : "#FCEBE5" }}
-              >
+            {insights.map((ins) => {
+              const style = { backgroundColor: ins.good ? "#E9ECEE" : "#FCEBE5" };
+              const body = (
                 <div className="flex items-start gap-2.5">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ins.good ? "#2D3A47" : "#C24E36"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
                     {ins.good ? (
@@ -284,8 +293,17 @@ export default function GovBlockPage({
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+              return ins.href ? (
+                <Link key={ins.l} href={ins.href} className="block rounded-xl p-3.5 transition hover:ring-2 hover:ring-gov" style={style}>
+                  {body}
+                </Link>
+              ) : (
+                <div key={ins.l} className="rounded-xl p-3.5" style={style}>
+                  {body}
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -353,29 +371,31 @@ export default function GovBlockPage({
                 )}
               </div>
             )}
-            {/* band cards */}
-            <div className="mt-3 grid grid-cols-2 gap-2.5">
-              {BAND_ORDER.map((k) => (
-                <div
-                  key={k}
-                  className="rounded-xl p-3"
-                  style={{ backgroundColor: `${BAND_COLOR[k]}1F` }}
-                >
-                  <div className="text-xl font-extrabold tabular-nums" style={{ color: BAND_TEXT[k] }}>
-                    {num(counts[k] ?? 0)}
-                  </div>
-                  <div className="mt-0.5 text-xs font-semibold text-gov-ink">
-                    {t.band[k]} · {v.schoolsWord}
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* band cards — click one to list its schools */}
+            <BandCards
+              locale={locale}
+              labels={{
+                schoolsWord: v.schoolsWord,
+                clusterWord: v.clusterWord,
+                noSchools: v.noSchoolsInBand,
+                closeList: v.closeList,
+              }}
+              bands={BAND_ORDER.map((k) => ({ key: k, label: t.band[k], count: counts[k] ?? 0, color: BAND_COLOR[k], text: BAND_TEXT[k] }))}
+              schools={(b.bands.overall?.schools ?? []).map((s) => ({
+                udise: s.udise,
+                name: schoolDisplayName(s.udise, s.name, locale),
+                cluster: clusterName(s.cluster, locale),
+                clusterSlug: clSlug[s.cluster],
+                score: s.score,
+                band: s.band,
+              }))}
+            />
           </section>
         </div>
 
         {/* ===== subjects vs district | cluster performance ===== */}
         <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
-          <section className="gov-card p-5">
+          <section id="subjects" className="gov-card scroll-mt-24 p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.subjectVsDistrictT}</h2>
             <div className="mt-3">
               <SubjectsVsDistrict
@@ -392,6 +412,12 @@ export default function GovBlockPage({
 
           <section className="gov-card p-5">
             <h2 className="text-lg font-bold text-gov-ink">{v.clusterPerformance}</h2>
+            <p className="mt-0.5 text-xs text-muted">
+              {v.clustersFindHint}{" "}
+              <a href={blockReportUrl(b.slug)} target="_blank" rel="noopener noreferrer" className="font-semibold text-gov underline underline-offset-2">
+                {v.clustersFindLink}
+              </a>
+            </p>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
               <span className="flex items-center gap-1.5">
                 <span className="h-3 w-3 rounded" style={{ backgroundColor: "#2D3A47" }} />
@@ -406,8 +432,8 @@ export default function GovBlockPage({
               {clusters.map((c) => {
                 const under = c.score < 50;
                 return (
-                  <div key={c.cluster} className="flex items-center gap-3 text-sm">
-                    <span className="w-32 shrink-0 truncate text-gov-ink sm:w-40">{clusterName(c.cluster, locale)}</span>
+                  <Link key={c.cluster} href={principalFind(c.cluster)} className="flex items-center gap-3 rounded text-sm hover:bg-gov-tint">
+                    <span className="w-32 shrink-0 truncate text-gov underline-offset-2 hover:underline sm:w-40">{clusterName(c.cluster, locale)}</span>
                     <span className="h-4 flex-1 overflow-hidden rounded bg-gov-tint">
                       <span
                         className="block h-full rounded"
@@ -420,7 +446,7 @@ export default function GovBlockPage({
                     <span className="w-10 shrink-0 text-right font-semibold tabular-nums text-gov-ink">
                       {pct(c.score)}
                     </span>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -466,6 +492,9 @@ export default function GovBlockPage({
               </a>
             </div>
           </div>
+          <p className="mt-3 text-[11px] text-gov-ink">
+            {v.csvColumnsL}: Block · Grade · Subject · Learning Outcome Code · Learning Outcome Description · Percentage
+          </p>
         </section>
 
         {/* ===== block overview | downloads & share ===== */}
@@ -515,13 +544,14 @@ export default function GovBlockPage({
                 <span aria-hidden className="text-gov">↗</span>
               </a>
               <a
-                href="/data/downloads/block_aggregates.csv"
+                href="/data/downloads/block_report.csv"
                 download
                 className="flex items-center justify-between gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-sm transition hover:bg-gov-tint"
               >
                 <span>
                   <span className="block text-sm font-bold text-gov-ink">{v.dlCsvRowT}</span>
                   <span className="mt-0.5 block text-xs text-muted">{v.dlCsvRowD}</span>
+                  <span className="mt-1 block text-[11px] text-gov-ink">{v.blockCsvColumns}</span>
                 </span>
                 <span aria-hidden className="text-gov">↓</span>
               </a>

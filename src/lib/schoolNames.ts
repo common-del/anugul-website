@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { Locale } from "@/lib/i18n/config";
+import { expandName } from "@/lib/expandName";
 
 // Display-only Odia school-name overlay + the "no-result" extra schools, both
 // committed under public/data (see school-od.json / extra-schools.json). Kept out
@@ -35,7 +36,7 @@ export function getExtraSchools(): ExtraSchool[] {
   return exCache as ExtraSchool[];
 }
 
-/** Localised school display name: Odia from the review when in `od`, else the raw name. */
+/** Localised school display name: Odia from the review when in `od`, else the name with acronyms written in full. */
 export function schoolDisplayName(udise: string, raw: string, locale: Locale): string {
-  return locale === "od" ? getSchoolOd()[udise] || raw : raw;
+  return locale === "od" ? getSchoolOd()[udise] || raw : expandName(raw);
 }

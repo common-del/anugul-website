@@ -8,6 +8,7 @@ import Stars from "@/components/Stars";
 import type { Locale } from "@/lib/i18n/config";
 import { blockName, clusterName } from "@/lib/placeNames";
 import { track } from "@/lib/analytics";
+import { expandName } from "@/lib/expandName";
 
 type Item = { u: string; n: string; b: string; c: string; st: string; s10?: number; band?: BandKey; nod?: string; noResult?: boolean };
 type Geo = { u: string; lat: number; lon: number };
@@ -110,6 +111,8 @@ export default function SchoolFinder({
     const params = new URLSearchParams(window.location.search);
     const b = params.get("block");
     if (b) setBlockState(b);
+    const c = params.get("cluster");
+    if (b && c) setCluster(c);
     Promise.all([
       fetch("/data/search-index.json").then((r) => r.json()),
       fetch("/data/school-od.json").then((r) => r.json()).catch(() => ({})),
@@ -154,7 +157,7 @@ export default function SchoolFinder({
     if (!query) return [];
     return index
       .filter((s) =>
-        `${s.n} ${s.nod ?? ""} ${s.u} ${s.b} ${s.c} ${s.st}`.toLowerCase().includes(query),
+        `${s.n} ${expandName(s.n)} ${s.nod ?? ""} ${s.u} ${s.b} ${s.c} ${expandName(s.c)} ${s.st}`.toLowerCase().includes(query),
       )
       .sort((a, z) => a.n.localeCompare(z.n));
   }, [index, q]);
@@ -184,7 +187,7 @@ export default function SchoolFinder({
   // Whole card is one focusable link (no separate button); score is the green
   // focal number; enlarged filled stars; chevron signals "tap to open".
   const Card = ({ s, km }: { s: Item; km?: number }) => {
-    const nm = locale === "od" && s.nod ? s.nod : s.n;
+    const nm = locale === "od" && s.nod ? s.nod : expandName(s.n);
     const sc = s.s10 ?? 0;
     return (
     <Link
@@ -238,14 +241,14 @@ export default function SchoolFinder({
     );
   };
 
-  const chip = (label: string, onClick: () => void) => (
+  const chip = (label: string, onClick: () => void, wrap = false) => (
     <button
       key={label}
       type="button"
       onClick={onClick}
       className="flex min-h-[48px] items-center justify-between gap-2 rounded-xl bg-white px-4 text-left text-[15px] font-semibold text-gov ring-1 ring-gov-line shadow-sm transition hover:bg-gov-tint hover:ring-gov active:bg-gov-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
     >
-      <span className="min-w-0 truncate">{label}</span>
+      <span className={wrap ? "min-w-0 break-words py-2 sm:truncate sm:py-0" : "min-w-0 truncate"}>{label}</span>
       <svg
         width="18"
         height="18"
@@ -425,8 +428,8 @@ export default function SchoolFinder({
         {block && !cluster && (
           <>
             <p className="mt-2 text-sm font-semibold text-muted">{labels.chooseCluster}</p>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              {clusters.map((c) => chip(clusterName(c, locale), () => setCluster(c)))}
+            <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {clusters.map((c) => chip(clusterName(c, locale), () => setCluster(c), true))}
             </div>
           </>
         )}

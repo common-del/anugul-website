@@ -5,7 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
-import { blockName } from "@/lib/placeNames";
+import { blockName, clusterName } from "@/lib/placeNames";
 import Gauge from "@/components/Gauge";
 import DistrictMapBands, { mapBandColor, rankOrange } from "@/components/DistrictMapBands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -14,8 +14,11 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { getBlockSlugs } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
 import { getSchools } from "@/lib/schools";
+import { schoolDisplayName } from "@/lib/schoolNames";
 import { pageMeta, districtSeo, districtLd } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
+import DistrictInsights from "@/components/DistrictInsights";
+import competencies from "@/data/district_competencies.json";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -100,6 +103,17 @@ export default function DistrictReportPage({
   const highPerforming = Object.values(
     getSchools() as unknown as Record<string, { overall: { score: number } }>,
   ).filter((sc) => Math.round(sc.overall.score / 10) === 10).length;
+  const topSchools = Object.values(
+    getSchools() as unknown as Record<string, { udise: string; name: string; block: string; cluster: string; overall: { score: number } }>,
+  )
+    .filter((sc) => Math.round(sc.overall.score / 10) === 10)
+    .map((sc) => ({
+      udise: sc.udise,
+      name: schoolDisplayName(sc.udise, sc.name, locale),
+      block: blockName(sc.block, locale),
+      cluster: clusterName(sc.cluster, locale),
+      score10: `${num(Math.round(sc.overall.score / 10))}/${num(10)}`,
+    }));
 
   const stats = [
     {
@@ -194,6 +208,14 @@ export default function DistrictReportPage({
                 hint={v.clickBlockHint}
               />
             </div>
+            <div className="mt-4 rounded-xl bg-gov-tint p-3 text-xs text-gov-ink">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">{v.mapLegendHigh}</span>
+                <span className="h-3 flex-1 rounded-full" style={{ background: `linear-gradient(90deg, ${rankOrange(0, 8)}, ${rankOrange(7, 8)})` }} />
+                <span className="font-semibold">{v.mapLegendLow}</span>
+              </div>
+              <p className="mt-1.5 leading-snug text-muted">{v.mapLegendNote}</p>
+            </div>
           </section>
 
           {/* performance by blocks */}
@@ -255,54 +277,26 @@ export default function DistrictReportPage({
               </div>
             </section>
 
-            {/* key insights — first two computed; the rest placeholders that
-                fill the card so the column aligns with the rest of the row */}
-            <section className="gov-card flex flex-1 flex-col p-5">
-              <h2 className="text-lg font-bold text-gov-ink">{v.keyInsightsPlain}</h2>
-              <ul className="mt-3 flex flex-1 flex-col justify-between gap-2.5 text-sm">
-                {best && (
-                  <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                      <path d="M23 6l-9.5 9.5-5-5L1 18" />
-                      <path d="M17 6h6v6" />
-                    </svg>
-                    <span>
-                      <span className="block text-xs font-semibold text-muted">{v.insightBestSubjectL}</span>
-                      <span className="font-bold text-gov-ink">
-                        {subj(best.subject)} · {grade(best.grade)} · {pct(best.val)}
-                      </span>
-                    </span>
-                  </li>
-                )}
-                {worst && (
-                  <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C24E36" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                      <path d="M23 18l-9.5-9.5-5 5L1 6" />
-                      <path d="M17 18h6v-6" />
-                    </svg>
-                    <span>
-                      <span className="block text-xs font-semibold text-muted">{v.insightNeedsAttentionL}</span>
-                      <span className="font-bold text-gov-ink">
-                        {subj(worst.subject)} · {grade(worst.grade)} · {pct(worst.val)}
-                      </span>
-                    </span>
-                  </li>
-                )}
-                {/* number of schools scoring a full 10/10 across the district */}
-                <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                    <path d="M23 6l-9.5 9.5-5-5L1 18" />
-                    <path d="M17 6h6v6" />
-                  </svg>
-                  <span>
-                    <span className="block text-xs font-semibold text-muted">{v.insightHighPerformingL}</span>
-                    <span className="font-bold text-gov-ink">
-                      {fill(v.insightHighPerformingV, { n: num(highPerforming), max: num(10) })}
-                    </span>
-                  </span>
-                </li>
-              </ul>
-            </section>
+            {best && worst && (
+              <DistrictInsights
+                locale={locale}
+                labels={{
+                  title: v.keyInsightsPlain,
+                  bestSubject: v.insightBestSubjectL,
+                  needsAttention: v.insightNeedsAttentionL,
+                  bestCompetencies: v.bestCompetencies,
+                  weakestCompetencies: v.weakestCompetencies,
+                  highPerforming: v.insightHighPerformingL,
+                  highPerformingValue: fill(v.insightHighPerformingV, { n: num(highPerforming), max: num(10) }),
+                  openReport: v.openReportCardArrow,
+                  close: v.closeCard,
+                }}
+                best={{ grade: best.grade, subject: best.subject, label: `${subj(best.subject)} · ${grade(best.grade)}`, pct: pct(best.val) }}
+                worst={{ grade: worst.grade, subject: worst.subject, label: `${subj(worst.subject)} · ${grade(worst.grade)}`, pct: pct(worst.val) }}
+                comp={competencies}
+                top={topSchools}
+              />
+            )}
           </div>
         </div>
 
@@ -331,6 +325,11 @@ export default function DistrictReportPage({
                   <span className="text-sm font-extrabold leading-snug text-gov-ink">{c.t}</span>
                 </div>
                 <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{c.d}</p>
+                {c.hl && (
+                  <p className="mt-2 text-[11px] leading-snug text-gov-ink">
+                    {v.csvColumnsL}: Grade · Subject · Learning Outcome Code · Learning Outcome Description · Percentage
+                  </p>
+                )}
                 {c.view ? (
                   <a
                     href={c.href}

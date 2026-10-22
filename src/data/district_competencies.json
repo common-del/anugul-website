@@ -1,0 +1,420 @@
+{
+ "Grade 5|EVS": {
+  "weak": [
+   {
+    "grade": "Grade 5",
+    "subject": "EVS",
+    "code": "E 501",
+    "desc": "Discuss the remarkable and extraordinary sensory abilities of animals (such as vision, smell, taste, touch, sound, etc.) and describe the reactions of different organisms to stimuli such as sound, light, taste, etc.",
+    "pct": 48.0
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "EVS",
+    "code": "E 415",
+    "desc": "Propose various methods related to health, reducing waste, recycling, and sustaining living resources (plants, animals, elderly individuals, people with disabilities) along with community resources (food, water, and public relations).",
+    "pct": 50.0
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "EVS",
+    "code": "E 512",
+    "desc": "Discuss complex issues faced by society, such as discrimination, expulsion, and children's rights; provide insights into traditions and events related to these matters.",
+    "pct": 56.9
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 5",
+    "subject": "EVS",
+    "code": "E 408",
+    "desc": "Identify specific characteristics, such as shape (head, limbs, teeth, skin surface), habitat (whether domesticated or wild), fruits, vegetables, and spices, along with their life cycles, uses (such as for food, medicine, decoration, etc.), and sensory attributes (such as smell, taste, preferences).",
+    "pct": 82.5
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "EVS",
+    "code": "E 405",
+    "desc": "Describe the various skills involved in daily life (such as farming, hunting, weaving, and handicrafts) along with the importance of training (the role of programs) in enhancing these skills.",
+    "pct": 81.9
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "EVS",
+    "code": "E 407",
+    "desc": "Identify and differentiate between various items related to past and present (such as transportation, goods, homes, materials, tools, skills, agriculture, etc.) and provide insights regarding their origins.",
+    "pct": 74.7
+   }
+  ]
+ },
+ "Grade 5|English": {
+  "weak": [
+   {
+    "grade": "Grade 5",
+    "subject": "English",
+    "code": "EN 508",
+    "desc": "Reads texts with comprehension, locates details and sequence of events.",
+    "pct": 64.0
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "English",
+    "code": "EN 407",
+    "desc": "Infers the meaning of unfamiliar words by reading them in contexts.",
+    "pct": 66.7
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 5",
+    "subject": "English",
+    "code": "EN 407",
+    "desc": "Infers the meaning of unfamiliar words by reading them in contexts.",
+    "pct": 66.7
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "English",
+    "code": "EN 508",
+    "desc": "Reads texts with comprehension, locates details and sequence of events.",
+    "pct": 64.0
+   }
+  ]
+ },
+ "Grade 5|Maths": {
+  "weak": [
+   {
+    "grade": "Grade 5",
+    "subject": "Maths",
+    "code": "M 504",
+    "desc": "Estimate the sum, difference, product, and quotient of significa...",
+    "pct": 53.0
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Maths",
+    "code": "M 512",
+    "desc": "Establish relationships between measurement, weight, and volume ...",
+    "pct": 55.0
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Maths",
+    "code": "M 421",
+    "desc": "Present collected data in tables or bar graph and analyze patterns.",
+    "pct": 61.5
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 5",
+    "subject": "Maths",
+    "code": "M 419",
+    "desc": "Recognize the structure of multiplication and division up to the...",
+    "pct": 82.9
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Maths",
+    "code": "M 401",
+    "desc": "Demonstrate mathematical operations used in daily life.",
+    "pct": 82.1
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Maths",
+    "code": "M 420",
+    "desc": "Understand, identify, and extend geometric patterns based on sym...",
+    "pct": 82.0
+   }
+  ]
+ },
+ "Grade 5|Odia": {
+  "weak": [
+   {
+    "grade": "Grade 5",
+    "subject": "Odia",
+    "code": "OD 512",
+    "desc": "Utilize vocabulary relevant to different subjects (such as mathematics, science, social studies, dance, medicine, etc.) to enhance communication and incorporate these terms into writing.",
+    "pct": 54.7
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Odia",
+    "code": "OD 405",
+    "desc": "Understand various types of materials (e.g., main articles in newspapers, children magazines, etc.), analyze important social and other relevant topics, and discuss them.",
+    "pct": 64.5
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Odia",
+    "code": "OD 408",
+    "desc": "Recognize and understand new vocabulary that comes from different types of content and utilize it appropriately.",
+    "pct": 68.1
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 5",
+    "subject": "Odia",
+    "code": "OD 407",
+    "desc": "Read other materials alongside your textbook (such as children literature, main news articles, magazines, posters, etc.) and gain an understanding of them.",
+    "pct": 83.5
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Odia",
+    "code": "OD 507",
+    "desc": "Explain the meanings of unfamiliar words from word lists",
+    "pct": 81.7
+   },
+   {
+    "grade": "Grade 5",
+    "subject": "Odia",
+    "code": "OD 413",
+    "desc": "Use vocabulary contextually by understanding word meanings based on specific topics and applying words meaningfully.",
+    "pct": 69.0
+   }
+  ]
+ },
+ "Grade 8|English": {
+  "weak": [
+   {
+    "grade": "Grade 8",
+    "subject": "English",
+    "code": "EN 710",
+    "desc": "Compare between characters, events, ideas, themes and correlates them to their own life.",
+    "pct": 46.0
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "English",
+    "code": "EN 709",
+    "desc": "Identifies characters, main ideas and sequence of ideas and events in textual / non textual material",
+    "pct": 60.2
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "English",
+    "code": "EN 716",
+    "desc": "Uses appropriate grammatical forms in communication (noun/ pronoun / verb/ determiner,time and tense/ passivisation/ adjective, adverb, tense.)",
+    "pct": 60.3
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 8",
+    "subject": "English",
+    "code": "EN 711",
+    "desc": "Reads to seek information in print /online, notice board, sign boards in public places, newspapers, hoardings etc.",
+    "pct": 60.7
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "English",
+    "code": "EN 713",
+    "desc": "Infers the meaning of unfamiliar words by reading them in context and enriches vocabulary.",
+    "pct": 60.5
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "English",
+    "code": "EN 716",
+    "desc": "Uses appropriate grammatical forms in communication (noun/ pronoun / verb/ determiner,time and tense/ passivisation/ adjective, adverb, tense.)",
+    "pct": 60.3
+   }
+  ]
+ },
+ "Grade 8|Maths": {
+  "weak": [
+   {
+    "grade": "Grade 8",
+    "subject": "Maths",
+    "code": "M 721",
+    "desc": "Analyze data from the column chart, comparing seasonal strengths...",
+    "pct": 37.5
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Maths",
+    "code": "M 714",
+    "desc": "Calculate the volume of a product from the two ends of a triangu...",
+    "pct": 49.7
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Maths",
+    "code": "M 715",
+    "desc": "Understand the characteristics of triangles based on given condi...",
+    "pct": 52.8
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 8",
+    "subject": "Maths",
+    "code": "M 803",
+    "desc": "Using the divisibility rules for 2, 3, 4, 5, 6, 9, and 11, deter...",
+    "pct": 82.8
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Maths",
+    "code": "M 811",
+    "desc": "Solve problems using the measurement formulas of various shapes.",
+    "pct": 76.0
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Maths",
+    "code": "M 705",
+    "desc": "Solve life problems based on the ratio of the parts.",
+    "pct": 72.2
+   }
+  ]
+ },
+ "Grade 8|Odia": {
+  "weak": [
+   {
+    "grade": "Grade 8",
+    "subject": "Odia",
+    "code": "OD 716",
+    "desc": "Read various types of materials in the Odia language (including newspapers, magazines, stories, and internet publications) to understand and write your preferences, comments, and expressions in the language or in braille",
+    "pct": 40.2
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Odia",
+    "code": "OD 711",
+    "desc": "Identify various forms and styles of storytelling and poetry, including - narrative, emotional, and nature depiction.",
+    "pct": 49.9
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Odia",
+    "code": "OD 718",
+    "desc": "Use appropriate vocabulary, sentence structure, dialogue, punctuation, and other grammatical aspects (like tense, verbs, subjects) while writing for various topics and purposes.",
+    "pct": 58.7
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 8",
+    "subject": "Odia",
+    "code": "OD 806",
+    "desc": "Use correct grammar in framing sentences in Language use appropriate word to frame sentences",
+    "pct": 86.8
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Odia",
+    "code": "EN 812",
+    "desc": "Reads textual/non-textual materials in Language/ Braille with comprehension.",
+    "pct": 79.0
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Odia",
+    "code": "EN 811",
+    "desc": "Interprets quotations, sayings and proverb etc.",
+    "pct": 78.8
+   }
+  ]
+ },
+ "Grade 8|SST": {
+  "weak": [
+   {
+    "grade": "Grade 8",
+    "subject": "SST",
+    "code": "SST 717",
+    "desc": "Examine the governance systems established by various empires su...",
+    "pct": 38.8
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "SST",
+    "code": "SST 832",
+    "desc": "Explain the working of the Indian judicial system by giving exam...",
+    "pct": 42.7
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "SST",
+    "code": "SST 816",
+    "desc": "Analyze the reasons for the decline of existing city centres, ha...",
+    "pct": 46.2
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 8",
+    "subject": "SST",
+    "code": "SST 708",
+    "desc": "Discuss the factors affecting biodiversity in flora and fauna (s...",
+    "pct": 79.4
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "SST",
+    "code": "SST 701",
+    "desc": "Identify the various layers of the Earth's atmosphere, types of ...",
+    "pct": 71.3
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "SST",
+    "code": "SST 722",
+    "desc": "Discuss the significance of equality in a democracy.",
+    "pct": 69.3
+   }
+  ]
+ },
+ "Grade 8|Science": {
+  "weak": [
+   {
+    "grade": "Grade 8",
+    "subject": "Science",
+    "code": "SCI 709",
+    "desc": "This involves creating and interpreting diagrams, such as anatomical diagrams of humans and plants, as well as preparation for experiments.",
+    "pct": 45.3
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Science",
+    "code": "SCI 716",
+    "desc": "Discussions will cover sustainability, resource conservation, cooperation, and overcoming fear and superstition.",
+    "pct": 47.1
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Science",
+    "code": "SCI 807",
+    "desc": "Measure the angle of incidence and angle of reflection",
+    "pct": 50.8
+   }
+  ],
+  "best": [
+   {
+    "grade": "Grade 8",
+    "subject": "Science",
+    "code": "SCI 713",
+    "desc": "Understanding concepts related to environmental science, such as countering acidity in soil, conducting soil tests, and finding ways to prevent soil erosion.",
+    "pct": 74.2
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Science",
+    "code": "SCI 714",
+    "desc": "Efforts will be made towards environmental protection, such as maintaining cleanliness in general places, reducing pollution-causing substances, and tree plantation to prevent soil erosion.",
+    "pct": 73.3
+   },
+   {
+    "grade": "Grade 8",
+    "subject": "Science",
+    "code": "SCI 802",
+    "desc": "Materials and living things will be classified based on their properties, for example - metals and non-metals, kharif and rabi crops, beneficial and harmful microorganisms, sexual and asexual reproduction, cosmic objects and non-renewable natural resources.",
+    "pct": 69.3
+   }
+  ]
+ }
+}

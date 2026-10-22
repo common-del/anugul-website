@@ -98,6 +98,11 @@ export default function ClusterPage({
                 >
                   {schoolDisplayName(s.udise, s.name, locale)}
                 </Link>
+                <span className="shrink-0 text-xs">
+                  <Link href={`/${locale}/school/${s.udise}/`} className="font-semibold text-brand underline">{o.schoolCardLink}</Link>
+                  {" · "}
+                  <Link href={`/${locale}/principal/${s.udise}/`} className="font-semibold text-brand underline">{o.principalCardLink}</Link>
+                </span>
                 <span
                   className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
                   style={{
