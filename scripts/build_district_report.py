@@ -2,15 +2,13 @@
 Generate the two district-level download files for /gov/district:
 
   public/data/downloads/district_report.pdf   one-page district summary
-  public/data/downloads/district_report.xlsx  District Excel data (one row per
-                                              school), District Report (one row
-                                              per block), Blocks / Schools /
-                                              Subjects sheets
+  public/data/downloads/district_report.xlsx  District Excel data, one sheet
+                                              with one row per assessed school
 
-Reads src/data/district.json (already renamed to the official unit names) and
-the emitted researcher CSVs. English-only (researcher-facing downloads).
-Run after build_data.py and build_district_competencies.py (which writes
-block_report.csv):  python scripts/build_district_report.py
+Reads src/data/district.json (already renamed to the official unit names),
+schools.json, the officials block files and students_anonymised.csv.
+English-only (researcher-facing downloads).
+Run after build_data.py:  python scripts/build_district_report.py
 """
 
 import csv
@@ -21,7 +19,6 @@ from collections import defaultdict
 
 import fitz  # PyMuPDF
 import openpyxl
-from openpyxl.formatting.rule import ColorScaleRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
@@ -30,11 +27,6 @@ ROOT = os.path.normpath(os.path.join(HERE, ".."))
 DL = os.path.join(ROOT, "public", "data", "downloads")
 
 district = json.load(open(os.path.join(ROOT, "src", "data", "district.json"), encoding="utf-8"))
-
-
-def read_csv(name):
-    with open(os.path.join(DL, name), encoding="utf-8-sig", newline="") as f:
-        return list(csv.reader(f))
 
 
 # ---------- PDF ----------------------------------------------------------------
@@ -97,141 +89,6 @@ print(f"  wrote district_report.pdf ({os.path.getsize(os.path.join(DL, 'district
 
 # ---------- XLSX ----------------------------------------------------------------
 wb = openpyxl.Workbook()
-
-
-def sheet_from_csv(ws, rows):
-    for r in rows:
-        ws.append(r)
-    for c in range(1, len(rows[0]) + 1):
-        ws.cell(row=1, column=c).font = Font(bold=True)
-        width = max(len(str(rows[i][c - 1])) for i in range(min(len(rows), 50)))
-        ws.column_dimensions[get_column_letter(c)].width = min(max(width + 2, 10), 42)
-    ws.freeze_panes = "A2"
-
-
-def district_report_sheet(ws):
-    """The District Report table: one row per block, scores as a red-yellow-green
-    heat map, a district total row and a short legend. Block rows come from
-    block_report.csv (same columns as the Block Report download)."""
-    rows = read_csv("block_report.csv")[1:]
-    los = read_csv("learning_outcomes.csv")[1:]  # Grade, Subject, Code, Description, Percentage
-    los = sorted(los, key=lambda r: float(r[4]))
-
-    def lo_list(items):
-        return "; ".join(f"{r[2]} ({round(float(r[4]))}%)" for r in items)
-
-    def grade_mean(g):
-        m = district["subjectMeans"].get(g, {})
-        return round(sum(m.values()) / len(m), 1) if m else ""
-
-    sm = district["subjectMeans"]
-    total = (
-        ["", "Total (district)", district["schoolsAssessed"], district["studentsAssessed"],
-         district["districtAverage"], grade_mean("Grade 5"), grade_mean("Grade 8")]
-        + [sm.get(g, {}).get(s, "") for g, s in (
-            ("Grade 5", "Odia"), ("Grade 8", "Odia"), ("Grade 5", "English"), ("Grade 8", "English"),
-            ("Grade 5", "Maths"), ("Grade 8", "Maths"), ("Grade 5", "EVS"), ("Grade 8", "Science"), ("Grade 8", "SST"))]
-        + [sum(int(r[16]) for r in rows), sum(int(r[17]) for r in rows), lo_list(los[:3]), lo_list(los[::-1][:3])]
-        + [sum(int(r[i]) for r in rows) for i in range(20, 24)]
-    )
-
-    navy = "2D3A47"
-    head_fill = PatternFill("solid", fgColor="E9ECEE")
-    total_fill = PatternFill("solid", fgColor="F3EFE8")
-    thin = Side(style="thin", color="C9CED3")
-    box = Border(left=thin, right=thin, top=thin, bottom=thin)
-    wrap = Alignment(wrap_text=True, vertical="center", horizontal="center")
-
-    ws["A1"] = f"{district['name']} District: SAKSHAM District Report"
-    ws["A1"].font = Font(bold=True, size=14, color=navy)
-    ws["A2"] = "Grade 5 and Grade 8, 2025-26. Scores are the share of answers correct (%)."
-    ws["A2"].font = Font(italic=True, color="566579")
-
-    # two header rows (3 and 4); single columns are merged across both
-    singles = {1: "S. No.", 2: "Block Name", 3: "Schools Assessed", 4: "Students Assessed",
-               5: "Overall Score", 6: "Grade 5 Score", 7: "Grade 8 Score",
-               17: "No. of schools with recoverable points",
-               18: "No. of schools scoring above their block's average",
-               19: "Weakest learning outcomes in this block (top 3)",
-               20: "Best performing learning outcomes in this block (top 3)"}
-    for c, label in singles.items():
-        ws.cell(row=3, column=c, value=label)
-        ws.merge_cells(start_row=3, start_column=c, end_row=4, end_column=c)
-    for c, label in ((8, "Odia"), (10, "English"), (12, "Maths")):
-        ws.cell(row=3, column=c, value=label)
-        ws.merge_cells(start_row=3, start_column=c, end_row=3, end_column=c + 1)
-        ws.cell(row=4, column=c, value="G5")
-        ws.cell(row=4, column=c + 1, value="G8")
-    for c, label, g in ((14, "EVS (only G5)", "G5"), (15, "Science (only G8)", "G8"), (16, "Social Science (only G8)", "G8")):
-        ws.cell(row=3, column=c, value=label)
-        ws.cell(row=4, column=c, value=g)
-    ws.cell(row=3, column=21, value="Number of schools by band")
-    ws.merge_cells(start_row=3, start_column=21, end_row=3, end_column=24)
-    for c, label in zip(range(21, 25), ("Critical", "Needs Support", "Developing", "Excelling")):
-        ws.cell(row=4, column=c, value=label)
-    for r in (3, 4):
-        for c in range(1, 25):
-            cell = ws.cell(row=r, column=c)
-            cell.font = Font(bold=True, color=navy)
-            cell.fill = head_fill
-            cell.alignment = wrap
-            cell.border = box
-
-    def num(v):
-        try:
-            f = float(v)
-            return int(f) if f.is_integer() and "." not in str(v) else f
-        except (TypeError, ValueError):
-            return v
-
-    first = 5
-    for i, r in enumerate(rows + [total]):
-        rr = first + i
-        for c, v in enumerate(r, 1):
-            cell = ws.cell(row=rr, column=c, value=num(v))
-            cell.border = box
-            cell.alignment = Alignment(vertical="center", wrap_text=c in (19, 20),
-                                       horizontal="left" if c in (2, 19, 20) else "center")
-            if 5 <= c <= 16 and isinstance(cell.value, (int, float)):
-                cell.number_format = '0"%"'
-        if r is total:
-            for c in range(1, 25):
-                ws.cell(row=rr, column=c).font = Font(bold=True)
-                ws.cell(row=rr, column=c).fill = total_fill
-    last = first + len(rows) - 1
-
-    # heat map per score column, comparing the blocks (total row excluded)
-    for c in range(5, 17):
-        col = get_column_letter(c)
-        ws.conditional_formatting.add(
-            f"{col}{first}:{col}{last}",
-            ColorScaleRule(start_type="min", start_color="F8696B",
-                           mid_type="percentile", mid_value=50, mid_color="FFEB84",
-                           end_type="max", end_color="63BE7B"),
-        )
-    # band counts in their band colours
-    for c, hexc in zip(range(21, 25), ("C24E36", "B5530C", "A85A0F", "15803D")):
-        for rr in range(first, last + 2):
-            ws.cell(row=rr, column=c).font = Font(bold=True, color=hexc)
-
-    notes = [
-        "How to read this sheet",
-        "Heat map: in each score column, red marks the lowest-scoring blocks, yellow the middle and green the highest. Colours compare the eight blocks with each other; the number is shown in every cell.",
-        "Recoverable points: schools scoring below their block's average. Lifting these schools towards the average recovers the most points for the block and district score.",
-        "Bands (school overall score): Critical 0 to 25%, Needs Support 26 to 50%, Developing 51 to 75%, Excelling 76 to 100%.",
-        "Learning outcomes: code with the share of students answering correctly in brackets. Full descriptions are in learning_outcomes_by_block.csv.",
-    ]
-    for i, n in enumerate(notes):
-        cell = ws.cell(row=last + 3 + i, column=1, value=n)
-        cell.font = Font(bold=(i == 0), color=navy if i == 0 else "566579")
-
-    widths = {1: 6, 2: 16, 3: 11, 4: 11, 5: 9, 6: 9, 7: 9, 17: 15, 18: 15, 19: 30, 20: 30}
-    for c in range(1, 25):
-        ws.column_dimensions[get_column_letter(c)].width = widths.get(c, 9 if c < 21 else 11)
-    ws.row_dimensions[3].height = 48
-    for rr in range(first, last + 2):
-        ws.row_dimensions[rr].height = 48
-    ws.freeze_panes = "C5"
 
 
 def district_excel_data_sheet(ws):
@@ -336,11 +193,6 @@ def district_excel_data_sheet(ws):
 
 district_excel_data_sheet(wb.active)
 wb.active.title = "District Excel data"
-district_report_sheet(wb.create_sheet("District Report"))
-ws = wb.create_sheet("Blocks")
-sheet_from_csv(ws, read_csv("block_aggregates.csv"))
-sheet_from_csv(wb.create_sheet("Schools"), read_csv("schools_overall.csv"))
-sheet_from_csv(wb.create_sheet("Subjects by block"), read_csv("block_grade_subject.csv"))
 
 wb.save(os.path.join(DL, "district_report.xlsx"))
 print(f"  wrote district_report.xlsx ({os.path.getsize(os.path.join(DL, 'district_report.xlsx')) / 1024:.0f} KB)")

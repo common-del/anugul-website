@@ -823,7 +823,7 @@
     "dlDistPdfT": "View Full District Report",
     "dlDistPdfD": "Opens the full interactive District Report",
     "dlDistXlsxT": "District Report (Excel)",
-    "dlDistXlsxD": "Blocks, schools and subject data in one workbook",
+    "dlDistXlsxD": "One row per school: scores by grade and subject",
     "dlDistCsvT": "District Data (CSV)",
     "dlDistCsvD": "Every school's score out of 10, with block and cluster",
     "dlLoCsvT": "Learning Outcomes (CSV)",

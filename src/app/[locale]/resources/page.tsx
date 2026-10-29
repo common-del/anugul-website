@@ -51,7 +51,7 @@ export default function ResourcesPage({
 
   const districtDownloads: DL[] = [
     ["/block-report/?block=District", v.dlDistPdfT, "view", IC_CHART],
-    ["/data/downloads/district_report.xlsx?v=2026-10-28", v.dlDistXlsxT, "download", IC_GRID],
+    ["/data/downloads/district_report.xlsx?v=2026-10-29", v.dlDistXlsxT, "download", IC_GRID],
     ["/data/downloads/learning_outcomes_report.pdf", v.dlLor, "download", IC_FILE],
     ["/data/downloads/learning_outcomes.csv", v.dlLorCsv, "download", IC_GRID],
     ["/data/downloads/misconceptions_report.pdf", v.dlMisPdfT, "download", IC_SEARCH],

@@ -306,7 +306,7 @@ export default function DistrictReportPage({
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/block-report/?block=District", excel: false, view: true, hl: false },
-              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx?v=2026-10-28", excel: true, view: false, hl: false },
+              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx?v=2026-10-29", excel: true, view: false, hl: false },
               { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false, view: false, hl: true },
               { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false, view: false, hl: false },
             ].map((c) => (
