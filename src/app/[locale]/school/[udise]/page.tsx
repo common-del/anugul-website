@@ -65,6 +65,32 @@ const EXPLAINER_DEFAULT = "OcBdapIlGHM";
 
 const score10 = (pct: number) => Math.round(pct / 10);
 
+// Some schools share a display name (two "Khamar Primary School"s, say). Their
+// page titles add the block, and the cluster too where two also share a block,
+// so no two report cards carry the same title. Built once per locale.
+const titleNameCache = new Map<Locale, Map<string, string>>();
+function titleNames(locale: Locale): Map<string, string> {
+  const cached = titleNameCache.get(locale);
+  if (cached) return cached;
+  const rows = Object.values(schools).map((sc) => ({
+    udise: sc.udise,
+    name: schoolDisplayName(sc.udise, sc.name, locale),
+    block: blockName(sc.block, locale),
+    cluster: clusterName(sc.cluster, locale),
+  }));
+  const count = (keys: string[]) => keys.reduce((m, k) => m.set(k, (m.get(k) ?? 0) + 1), new Map<string, number>());
+  const byName = count(rows.map((r) => r.name));
+  const byNameBlock = count(rows.map((r) => `${r.name}, ${r.block}`));
+  const out = new Map<string, string>();
+  for (const r of rows) {
+    if ((byName.get(r.name) ?? 0) < 2) continue;
+    const nb = `${r.name}, ${r.block}`;
+    out.set(r.udise, (byNameBlock.get(nb) ?? 0) < 2 ? nb : `${r.name}, ${r.cluster}, ${r.block}`);
+  }
+  titleNameCache.set(locale, out);
+  return out;
+}
+
 export function generateStaticParams() {
   return locales.flatMap((locale) => [
     ...Object.keys(schools).map((udise) => ({ locale, udise })),
@@ -92,11 +118,13 @@ export function generateMetadata({
   }
   const s = schools[params.udise];
   if (!s) return {};
+  const name = schoolDisplayName(s.udise, s.name, locale);
   const { title, description } = schoolSeo(
     locale,
-    schoolDisplayName(s.udise, s.name, locale),
+    name,
     blockName(s.block, locale),
     score10(s.overall.score),
+    titleNames(locale).get(s.udise) ?? name,
   );
   return pageMeta(locale, `school/${params.udise}/`, title, description);
 }

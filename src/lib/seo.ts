@@ -115,12 +115,14 @@ export function blockSeo(l: Locale, block: string, avg: number, schoolCount: num
 }
 
 // name stays English in both locales; block is already display-localized.
-export function schoolSeo(l: Locale, name: string, block: string, score10: number): TD {
+// titleName lets a school whose name is shared with another school carry a
+// disambiguated name in the title only (see titleNames in the school page).
+export function schoolSeo(l: Locale, name: string, block: string, score10: number, titleName: string = name): TD {
   const s = `${fmtNum(score10, l)}/${fmtNum(10, l)}`;
   return {
     title: pick({
-      en: `${name} — Report Card | Anugola (Angul)`,
-      od: `${name} — ରିପୋର୍ଟ କାର୍ଡ | ଅନୁଗୋଳ (Angul)`,
+      en: `${titleName} — Report Card | Anugola (Angul)`,
+      od: `${titleName} — ରିପୋର୍ଟ କାର୍ଡ | ଅନୁଗୋଳ (Angul)`,
     }, l),
     description: pick({
       en: `Read the full SAKSHAM report card for ${name} in ${block} block, Anugola (Angul) — overall score ${s}, grade-wise learning outcomes, enrolment and school profile.`,
