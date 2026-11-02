@@ -8,7 +8,9 @@ export default function JsonLd({ data }: { data: object | object[] }) {
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(d) }}
+          // Escape "<" so a value containing "</script>" can never end the tag
+          // early and inject markup (the pattern Next.js documents for JSON-LD).
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(d).replace(/</g, "\\u003c") }}
         />
       ))}
     </>

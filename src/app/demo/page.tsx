@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const HOST = "anugul-website.vercel.app";
+const HOST = "anugolasaksham.in";
 const START = "/od/";
 // Laptop screen renders a real 1280×800 viewport, scaled to sit beside the phone.
 const LAPTOP_W = 1280;
