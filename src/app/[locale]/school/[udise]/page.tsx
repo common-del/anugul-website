@@ -15,7 +15,7 @@ import { blockName, clusterName } from "@/lib/placeNames";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
-import { pageMeta, schoolSeo, schoolLd, schoolBreadcrumbLd, schoolParagraph, absUrl, schoolCrumbs } from "@/lib/seo";
+import { pageMeta, schoolSeo, schoolLd, schoolBreadcrumbLd, schoolParagraph, schoolFacts, absUrl, schoolCrumbs } from "@/lib/seo";
 import { getBlockSlugs } from "@/lib/officialsData";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -48,6 +48,7 @@ type School = {
   profile: Profile | null;
   inputs: Inputs;
   neighbours: { udise: string; km: number | null }[];
+  comparison: { blockAverage: number; districtAverage: number } | null;
 };
 
 const schools = getSchools() as unknown as Record<string, School>;
@@ -130,6 +131,18 @@ export default function SchoolPage({
   const num = (n: number) => fmtNum(n, locale);
   const overall10 = score10(s.overall.score);
   const dispName = schoolDisplayName(s.udise, s.name, locale);
+  // Plain-text facts that open the page's summary paragraph (answer-first).
+  const facts = s.comparison
+    ? schoolFacts(locale, {
+        name: dispName,
+        block: blockName(s.block, locale),
+        score10: overall10,
+        pct: s.overall.score,
+        band: t.band[s.overall.band],
+        blockPct: s.comparison.blockAverage,
+        districtPct: s.comparison.districtAverage,
+      })
+    : null;
 
   const neighbours = (s.neighbours ?? [])
     // the source CSV occasionally lists a school as its own neighbour
@@ -233,6 +246,7 @@ export default function SchoolPage({
         </section>
 
         <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+          {facts ? `${facts} ` : ""}
           {schoolParagraph(locale, dispName, blockName(s.block, locale))}
         </p>
 

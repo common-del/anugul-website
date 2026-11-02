@@ -109,7 +109,7 @@ export function blockSeo(l: Locale, block: string, avg: number, schoolCount: num
     }, l),
     description: pick({
       en: `How government schools in ${block} block, Anugola (Angul) district performed on the SAKSHAM assessment — overall ${s}, ${n} schools, learning outcomes and cluster comparison.`,
-      od: `ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ${block} ବ୍ଲକ୍ର ସରକାରୀ ବିଦ୍ୟାଳୟଗୁଡ଼ିକ ସକ୍ଷମ ମୂଲ୍ୟାଙ୍କନରେ କିପରି ପ୍ରଦର୍ଶନ କଲେ — ସାମଗ୍ରିକ ${s}, ${n} ବିଦ୍ୟାଳୟ, ଶିକ୍ଷଣ ଫଳାଫଳ ଓ କ୍ଲଷ୍ଟର ତୁଳନା।`,
+      od: `ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ${block} ବ୍ଲକ୍‌ର ସରକାରୀ ବିଦ୍ୟାଳୟଗୁଡ଼ିକ ସକ୍ଷମ ମୂଲ୍ୟାଙ୍କନରେ କିପରି ପ୍ରଦର୍ଶନ କଲେ — ସାମଗ୍ରିକ ${s}, ${n} ବିଦ୍ୟାଳୟ, ଶିକ୍ଷଣ ଫଳାଫଳ ଓ କ୍ଲଷ୍ଟର ତୁଳନା।`,
     }, l),
   };
 }
@@ -375,6 +375,31 @@ export function faqPageLd(items: { q: string; a: string }[]) {
 export function schoolParagraph(locale: Locale, name: string, block: string): string {
   return pick({
     en: `This report card presents how ${name} in ${block} block, Anugola (Angul) district performed on the SAKSHAM competency-based assessment — its overall score, grade-wise learning outcomes, enrolment and other quality indicators, to help parents, the community and education officials understand and act on the school's performance.`,
-    od: `ଏହି ରିପୋର୍ଟ କାର୍ଡ ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ${block} ବ୍ଲକ୍ର ${name} ସକ୍ଷମ ମୂଲ୍ୟାଙ୍କନରେ କିପରି ପ୍ରଦର୍ଶନ କଲା ଦର୍ଶାଏ — ସାମଗ୍ରିକ ସ୍କୋର, ଶ୍ରେଣୀ-ଅନୁସାରେ ଶିକ୍ଷଣ ଫଳାଫଳ, ନାମଲେଖା ଓ ଅନ୍ୟ ଗୁଣବତ୍ତା ସୂଚକ, ଯାହା ଅଭିଭାବକ, ସମ୍ପ୍ରଦାୟ ଓ ଶିକ୍ଷା ଅଧିକାରୀଙ୍କୁ ବିଦ୍ୟାଳୟର ପ୍ରଦର୍ଶନ ବୁଝି କାର୍ଯ୍ୟ କରିବାରେ ସାହାଯ୍ୟ କରେ।`,
+    od: `ଏହି ରିପୋର୍ଟ କାର୍ଡ ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ${block} ବ୍ଲକ୍‌ର ${name} ସକ୍ଷମ ମୂଲ୍ୟାଙ୍କନରେ କିପରି ପ୍ରଦର୍ଶନ କଲା ଦର୍ଶାଏ — ସାମଗ୍ରିକ ସ୍କୋର, ଶ୍ରେଣୀ-ଅନୁସାରେ ଶିକ୍ଷଣ ଫଳାଫଳ, ନାମଲେଖା ଓ ଅନ୍ୟ ଗୁଣବତ୍ତା ସୂଚକ, ଯାହା ଅଭିଭାବକ, ସମ୍ପ୍ରଦାୟ ଓ ଶିକ୍ଷା ଅଧିକାରୀଙ୍କୁ ବିଦ୍ୟାଳୟର ପ୍ରଦର୍ଶନ ବୁଝି କାର୍ଯ୍ୟ କରିବାରେ ସାହାଯ୍ୟ କରେ।`,
   }, locale);
+}
+
+// Answer-first facts for a school page: its score, its band and the averages it
+// is measured against, stated plainly so search and AI answer engines can quote
+// them as they stand. The Odia awaits native review like the rest of this file.
+export function schoolFacts(
+  l: Locale,
+  f: {
+    name: string;
+    block: string;
+    score10: number;
+    pct: number;
+    band: string;
+    blockPct: number;
+    districtPct: number;
+  },
+): string {
+  const s10 = `${fmtNum(f.score10, l)}/${fmtNum(10, l)}`;
+  const p = fmtPercent(Math.round(f.pct), l);
+  const bp = fmtPercent(Math.round(f.blockPct), l);
+  const dp = fmtPercent(Math.round(f.districtPct), l);
+  return pick({
+    en: `${f.name} is a school in ${f.block} block, Anugola (Angul) district, Odisha. In the SAKSHAM assessment of December 2025 it scored ${s10} (${p}) overall, which places it in the ${f.band} band. The ${f.block} block average was ${bp} and the district average was ${dp}.`,
+    od: `${f.name} ଓଡ଼ିଶାର ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ${f.block} ବ୍ଲକ୍‌ରେ ଥିବା ଏକ ବିଦ୍ୟାଳୟ। ଡିସେମ୍ବର ୨୦୨୫ର ସକ୍ଷମ ମୂଲ୍ୟାଙ୍କନରେ ଏହା ସାମଗ୍ରିକ ଭାବେ ${s10} (${p}) ସ୍କୋର କରିଛି, ଯାହା ଏହାକୁ "${f.band}" ପ୍ରଦର୍ଶନ ବ୍ୟାଣ୍ଡରେ ରଖେ। ${f.block} ବ୍ଲକ୍‌ର ହାରାହାରି ${bp} ଏବଂ ଜିଲ୍ଲାର ହାରାହାରି ${dp}।`,
+  }, l);
 }
