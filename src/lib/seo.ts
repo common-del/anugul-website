@@ -237,7 +237,9 @@ export function orgLd() {
     name: SITE,
     alternateName: "SAKSHAM — Anugola (Angul) District",
     url: BASE,
-    logo: `${BASE}/og-image.png`,
+    // Square app icon (src/app/icon.png): Google wants a logo at least 112 px
+    // square, and the 1200x630 share banner is not a logo.
+    logo: `${BASE}/icon.png`,
     areaServed: "Angul district, Odisha, India",
     description:
       "School report cards and SAKSHAM competency-based assessment results for government schools in Anugola (Angul) district, Odisha.",
@@ -274,6 +276,19 @@ export function schoolLd(name: string, block: string, udise: string, url: string
   };
 }
 
+// Data files linked from the site's Resources page, listed in the Dataset
+// markup so Google Dataset Search can offer them. Keep in step with that page.
+const XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+const DATA_FILES: { file: string; format: string }[] = [
+  { file: "district_report.xlsx", format: XLSX },
+  { file: "block_aggregates.csv", format: "text/csv" },
+  { file: "block_report.csv", format: "text/csv" },
+  { file: "cluster_league.csv", format: "text/csv" },
+  { file: "learning_outcomes.csv", format: "text/csv" },
+  { file: "learning_outcomes_by_block.csv", format: "text/csv" },
+  { file: "items_clean.csv", format: "text/csv" },
+];
+
 export function districtLd(locale: Locale, description: string) {
   return {
     "@context": "https://schema.org",
@@ -286,8 +301,14 @@ export function districtLd(locale: Locale, description: string) {
     url: absUrl(locale, "gov/district/"),
     creator: { "@type": "GovernmentOrganization", name: SITE },
     spatialCoverage: "Angul district, Odisha, India",
+    temporalCoverage: "2025-12",
     variableMeasured: ["Overall SAKSHAM score", "Grade 5 score", "Grade 8 score", "Learning outcomes"],
     isAccessibleForFree: true,
+    distribution: DATA_FILES.map((f) => ({
+      "@type": "DataDownload",
+      encodingFormat: f.format,
+      contentUrl: `${BASE}/data/downloads/${f.file}`,
+    })),
   };
 }
 
