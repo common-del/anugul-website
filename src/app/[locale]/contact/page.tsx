@@ -6,6 +6,14 @@ import ContactForm from "@/components/ContactForm";
 import EmailLink from "@/components/EmailLink";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta, contactSeo } from "@/lib/seo";
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = contactSeo(locale);
+  return pageMeta(locale, "contact/", title, description);
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

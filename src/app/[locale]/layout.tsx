@@ -25,9 +25,8 @@ export function generateMetadata({
       template: `%s · ${t.site.name}`,
     },
     description: t.site.description,
-    alternates: {
-      languages: { or: "/od/", en: "/en/", "x-default": "/od/" },
-    },
+    // No hreflang here: a layout-level value would point every page at the two
+    // homepages. Each page sets its own pair through pageMeta() in lib/seo.ts.
     openGraph: {
       type: "website",
       siteName: t.site.name,

@@ -5,6 +5,21 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta } from "@/lib/seo";
+
+// A navigation aid with nothing of its own to rank: noindex, links followed.
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const t = getDict(locale);
+  return pageMeta(
+    locale,
+    "sitemap/",
+    `${t.v2.sitemapTitle} | ${t.site.name}`,
+    t.v2.sitemapIntro,
+    { index: false },
+  );
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

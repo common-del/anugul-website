@@ -4,6 +4,22 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta } from "@/lib/seo";
+
+// Placeholder copy and no inbound links yet, so it stays out of search results
+// until the real About SAKSHAM text is published.
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const t = getDict(locale);
+  return pageMeta(
+    locale,
+    "about-saksham/",
+    `${t.aboutSaksham.title} | ${t.site.name}`,
+    t.aboutSaksham.body,
+    { index: false },
+  );
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

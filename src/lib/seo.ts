@@ -18,6 +18,18 @@ const OG_IMAGE = { url: "/og-image.png", width: 1200, height: 630, alt: OG_ALT }
 type Copy = { en: string; od: string };
 const pick = (c: Copy, l: Locale) => (l === "od" ? c.od : c.en);
 
+// hreflang cluster for one page: its Odia and English versions plus x-default
+// (Odia, the site default). Every version must list all versions, itself
+// included, or Google ignores the annotations. Shared by pageMeta and the
+// XML sitemap so the two can never disagree.
+export function langAlternates(path: string) {
+  return {
+    or: `${BASE}/od/${path}`,
+    en: `${BASE}/en/${path}`,
+    "x-default": `${BASE}/od/${path}`,
+  };
+}
+
 // Wrap a resolved title + description into full page metadata. `path` is the
 // locale-relative path with trailing slash, e.g. "" (home), "gov/district/",
 // "school/21150106101/". Pass index:false to keep a route out of Google.
@@ -32,7 +44,9 @@ export function pageMeta(
   const meta: Metadata = {
     title: { absolute: title },
     description,
-    alternates: { canonical: url },
+    // Set canonical and languages together: Next.js replaces the whole
+    // `alternates` object per segment, so a canonical alone would drop hreflang.
+    alternates: { canonical: url, languages: langAlternates(path) },
     openGraph: {
       type: "website",
       siteName: SITE,
@@ -157,6 +171,45 @@ export function govSeo(l: Locale): TD {
     description: pick({
       en: "Choose a district or block report to explore government school performance and SAKSHAM learning outcomes across Anugola (Angul), Odisha.",
       od: "ଅନୁଗୋଳ (Angul), ଓଡ଼ିଶାର ସରକାରୀ ବିଦ୍ୟାଳୟ ପ୍ରଦର୍ଶନ ଓ ସକ୍ଷମ ଶିକ୍ଷଣ ଫଳାଫଳ ଦେଖିବାକୁ ଏକ ଜିଲ୍ଲା କିମ୍ବା ବ୍ଲକ୍ ରିପୋର୍ଟ ବାଛନ୍ତୁ।",
+    }, l),
+  };
+}
+
+export function contactSeo(l: Locale): TD {
+  return {
+    title: pick({
+      en: "Contact | Anugola (Angul) Saksham",
+      od: "ଯୋଗାଯୋଗ | ଅନୁଗୋଳ (Angul) ସକ୍ଷମ",
+    }, l),
+    description: pick({
+      en: "Email the Anugola (Angul) SAKSHAM team or write to the District Education Office, Amalapada, Angul, Odisha, with questions about school report cards or this website.",
+      od: "ବିଦ୍ୟାଳୟ ରିପୋର୍ଟ କାର୍ଡ କିମ୍ବା ଏହି ୱେବସାଇଟ ବିଷୟରେ ପ୍ରଶ୍ନ ଥିଲେ ଅନୁଗୋଳ (Angul) ସକ୍ଷମ ଦଳକୁ ଇମେଲ କରନ୍ତୁ, କିମ୍ବା ଜିଲ୍ଲା ଶିକ୍ଷା କାର୍ଯ୍ୟାଳୟ, ଅମଳାପଡ଼ା, ଅନୁଗୋଳ, ଓଡ଼ିଶାକୁ ଲେଖନ୍ତୁ।",
+    }, l),
+  };
+}
+
+export function policiesSeo(l: Locale): TD {
+  return {
+    title: pick({
+      en: "Website Policies | Anugola (Angul) Saksham",
+      od: "ୱେବସାଇଟ ନୀତି | ଅନୁଗୋଳ (Angul) ସକ୍ଷମ",
+    }, l),
+    description: pick({
+      en: "Privacy, terms of use, accessibility, copyright and hyperlinking policies for the Anugola (Angul) SAKSHAM school report card website.",
+      od: "ଅନୁଗୋଳ (Angul) ସକ୍ଷମ ବିଦ୍ୟାଳୟ ରିପୋର୍ଟ କାର୍ଡ ୱେବସାଇଟର ଗୋପନୀୟତା, ବ୍ୟବହାର ସର୍ତ୍ତାବଳୀ, ସୁଗମତା, କପିରାଇଟ ଓ ହାଇପରଲିଙ୍କ ନୀତି।",
+    }, l),
+  };
+}
+
+export function schoolHeadSeo(l: Locale): TD {
+  return {
+    title: pick({
+      en: "For principals: find your school's SAKSHAM report | Anugola (Angul)",
+      od: "ବିଦ୍ୟାଳୟ ପ୍ରଧାନଙ୍କ ପାଇଁ: ଆପଣଙ୍କ ବିଦ୍ୟାଳୟର ସକ୍ଷମ ରିପୋର୍ଟ ଖୋଜନ୍ତୁ | ଅନୁଗୋଳ (Angul)",
+    }, l),
+    description: pick({
+      en: "Principals of government schools in Anugola (Angul) district can find their school and open its SAKSHAM report, with subject scores, competencies and how nearby schools compare.",
+      od: "ଅନୁଗୋଳ (Angul) ଜିଲ୍ଲାର ସରକାରୀ ବିଦ୍ୟାଳୟର ପ୍ରଧାନମାନେ ନିଜ ବିଦ୍ୟାଳୟ ଖୋଜି ତାହାର ସକ୍ଷମ ରିପୋର୍ଟ ଦେଖିପାରିବେ: ବିଷୟ ଅନୁସାରେ ସ୍କୋର, ଦକ୍ଷତା ଓ ନିକଟସ୍ଥ ବିଦ୍ୟାଳୟ ସହ ତୁଳନା।",
     }, l),
   };
 }

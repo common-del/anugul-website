@@ -5,6 +5,22 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta } from "@/lib/seo";
+
+// No longer linked from the site (the role landings replaced it), so it stays
+// out of search results.
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const t = getDict(locale);
+  return pageMeta(
+    locale,
+    "roles/",
+    `${t.roles.pageTitle} | ${t.site.name}`,
+    t.roles.pageIntro,
+    { index: false },
+  );
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

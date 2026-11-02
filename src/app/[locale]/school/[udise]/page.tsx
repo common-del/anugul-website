@@ -78,9 +78,19 @@ export function generateMetadata({
   params: { locale: string; udise: string };
 }): Metadata {
   if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const ex = extraById.get(params.udise);
+  if (ex) {
+    // Schools with no SAKSHAM result get a page so Find can open them, but it
+    // carries no data of its own, so it stays out of search results.
+    const name = locale === "od" && ex.nameOd ? ex.nameOd : ex.name;
+    const t = getDict(locale);
+    return pageMeta(locale, `school/${params.udise}/`, `${name} | ${t.site.name}`, t.site.description, {
+      index: false,
+    });
+  }
   const s = schools[params.udise];
   if (!s) return {};
-  const locale = params.locale as Locale;
   const { title, description } = schoolSeo(
     locale,
     schoolDisplayName(s.udise, s.name, locale),

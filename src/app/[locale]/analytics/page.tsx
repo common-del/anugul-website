@@ -8,6 +8,7 @@ import BlockBars from "@/components/BlockBars";
 import Link from "next/link";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta } from "@/lib/seo";
 import { fmtNum, fmtPercent } from "@/lib/format";
 import { bandFromScore } from "@/lib/bands";
 import { getDistrictOfficials } from "@/lib/officialsData";
@@ -25,6 +26,21 @@ type District = {
 };
 
 const district = districtData as unknown as District;
+
+// Legacy district view, reachable only from the noindexed officials hub and
+// overlapping gov/district/, which is the page that should rank.
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const t = getDict(locale);
+  return pageMeta(
+    locale,
+    "analytics/",
+    `${t.analytics.title} | ${t.site.name}`,
+    t.analytics.intro,
+    { index: false },
+  );
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
