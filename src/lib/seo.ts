@@ -11,6 +11,12 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 // locales, per the owner's decision.
 
 const BASE = "https://anugolasaksham.in";
+
+// Date of the last significant change to page content or data, used for the
+// sitemap's lastmod. Search engines trust lastmod only while it stays accurate,
+// so bump this whenever report data or page copy changes, and never set it to
+// the build time (every deploy would then claim every page changed).
+export const CONTENT_UPDATED = "2026-11-02";
 const SITE = "Anugola (Angul) Saksham";
 const OG_ALT = "Anugola (Angul) Saksham — Government School Report Cards";
 const OG_IMAGE = { url: "/og-image.png", width: 1200, height: 630, alt: OG_ALT };
