@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppShare from "@/components/WhatsAppShare";
 import BlockSwitcher from "@/components/BlockSwitcher";
+import { blockName, clusterName } from "@/lib/placeNames";
 import Gauge from "@/components/Gauge";
 import DistrictMapBands, { mapBandColor, rankOrange } from "@/components/DistrictMapBands";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -13,6 +14,11 @@ import { fmtNum, fmtPercent } from "@/lib/format";
 import { getBlockSlugs } from "@/lib/officialsData";
 import districtData from "@/data/district.json";
 import { getSchools } from "@/lib/schools";
+import { schoolDisplayName } from "@/lib/schoolNames";
+import { pageMeta, districtSeo, districtLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import DistrictInsights from "@/components/DistrictInsights";
+import competencies from "@/data/district_competencies.json";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -28,6 +34,18 @@ type District = {
   blocks: { name: string; average: number; schools: number; students: number; g5: number; g8: number }[];
 };
 const district = districtData as unknown as District;
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = districtSeo(
+    locale,
+    district.districtAverage,
+    district.blocks.length,
+    district.schoolsAssessed,
+  );
+  return pageMeta(locale, "gov/district/", title, description);
+}
 
 function fill(s: string, vars: Record<string, string | number>) {
   return Object.entries(vars).reduce(
@@ -85,6 +103,17 @@ export default function DistrictReportPage({
   const highPerforming = Object.values(
     getSchools() as unknown as Record<string, { overall: { score: number } }>,
   ).filter((sc) => Math.round(sc.overall.score / 10) === 10).length;
+  const topSchools = Object.values(
+    getSchools() as unknown as Record<string, { udise: string; name: string; block: string; cluster: string; overall: { score: number } }>,
+  )
+    .filter((sc) => Math.round(sc.overall.score / 10) === 10)
+    .map((sc) => ({
+      udise: sc.udise,
+      name: schoolDisplayName(sc.udise, sc.name, locale),
+      block: blockName(sc.block, locale),
+      cluster: clusterName(sc.cluster, locale),
+      score10: `${num(Math.round(sc.overall.score / 10))}/${num(10)}`,
+    }));
 
   const stats = [
     {
@@ -121,13 +150,19 @@ export default function DistrictReportPage({
 
   return (
     <PageShell>
+      <JsonLd
+        data={districtLd(
+          locale,
+          districtSeo(locale, district.districtAverage, district.blocks.length, district.schoolsAssessed).description,
+        )}
+      />
       <SiteHeader locale={locale} t={t} showBack active="reports" role="researcher" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
         {/* top row: title | block switcher (centre) | WhatsApp (right) —
             identical arrangement to the block report */}
         <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr,auto,1fr]">
           <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
-            {fill(v.distTitle, { name: district.name })}
+            {fill(v.distTitle, { name: blockName(district.name, locale) })}
           </h1>
           <div className="sm:justify-self-center">
             <BlockSwitcher
@@ -140,7 +175,7 @@ export default function DistrictReportPage({
           <div className="sm:justify-self-end">
             <WhatsAppShare
               label={v.shareWhatsApp}
-              text={fill(v.distTitle, { name: district.name })}
+              text={fill(v.distTitle, { name: blockName(district.name, locale) })}
             />
           </div>
         </div>
@@ -173,6 +208,14 @@ export default function DistrictReportPage({
                 hint={v.clickBlockHint}
               />
             </div>
+            <div className="mt-4 rounded-xl bg-gov-tint p-3 text-xs text-gov-ink">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">{v.mapLegendHigh}</span>
+                <span className="h-3 flex-1 rounded-full" style={{ background: `linear-gradient(90deg, ${rankOrange(0, 8)}, ${rankOrange(7, 8)})` }} />
+                <span className="font-semibold">{v.mapLegendLow}</span>
+              </div>
+              <p className="mt-1.5 leading-snug text-muted">{v.mapLegendNote}</p>
+            </div>
           </section>
 
           {/* performance by blocks */}
@@ -186,7 +229,7 @@ export default function DistrictReportPage({
                   className="flex items-center gap-2 text-sm hover:opacity-90"
                 >
                   <span className="w-24 shrink-0 truncate font-semibold text-gov-ink">
-                    {b.name}
+                    {blockName(b.name, locale)}
                   </span>
                   <span className="h-5 flex-1 overflow-hidden rounded bg-gov-tint">
                     <span
@@ -234,54 +277,26 @@ export default function DistrictReportPage({
               </div>
             </section>
 
-            {/* key insights — first two computed; the rest placeholders that
-                fill the card so the column aligns with the rest of the row */}
-            <section className="gov-card flex flex-1 flex-col p-5">
-              <h2 className="text-lg font-bold text-gov-ink">{v.keyInsightsPlain}</h2>
-              <ul className="mt-3 flex flex-1 flex-col justify-between gap-2.5 text-sm">
-                {best && (
-                  <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                      <path d="M23 6l-9.5 9.5-5-5L1 18" />
-                      <path d="M17 6h6v6" />
-                    </svg>
-                    <span>
-                      <span className="block text-xs font-semibold text-muted">{v.insightBestSubjectL}</span>
-                      <span className="font-bold text-gov-ink">
-                        {subj(best.subject)} · {grade(best.grade)} · {pct(best.val)}
-                      </span>
-                    </span>
-                  </li>
-                )}
-                {worst && (
-                  <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C24E36" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                      <path d="M23 18l-9.5-9.5-5 5L1 6" />
-                      <path d="M17 18h6v-6" />
-                    </svg>
-                    <span>
-                      <span className="block text-xs font-semibold text-muted">{v.insightNeedsAttentionL}</span>
-                      <span className="font-bold text-gov-ink">
-                        {subj(worst.subject)} · {grade(worst.grade)} · {pct(worst.val)}
-                      </span>
-                    </span>
-                  </li>
-                )}
-                {/* number of schools scoring a full 10/10 across the district */}
-                <li className="flex items-start gap-2.5 rounded-xl bg-gov-tint px-3 py-2.5">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2D3A47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="mt-0.5 shrink-0">
-                    <path d="M23 6l-9.5 9.5-5-5L1 18" />
-                    <path d="M17 6h6v6" />
-                  </svg>
-                  <span>
-                    <span className="block text-xs font-semibold text-muted">{v.insightHighPerformingL}</span>
-                    <span className="font-bold text-gov-ink">
-                      {fill(v.insightHighPerformingV, { n: num(highPerforming), max: num(10) })}
-                    </span>
-                  </span>
-                </li>
-              </ul>
-            </section>
+            {best && worst && (
+              <DistrictInsights
+                locale={locale}
+                labels={{
+                  title: v.keyInsightsPlain,
+                  bestSubject: v.insightBestSubjectL,
+                  needsAttention: v.insightNeedsAttentionL,
+                  bestCompetencies: v.bestCompetencies,
+                  weakestCompetencies: v.weakestCompetencies,
+                  highPerforming: v.insightHighPerformingL,
+                  highPerformingValue: fill(v.insightHighPerformingV, { n: num(highPerforming), max: num(10) }),
+                  openReport: v.openReportCardArrow,
+                  close: v.closeCard,
+                }}
+                best={{ grade: best.grade, subject: best.subject, label: `${subj(best.subject)} · ${grade(best.grade)}`, pct: pct(best.val) }}
+                worst={{ grade: worst.grade, subject: worst.subject, label: `${subj(worst.subject)} · ${grade(worst.grade)}`, pct: pct(worst.val) }}
+                comp={competencies}
+                top={topSchools}
+              />
+            )}
           </div>
         </div>
 
@@ -291,7 +306,7 @@ export default function DistrictReportPage({
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { t: v.dlDistPdfT, d: v.dlDistPdfD, href: "/block-report/?block=District", excel: false, view: true, hl: false },
-              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx", excel: true, view: false, hl: false },
+              { t: v.dlDistXlsxT, d: v.dlDistXlsxD, href: "/data/downloads/district_report.xlsx?v=2026-10-29", excel: true, view: false, hl: false },
               { t: v.dlLoCsvT, d: v.dlLoCsvD, href: "/data/downloads/learning_outcomes.csv", excel: false, view: false, hl: true },
               { t: v.dlMisPdfT, d: v.dlMisPdfD, href: "/data/downloads/misconceptions_report.pdf", excel: false, view: false, hl: false },
             ].map((c) => (
@@ -310,6 +325,11 @@ export default function DistrictReportPage({
                   <span className="text-sm font-extrabold leading-snug text-gov-ink">{c.t}</span>
                 </div>
                 <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{c.d}</p>
+                {c.hl && (
+                  <p className="mt-2 text-[11px] leading-snug text-gov-ink">
+                    {v.csvColumnsL}: Grade · Subject · Learning Outcome Code · Learning Outcome Description · Percentage
+                  </p>
+                )}
                 {c.view ? (
                   <a
                     href={c.href}

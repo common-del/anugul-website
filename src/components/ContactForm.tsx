@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 
 // Static-site contact form: composes a mailto with the visitor's name +
 // message. If no office email is configured yet, sending is disabled with a
@@ -20,6 +21,7 @@ export default function ContactForm({
 
   const send = () => {
     if (!email) return;
+    track("contact_click", { method: "form" });
     const body = `${labels.name}: ${name}\n\n${msg}`;
     window.location.href = `mailto:${email}?subject=${encodeURIComponent(
       labels.subject,

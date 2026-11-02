@@ -8,9 +8,17 @@ import ExplainerVideos from "@/components/ExplainerVideos";
 import { getBlockSlugs, blockReportUrl } from "@/lib/officialsData";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { pageMeta, resourcesSeo } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {};
+  const locale = params.locale as Locale;
+  const { title, description } = resourcesSeo(locale);
+  return pageMeta(locale, "resources/", title, description);
 }
 
 type Kind = "download" | "view" | "link";
@@ -43,7 +51,7 @@ export default function ResourcesPage({
 
   const districtDownloads: DL[] = [
     ["/block-report/?block=District", v.dlDistPdfT, "view", IC_CHART],
-    ["/data/downloads/district_report.xlsx", v.dlDistXlsxT, "download", IC_GRID],
+    ["/data/downloads/district_report.xlsx?v=2026-10-29", v.dlDistXlsxT, "download", IC_GRID],
     ["/data/downloads/learning_outcomes_report.pdf", v.dlLor, "download", IC_FILE],
     ["/data/downloads/learning_outcomes.csv", v.dlLorCsv, "download", IC_GRID],
     ["/data/downloads/misconceptions_report.pdf", v.dlMisPdfT, "download", IC_SEARCH],
@@ -118,6 +126,7 @@ export default function ResourcesPage({
                 blocks={blockNames}
                 chooseLabel={v.govChooseBlock}
                 title={v.resExplainer}
+                locale={locale}
               />
             </div>
           </details>
@@ -126,8 +135,10 @@ export default function ResourcesPage({
               (Owner 2026-07-21: replaced the inline description; the detail —
               assessment design, the analysis, and how the % becomes a /10 score
               — now lives in the downloadable document.) */}
+          {/* The ?v= tag is a cache-buster: bump it whenever the PDF is
+              replaced so browsers fetch the new file instead of a stale cached copy. */}
           <a
-            href="/data/downloads/assessment_methodology.pdf"
+            href="/data/downloads/assessment_methodology.pdf?v=20260728"
             download
             className="group gov-card flex items-center gap-3 p-5 transition hover:bg-gov-tint hover:shadow-lift"
           >

@@ -6,6 +6,7 @@
     "data": "python scripts/build_data.py",
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/strip-offloaded-assets.mjs",
     "start": "next start",
     "lint": "next lint"
   },

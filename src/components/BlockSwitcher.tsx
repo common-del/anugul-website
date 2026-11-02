@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName } from "@/lib/placeNames";
 
 // In-page block/district switcher, shared by the block report and the
 // district report (same top-row position on both). The "District / All
@@ -36,7 +37,7 @@ export default function BlockSwitcher({
           .sort()
           .map((n) => (
             <option key={n} value={n}>
-              {n}
+              {blockName(n, locale)}
             </option>
           ))}
       </select>

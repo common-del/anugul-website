@@ -1,6 +1,7 @@
 import { BAND_COLOR, BAND_TEXT, bandFromScore } from "@/lib/bands";
 import { fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName } from "@/lib/placeNames";
 
 type Block = { name: string; average: number; schools: number };
 
@@ -22,7 +23,7 @@ export default function BlockBars({
           <div key={bl.name}>
             <div className="flex justify-between text-sm">
               <span className="text-brand-ink">
-                {bl.name}
+                {blockName(bl.name, locale)}
                 {bl.name === bestBlock && (
                   <span className="ml-1 text-accent-dark" aria-hidden>
                     ★

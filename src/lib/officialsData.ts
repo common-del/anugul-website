@@ -60,7 +60,7 @@ export type ClusterSlice = {
   cluster: string; block: string; blockSlug: string; rank: number; of: number;
   score: number; blockScore: number; students: number;
   schools: { udise: string; name: string; score: number; band: BandKeyStr }[];
-  brightSpots: { name: string; score: number; cluster_score: number; students: number }[];
+  brightSpots: { udise: string; name: string; score: number; cluster_score: number; students: number }[];
   recognition: { grade: string; subject: string; desc: string; observed: number; district: number; n: number }[];
   worstSubject: string | null;
   worstSubjectPct: number | null;

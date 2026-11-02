@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import type { Locale } from "@/lib/i18n/config";
 import { fmtPercent } from "@/lib/format";
+import { blockName } from "@/lib/placeNames";
 import DistrictMapCanvas, { type MapBlock } from "./DistrictMapCanvas";
 
 // District map as a block choropleth (server component — reads prebuilt block
@@ -76,7 +77,7 @@ export default function DistrictMapBands({
   const blocks: MapBlock[] = map.blocks
     .filter((b) => slugs[b.name] && scores[b.name] != null)
     .map((b) => ({
-      name: b.name,
+      name: blockName(b.name, locale),
       d: b.d,
       lx: b.lx,
       ly: b.ly,

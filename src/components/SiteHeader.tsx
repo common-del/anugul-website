@@ -137,7 +137,7 @@ export default function SiteHeader({
           aria-label={v.navHome}
         >
           {showBack && (
-            <span className="flex items-center pl-2 pr-1">
+            <span className="flex items-center py-1.5 pl-2 pr-1">
               <BackButton label={t.back} />
             </span>
           )}

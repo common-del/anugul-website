@@ -6,9 +6,13 @@ import { fmtNum } from "@/lib/format";
 import type { BandKey } from "@/lib/bands";
 import Stars from "@/components/Stars";
 import type { Locale } from "@/lib/i18n/config";
+import { blockName, clusterName } from "@/lib/placeNames";
+import { track } from "@/lib/analytics";
+import { expandName } from "@/lib/expandName";
 
-type Item = { u: string; n: string; b: string; c: string; st: string; s10: number; band: BandKey };
+type Item = { u: string; n: string; b: string; c: string; st: string; s10?: number; band?: BandKey; nod?: string; noResult?: boolean };
 type Geo = { u: string; lat: number; lon: number };
+type ExtraSchool = { id: string; udise: string | null; block: string; cluster: string; name: string; nameOd: string; odVerified: boolean };
 
 type Labels = {
   nearMe: string;
@@ -31,6 +35,7 @@ type Labels = {
   showingFirst: string;
   kmAway: string;
   viewReportAria: string;
+  noResultChip: string;
 };
 
 function havKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }) {
@@ -106,9 +111,21 @@ export default function SchoolFinder({
     const params = new URLSearchParams(window.location.search);
     const b = params.get("block");
     if (b) setBlockState(b);
-    fetch("/data/search-index.json")
-      .then((r) => r.json())
-      .then(setIndex)
+    const c = params.get("cluster");
+    if (b && c) setCluster(c);
+    Promise.all([
+      fetch("/data/search-index.json").then((r) => r.json()),
+      fetch("/data/school-od.json").then((r) => r.json()).catch(() => ({})),
+      fetch("/data/extra-schools.json").then((r) => r.json()).catch(() => []),
+    ])
+      .then(([base, od, extra]: [Item[], Record<string, string>, ExtraSchool[]]) => {
+        const withOd = base.map((s) => ({ ...s, nod: od[s.u] }));
+        const extras: Item[] = extra.map((e) => ({
+          u: e.id, n: e.name, b: e.block, c: e.cluster, st: "",
+          nod: e.nameOd, noResult: true,
+        }));
+        setIndex([...withOd, ...extras]);
+      })
       .catch(() => {});
     if (params.get("near") === "1") locate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,13 +142,22 @@ export default function SchoolFinder({
       .filter((x): x is { item: Item; km: number } => !!x.item);
   }, [pos, geo, index, byU]);
 
+  // Fire a GA "search" event ~1s after the visitor stops typing (>=2 chars),
+  // so we capture real searches without an event per keystroke.
+  useEffect(() => {
+    const query = q.trim();
+    if (query.length < 2) return;
+    const id = setTimeout(() => track("search", { search_term: query.toLowerCase() }), 900);
+    return () => clearTimeout(id);
+  }, [q]);
+
   // global search across every field we actually hold
   const searchMatches = useMemo(() => {
     const query = q.trim().toLowerCase();
     if (!query) return [];
     return index
       .filter((s) =>
-        `${s.n} ${s.u} ${s.b} ${s.c} ${s.st}`.toLowerCase().includes(query),
+        `${s.n} ${expandName(s.n)} ${s.nod ?? ""} ${s.u} ${s.b} ${s.c} ${expandName(s.c)} ${s.st}`.toLowerCase().includes(query),
       )
       .sort((a, z) => a.n.localeCompare(z.n));
   }, [index, q]);
@@ -160,29 +186,42 @@ export default function SchoolFinder({
 
   // Whole card is one focusable link (no separate button); score is the green
   // focal number; enlarged filled stars; chevron signals "tap to open".
-  const Card = ({ s, km }: { s: Item; km?: number }) => (
+  const Card = ({ s, km }: { s: Item; km?: number }) => {
+    const nm = locale === "od" && s.nod ? s.nod : expandName(s.n);
+    const sc = s.s10 ?? 0;
+    return (
     <Link
       href={`/${locale}/${dest}/${s.u}/`}
-      aria-label={labels.viewReportAria
-        .replace("{name}", s.n)
-        .replace("{n}", num(s.s10))
-        .replace("{max}", num(10))}
+      aria-label={
+        s.noResult
+          ? `${nm} — ${labels.noResultChip}`
+          : labels.viewReportAria
+              .replace("{name}", nm)
+              .replace("{n}", num(sc))
+              .replace("{max}", num(10))
+      }
       className="flex items-center gap-3 rounded-xl border border-gov-line bg-white p-4 shadow-card transition hover:bg-gov-tint hover:shadow-lift active:bg-gov-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
     >
       <span className="min-w-0 flex-1">
-        <span className="block truncate font-bold text-gov-ink">{s.n}</span>
+        <span className="block truncate font-bold text-gov-ink">{nm}</span>
         <span className="mt-0.5 block truncate text-xs text-muted">
-          {s.b} · {s.c}
+          {blockName(s.b, locale)} · {clusterName(s.c, locale)}
           {km != null ? ` · ${labels.kmAway.replace("{km}", num(Math.round(km * 10) / 10))}` : ""}
         </span>
-        <span className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          <Stars score={s.s10} size={20} label={`${num(s.s10)}/${num(10)}`} />
-          <span className="text-xs font-semibold text-muted">
-            {labels.overallScore}{" "}
-            <span className="text-xl font-extrabold tabular-nums text-gov">{num(s.s10)}</span>
-            <span className="font-bold text-gov">/{num(10)}</span>
+        {s.noResult ? (
+          <span className="mt-2 inline-flex items-center rounded-full bg-gov-tint px-2.5 py-1 text-xs font-semibold text-gov-ink ring-1 ring-gov-line">
+            {labels.noResultChip}
           </span>
-        </span>
+        ) : (
+          <span className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+            <Stars score={sc} size={20} label={`${num(sc)}/${num(10)}`} />
+            <span className="text-xs font-semibold text-muted">
+              {labels.overallScore}{" "}
+              <span className="text-xl font-extrabold tabular-nums text-gov">{num(sc)}</span>
+              <span className="font-bold text-gov">/{num(10)}</span>
+            </span>
+          </span>
+        )}
       </span>
       <svg
         width="20"
@@ -199,16 +238,17 @@ export default function SchoolFinder({
         <path d="M9 6l6 6-6 6" />
       </svg>
     </Link>
-  );
+    );
+  };
 
-  const chip = (label: string, onClick: () => void) => (
+  const chip = (label: string, onClick: () => void, wrap = false) => (
     <button
       key={label}
       type="button"
       onClick={onClick}
       className="flex min-h-[48px] items-center justify-between gap-2 rounded-xl bg-white px-4 text-left text-[15px] font-semibold text-gov ring-1 ring-gov-line shadow-sm transition hover:bg-gov-tint hover:ring-gov active:bg-gov-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gov focus-visible:ring-offset-1"
     >
-      <span className="min-w-0 truncate">{label}</span>
+      <span className={wrap ? "min-w-0 break-words py-2 sm:truncate sm:py-0" : "min-w-0 truncate"}>{label}</span>
       <svg
         width="18"
         height="18"
@@ -366,15 +406,15 @@ export default function SchoolFinder({
           <>
             <p className="text-sm font-semibold text-muted">{labels.chooseBlock}</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              {blocks.map((b) => chip(b, () => setBlock(b)))}
+              {blocks.map((b) => chip(blockName(b, locale), () => setBlock(b)))}
             </div>
           </>
         )}
 
         {block && (
           <p className="flex flex-wrap items-center gap-x-2 text-sm">
-            <span className="font-bold text-gov-ink">{block}</span>
-            {cluster && <span className="font-bold text-gov-ink">· {cluster}</span>}
+            <span className="font-bold text-gov-ink">{blockName(block, locale)}</span>
+            {cluster && <span className="font-bold text-gov-ink">· {clusterName(cluster, locale)}</span>}
             <button
               type="button"
               onClick={() => (cluster ? setCluster("") : setBlock(""))}
@@ -388,8 +428,8 @@ export default function SchoolFinder({
         {block && !cluster && (
           <>
             <p className="mt-2 text-sm font-semibold text-muted">{labels.chooseCluster}</p>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              {clusters.map((c) => chip(c, () => setCluster(c)))}
+            <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {clusters.map((c) => chip(clusterName(c, locale), () => setCluster(c), true))}
             </div>
           </>
         )}

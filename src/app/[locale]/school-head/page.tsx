@@ -53,6 +53,7 @@ export default function SchoolHeadPage({
               showingFirst: v.showingFirst,
               kmAway: v.kmAway,
               viewReportAria: v.viewReportAria,
+              noResultChip: v.noResultChip,
             }}
           />
         </div>

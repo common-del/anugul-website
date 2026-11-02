@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BAND_COLOR, BAND_TEXT, bandFromScore, type BandKey } from "@/lib/bands";
 import { fmtPercent } from "@/lib/format";
 import type { Locale } from "@/lib/i18n/config";
+import { track } from "@/lib/analytics";
 
 type Idx = { u: string; n: string; b: string; c: string };
 type SchoolData = {
@@ -115,6 +116,11 @@ export default function CompareView({
   }, [bU]);
 
   const bothReady = aData && bData;
+  useEffect(() => {
+    if (aData && bData) {
+      track("compare_schools", { pair: [aU, bU].filter(Boolean).sort().join("|") });
+    }
+  }, [aData, bData, aU, bU]);
 
   const overallCell = (d: SchoolData) => (
     <div>

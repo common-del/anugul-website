@@ -11,10 +11,17 @@ import { hasCard, cardUrl, cardImg } from "@/lib/cards";
 import type { Metadata } from "next";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/dict";
+import { blockName, clusterName } from "@/lib/placeNames";
 import { fmtNum } from "@/lib/format";
 import { bandTint10, type BandKey } from "@/lib/bands";
 import { getSchools } from "@/lib/schools";
+import { pageMeta, schoolSeo, schoolLd, schoolBreadcrumbLd, schoolParagraph, absUrl, schoolCrumbs } from "@/lib/seo";
+import { getBlockSlugs } from "@/lib/officialsData";
+import JsonLd from "@/components/JsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { managementLabel, areaLabel, hasBoundaryWall, boolYesNo } from "@/lib/profile";
+import { getExtraSchools, schoolDisplayName } from "@/lib/schoolNames";
+import NoResultSchool from "@/components/NoResultSchool";
 
 type Profile = {
   classRange: string | null;
@@ -44,6 +51,7 @@ type School = {
 };
 
 const schools = getSchools() as unknown as Record<string, School>;
+const extraById = new Map(getExtraSchools().map((e) => [e.id, e]));
 
 // Block-wise "how to read your report card" explainer videos (YouTube IDs,
 // from the approved mock-up doc).
@@ -57,9 +65,10 @@ const EXPLAINER_DEFAULT = "OcBdapIlGHM";
 const score10 = (pct: number) => Math.round(pct / 10);
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    Object.keys(schools).map((udise) => ({ locale, udise })),
-  );
+  return locales.flatMap((locale) => [
+    ...Object.keys(schools).map((udise) => ({ locale, udise })),
+    ...[...extraById.values()].map((e) => ({ locale, udise: e.id })),
+  ]);
 }
 export const dynamicParams = false;
 
@@ -71,13 +80,14 @@ export function generateMetadata({
   if (!isLocale(params.locale)) return {};
   const s = schools[params.udise];
   if (!s) return {};
-  const t = getDict(params.locale);
-  const title = `${s.name} · ${t.site.name}`;
-  return {
-    title,
-    description: t.site.description,
-    openGraph: { title, description: t.site.description },
-  };
+  const locale = params.locale as Locale;
+  const { title, description } = schoolSeo(
+    locale,
+    schoolDisplayName(s.udise, s.name, locale),
+    blockName(s.block, locale),
+    score10(s.overall.score),
+  );
+  return pageMeta(locale, `school/${params.udise}/`, title, description);
 }
 
 // v2 parent report card (docx mock): /10 overall, subject scores, download +
@@ -88,13 +98,28 @@ export default function SchoolPage({
   params: { locale: string; udise: string };
 }) {
   if (!isLocale(params.locale)) notFound();
+  const locale = params.locale as Locale;
+  const ex = extraById.get(params.udise);
+  if (ex) {
+    const td = getDict(locale);
+    return (
+      <NoResultSchool
+        locale={locale}
+        t={td}
+        name={locale === "od" && ex.nameOd ? ex.nameOd : ex.name}
+        block={ex.block}
+        cluster={ex.cluster}
+        findHref={`/${locale}/find/`}
+      />
+    );
+  }
   const s = schools[params.udise];
   if (!s) notFound();
-  const locale = params.locale as Locale;
   const t = getDict(locale);
   const v = t.v2;
   const num = (n: number) => fmtNum(n, locale);
   const overall10 = score10(s.overall.score);
+  const dispName = schoolDisplayName(s.udise, s.name, locale);
 
   const neighbours = (s.neighbours ?? [])
     // the source CSV occasionally lists a school as its own neighbour
@@ -104,7 +129,7 @@ export default function SchoolPage({
       return ns
         ? {
             udise: ns.udise,
-            name: ns.name,
+            name: schoolDisplayName(ns.udise, ns.name, locale),
             cluster: ns.cluster,
             km: n.km,
             s10: score10(ns.overall.score),
@@ -156,19 +181,30 @@ export default function SchoolPage({
   // green, 6-7 orange, 3-5 gold, 0-2 red). Kept faint so AA holds; the score +
   // stars remain the primary signal.
   const tintFor = (s10: number) => bandTint10(s10);
+  const blockSlug = getBlockSlugs().find((bl) => bl.name === s.block)?.slug;
 
   return (
     <PageShell>
       <SiteHeader locale={locale} t={t} showBack active="reports" />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        <JsonLd
+          data={[
+            schoolLd(dispName, blockName(s.block, locale), s.udise, absUrl(locale, `school/${s.udise}/`)),
+            schoolBreadcrumbLd(locale, dispName, blockName(s.block, locale), blockSlug, s.udise),
+          ]}
+        />
+        <Breadcrumbs
+          crumbs={schoolCrumbs(locale, dispName, blockName(s.block, locale), blockSlug, s.udise)}
+          locale={locale}
+        />
         {/* header row */}
         <section className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-dashed border-gov-line pb-4">
           <div className="min-w-0">
             <h1 className="text-2xl font-extrabold leading-tight text-gov-ink">
-              {s.name}
+              {dispName}
             </h1>
             <p className="mt-1.5 text-sm font-bold text-gov-ink">
-              UDISE: {s.udise} | {s.block} | {s.cluster}
+              UDISE: {s.udise} | {blockName(s.block, locale)} | {clusterName(s.cluster, locale)}
               {s.assessedStudents
                 ? ` | ${num(s.assessedStudents)} ${t.report.studentsAssessed}`
                 : ""}
@@ -186,6 +222,10 @@ export default function SchoolPage({
           </div>
         </section>
 
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+          {schoolParagraph(locale, dispName, blockName(s.block, locale))}
+        </p>
+
         {/* HERO: report card (left) | video + what you can do (right).
             items-start: each column sizes to its own content — the right
             column must never stretch to match the left. */}
@@ -198,7 +238,7 @@ export default function SchoolPage({
                 <div className="mt-3">
                   <CardLightbox
                     src={cardImg(s.udise)}
-                    alt={`${s.name} — ${v.yourReportCard}`}
+                    alt={`${dispName} — ${v.yourReportCard}`}
                     enlargeLabel={v.enlargeCard}
                     closeLabel={v.closeCard}
                     pageLabel={v.pageOneOf}
@@ -217,12 +257,12 @@ export default function SchoolPage({
                     </svg>
                     {v.downloadReportCard}
                   </a>
-                  <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
+                  <WhatsAppShare label={v.shareWhatsApp} text={dispName} />
                 </div>
               </>
             ) : (
               <div className="mt-4">
-                <WhatsAppShare label={v.shareWhatsApp} text={s.name} />
+                <WhatsAppShare label={v.shareWhatsApp} text={dispName} />
               </div>
             )}
           </section>
