@@ -81,11 +81,16 @@ function titleNames(locale: Locale): Map<string, string> {
   const count = (keys: string[]) => keys.reduce((m, k) => m.set(k, (m.get(k) ?? 0) + 1), new Map<string, number>());
   const byName = count(rows.map((r) => r.name));
   const byNameBlock = count(rows.map((r) => `${r.name}, ${r.block}`));
+  // Clusters are often named after a school, so say "cluster" explicitly.
+  const clusterWord = locale === "od" ? "କ୍ଲଷ୍ଟର" : "cluster";
   const out = new Map<string, string>();
   for (const r of rows) {
     if ((byName.get(r.name) ?? 0) < 2) continue;
     const nb = `${r.name}, ${r.block}`;
-    out.set(r.udise, (byNameBlock.get(nb) ?? 0) < 2 ? nb : `${r.name}, ${r.cluster}, ${r.block}`);
+    out.set(
+      r.udise,
+      (byNameBlock.get(nb) ?? 0) < 2 ? nb : `${r.name}, ${r.cluster} ${clusterWord}, ${r.block}`,
+    );
   }
   titleNameCache.set(locale, out);
   return out;
